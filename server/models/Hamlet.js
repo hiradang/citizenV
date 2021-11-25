@@ -1,24 +1,28 @@
 module.exports = (sequelize, DataTypes) => {
-    const City = sequelize.define("City", {
-        id_city: {
+    const Hamlet = sequelize.define("Hamlet", {
+        id_hamlet: {
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true
         },
-        city_name: {
+        hamlet_name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        quantity_city: {
+        quantity_hamlet: {
             type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        id_ward: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     });
-    City.associate = (models) => {
-        City.hasMany(models.District, {
+    Hamlet.associate = (models) => {
+        Hamlet.belongsTo(models.Ward, {
           onDelete: "cascade",
-          foreignKey: "id_city"
+          foreignKey: "id_ward"
         });
     };
-    return City;
+    return Hamlet;
 };
