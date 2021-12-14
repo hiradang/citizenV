@@ -85,9 +85,7 @@ function Slide() {
                   <Box
                     component="img"
                     sx={{
-                      height: '100%',
                       display: 'block',
-                      // maxWidth: 800,
                       overflow: 'hidden',
                       width: '100%',
                     }}
