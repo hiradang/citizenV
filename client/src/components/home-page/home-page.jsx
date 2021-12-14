@@ -23,6 +23,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles.scss';
 import Slide from '../slide/slide';
+import Manage from '../manage/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 
@@ -112,6 +113,7 @@ export default function HomePage({ listItems }) {
 
   const render = () => {
     if (location.pathname === '/trangchu') return <Slide />;
+    if (location.pathname === '/quanly') return <Manage />;
   };
 
   return (

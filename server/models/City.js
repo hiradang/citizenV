@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    city_code: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   });
   City.associate = (models) => {
     City.hasMany(models.District, {
