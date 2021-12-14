@@ -23,8 +23,10 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles.scss';
 import Slide from '../slide/slide';
+import Citizen from '../all-citizen/allCitizen'
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
+
 
 const drawerWidth = 240;
 // const logoUrl = 'https://dichvucong.moh.gov.vn/byte-dvc-theme/images/logo%20-%20dangnhapbyt.png';
@@ -112,6 +114,7 @@ export default function HomePage({ listItems }) {
 
   const render = () => {
     if (location.pathname === '/trangchu') return <Slide />;
+    if (location.pathname === '/danso') return <Citizen />;
   };
 
   return (

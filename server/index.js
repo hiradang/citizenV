@@ -27,6 +27,10 @@ app.use("/hamlet", hamletRouter);
 const taskRouter = require("./routes/Task")
 app.use("/task", taskRouter);
 
+const citizenRouter = require("./routes/Citizen")
+app.use("/citizen", citizenRouter);
+
+
 db.sequelize.sync().then(() => {
     app.listen(port, () => {
         console.log("Server running at port: " + port);
