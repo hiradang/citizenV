@@ -9,34 +9,14 @@ router.get("/update/:id", async (req, res) => {
     Account.update({
       password: hash
     },
-    {where: {id_account: id}});
+    {where: {username: id}});
   });
 })
 
-
-// Change user name when the code change
-router.post("/updateUsername/:id", async (req, res) => {
-  const id = req.params.id;
-  const newName = req.body.newName;
-  await Account.update({
-    username: newName
-  },
-  {where: {id_account: id}});
-  res.json("Update successfully");
-})
-
-router.get("/:id", async (req, res) => {
-  let id = req.params.id;
-  let account = await Account.findByPk(id);
-  if (account === null) res.send("FAILED"); 
-  else res.send("SUCCESS");
-})
-
 router.post("/", async (req, res) => {
-    const {id_account, username, password } = req.body;
+    const { username, password } = req.body;
     bcrypt.hash(password, 10).then((hash) => {
       Account.create({
-        id_account: id_account,
         username: username,
         password: hash
       });

@@ -23,7 +23,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles.scss';
 import Slide from '../slide/slide';
-import Manage from '../manage/manage';
+import Manage from '../manage/main/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 

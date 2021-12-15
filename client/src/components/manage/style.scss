@@ -18,8 +18,14 @@
   }
 }
 
-.button.supplyCode {
-  margin-right: 20px;
+.buttons {
+  display: flex;
+  .button.actionButton {
+    margin-right: 20px;
+  }
+  .exportExcelBtn {
+    margin-left: 20px;
+  }
 }
 
 .navigation {
