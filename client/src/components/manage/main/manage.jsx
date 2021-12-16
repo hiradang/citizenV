@@ -25,6 +25,7 @@ import CustomTableCell from '../EditableCell';
 import AddCityDialog from '../AddCityDialog';
 import AddAccountDialog from '../AddAccountDialog';
 import ConfirmDialog from '../ConfirmDeleteOne';
+import ConfirmDeleteSelected from '../ConfirmDeleteSelected';
 import ConfirmResetAccount from '../ConfirmResetAccount';
 import AddCodeExcel from '../AddCodeExcel';
 var removeVietnameseTones = require('../../../constants/utils/CheckText').removeVietnameseTones;
@@ -35,6 +36,9 @@ function Manage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  // Checkbox - Id của các thành phố khi được checkbox
+  const [isAllChecked, setAllChecked] = useState(false);
+
   useEffect(() => {
     axios.get(`http://localhost:3001/city`).then((response) => {
       setCities(
@@ -44,6 +48,7 @@ function Manage() {
             city_name: element.city_name,
             hasAccount: element.hasAccount,
             isEditMode: false,
+            isChecked: false,
           };
         })
       );
@@ -143,6 +148,7 @@ function Manage() {
           city_name: row['Tên tỉnh/thành'],
           hasAccount: false,
           isEditMode: false,
+          isChecked: false,
         };
       });
       setCities(newCities);
@@ -195,15 +201,40 @@ function Manage() {
         city_name: city.city_name,
         hasAccount: true,
         isEditMode: false,
+        isChecked: city.isChecked,
       };
     });
     setCities(newCities);
   };
 
-  // Reset account
+  const supplyOneAccount = (cityId, defaultPassword) => {
+    Promise.all([
+      axios.post(`http://localhost:3001/login`, {
+        username: cityId,
+        password: defaultPassword,
+      }),
+      axios.post(`http://localhost:3001/city/${cityId}`, {
+        hasAccount: true,
+      }),
+    ]);
+
+    const newCities = cities.map((city) => {
+      return city.id === cityId
+        ? {
+            id: city.id,
+            city_name: city.city_name,
+            hasAccount: true,
+            isEditMode: false,
+            isChecked: city.isChecked,
+          }
+        : city;
+    });
+    setCities(newCities);
+  };
+
+  // Reset all account
   const resetAccount = () => {
     // Xóa các tài khoản đăng nhập và set lại trạng thái chưa cập nhật tài khoản
-    // to-do: xoa tai khoan dang nhap
     cities.forEach((city) => {
       Promise.all([
         axios.post(`http://localhost:3001/city/${city.id}`, {
@@ -219,7 +250,31 @@ function Manage() {
         city_name: city.city_name,
         hasAccount: false,
         isEditMode: false,
+        isChecked: city.isChecked,
       };
+    });
+    setCities(newCities);
+  };
+
+  // Reset one account
+  const resetOneAccount = (cityId) => {
+    Promise.all([
+      axios.post(`http://localhost:3001/city/${cityId}`, {
+        hasAccount: false,
+      }),
+      axios.delete(`http://localhost:3001/login/${cityId}`),
+    ]);
+
+    const newCities = cities.map((city) => {
+      return city.id === cityId
+        ? {
+            id: city.id,
+            city_name: city.city_name,
+            hasAccount: false,
+            isEditMode: false,
+            isChecked: city.isChecked,
+          }
+        : city;
     });
     setCities(newCities);
   };
@@ -234,6 +289,7 @@ function Manage() {
       city_name: cityName,
       hasAccount: false,
       isEditMode: false,
+      isChecked: false,
     };
     const newCities = [...cities, newCity];
     setCities(newCities);
@@ -249,8 +305,8 @@ function Manage() {
     });
     setCities(newCities);
     Promise.all([
-      axios.delete(`http://localhost:3001/city/${id}`).then((res) => console.log(res.data)),
-      axios.delete(`http://localhost:3001/login/${id}`).then((res) => console.log(res.data)),
+      axios.delete(`http://localhost:3001/city/${id}`),
+      axios.delete(`http://localhost:3001/login/${id}`),
     ]);
   };
 
@@ -263,6 +319,7 @@ function Manage() {
           city_name: element.city_name,
           hasAccount: element.hasAccount,
           isEditMode: false,
+          isChecked: element.isChecked,
         };
       });
 
@@ -278,6 +335,69 @@ function Manage() {
     });
   };
 
+  // Delete selected City
+  const deleteSelectedCity = () => {
+    const newCities = [];
+    cities.forEach((city) => {
+      if (!city.isChecked) {
+        newCities.push(city);
+      }
+    });
+    setCities(newCities);
+
+    cities.forEach((city) => {
+      if (city.isChecked) {
+        Promise.all([
+          axios.delete(`http://localhost:3001/city/${city.id}`),
+          axios.delete(`http://localhost:3001/login/${city.id}`),
+        ]);
+      }
+    });
+
+    // Reset lại danh sách các city đã được chọn
+    setAllChecked(false);
+
+    // Reset lại các checkbox
+    // const listCheckbox = document.querySelectorAll('.checkbox');
+    // for (let i = 0; i < listCheckbox.length; i++) {
+    //   listCheckbox[i].checked = false;
+    // }
+  };
+
+  const handleCheckboxAll = (e) => {
+    setAllChecked(!isAllChecked);
+    const newCities = cities.map((city) => {
+      return {
+        id: city.id,
+        city_name: city.city_name,
+        hasAccount: city.hasAccount,
+        isEditMode: false,
+        isChecked: e.target.checked,
+      };
+    });
+    setCities(newCities);
+  };
+
+  // Handle onchange of the checkbox
+  const onChangeCheckbox = (id, checked) => {
+    const newCities = cities.map((city) => {
+      return city.id === id
+        ? {
+            id: city.id,
+            city_name: city.city_name,
+            hasAccount: city.hasAccount,
+            isEditMode: false,
+            isChecked: checked,
+          }
+        : city;
+    });
+    setCities(newCities);
+
+    // Kiểm tra nút check all
+    const allChecked = newCities.every((city) => city.isChecked);
+    setAllChecked(allChecked);
+  };
+
   return (
     <div className="page-container">
       <div className="actions">
@@ -290,6 +410,7 @@ function Manage() {
             <AddAccountDialog
               title="Cấp tài khoản"
               className="actionButton button"
+              variant="contained"
               handler={supplyAccount}
             />
 
@@ -302,7 +423,7 @@ function Manage() {
             </Button>
 
             <div className="button actionButton">
-              <ConfirmResetAccount handler={resetAccount} />
+              <ConfirmResetAccount handler={resetAccount} title="Reset lại tài khoản" />
             </div>
           </div>
 
@@ -332,6 +453,15 @@ function Manage() {
               <TableCell align="left">Mã Tỉnh/thành</TableCell>
               <TableCell align="left">Tài khoản</TableCell>
               <TableCell align="left">Hành động</TableCell>
+              <TableCell align="right">
+                <input type="checkbox" checked={isAllChecked} onChange={handleCheckboxAll} />
+              </TableCell>
+              <TableCell align="left">
+                <ConfirmDeleteSelected
+                  handler={deleteSelectedCity}
+                  title="Xóa các tỉnh thành đã chọn"
+                />
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -342,11 +472,22 @@ function Manage() {
                 <CustomTableCell source={city} name="id" handleOnChange={onChangeCityCode} />
                 <TableCell>
                   {city.hasAccount ? (
-                    <Button variant="outlined">Đang hoạt động</Button>
+                    <AddAccountDialog
+                      title="Đang hoạt động"
+                      className="actionButton button"
+                      variant="outlined"
+                      handler={resetOneAccount}
+                      cityId={city.id}
+                    />
                   ) : (
-                    <Button variant="outlined" color="error">
-                      Chưa cấp
-                    </Button>
+                    <AddAccountDialog
+                      title="Chưa cấp"
+                      className="actionButton button"
+                      variant="outlined"
+                      color="error"
+                      cityId={city.id}
+                      handler={supplyOneAccount}
+                    />
                   )}
                 </TableCell>
                 <TableCell>
@@ -370,6 +511,14 @@ function Manage() {
                       </IconButton>
                     </>
                   )}
+                </TableCell>
+                <TableCell align="right">
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={city.isChecked}
+                    onChange={(e) => onChangeCheckbox(city.id, e.target.checked)}
+                  />
                 </TableCell>
               </TableRow>
             ))}

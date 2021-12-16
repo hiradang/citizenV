@@ -38,39 +38,67 @@ export default function FormDialog(props) {
     setOpen(false);
 
     // Gọi hàm xử lý của cha (thêm MK vào db)
-    props.handler(defaultPassword);
+    if (props.cityId) {
+      if (props.title === 'Chưa cấp') {
+        props.handler(props.cityId, defaultPassword);
+      } else {
+        props.handler(props.cityId);
+      }
+    } else {
+      props.handler(defaultPassword);
+    }
   };
 
   return (
     <div>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant={props.variant} onClick={handleClickOpen} color={props.color}>
         {props.title}
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{props.title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Tên đăng nhập sẽ được cấp giống với mã tỉnh/thành phố. <br />
-            Hãy cấp một mật khẩu mặc định.
-          </DialogContentText>
-          <DialogContentText className={classes.warning}>{notification}</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="cityName"
-            label="Mật khẩu mặc định (*)"
-            type="text"
-            fullWidth
-            variant="standard"
-            className={classes.textField}
-            onChange={(e) => setDefaultPassword(e.target.value)}
-            value={defaultPassword}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Hủy</Button>
-          <Button onClick={handleSubmit}>Thêm mới</Button>
-        </DialogActions>
+        {props.title === 'Đang hoạt động' ? (
+          <>
+            <DialogContent>
+              <DialogContentText>
+                Tài khoản này đang hoạt động. <br /> Bạn có muốn reset lại tài khoản này hay không?{' '}
+                <br />
+              </DialogContentText>
+              <DialogContentText className={classes.warning}>{notification}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Hủy</Button>
+              <Button onClick={handleSubmit} color="error">
+                Reset Tài khoản
+              </Button>
+            </DialogActions>
+          </>
+        ) : (
+          <>
+            <DialogContent>
+              <DialogContentText>
+                Tên đăng nhập sẽ được cấp giống với mã tỉnh/thành phố. <br />
+                Hãy cấp một mật khẩu mặc định.
+              </DialogContentText>
+              <DialogContentText className={classes.warning}>{notification}</DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="cityName"
+                label="Mật khẩu mặc định (*)"
+                type="text"
+                fullWidth
+                variant="standard"
+                className={classes.textField}
+                onChange={(e) => setDefaultPassword(e.target.value)}
+                value={defaultPassword}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Hủy</Button>
+              <Button onClick={handleSubmit}>Cấp tài khoản</Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </div>
   );

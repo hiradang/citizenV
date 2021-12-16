@@ -5,7 +5,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import { makeStyles } from '@mui/styles';
 
@@ -21,7 +20,7 @@ export default function AlertDialog(props) {
   };
 
   const handleAgree = () => {
-    props.handler();
+    props.handler(props.id);
     setOpen(false);
   };
 
@@ -34,8 +33,8 @@ export default function AlertDialog(props) {
 
   return (
     <div>
-      <Button variant="contained" onClick={handleClickOpen}>
-        Reset tài khoản
+      <Button onClick={handleClickOpen} variant="outlined" color="error">
+        Xóa
       </Button>
       <Dialog
         open={open}
@@ -43,16 +42,17 @@ export default function AlertDialog(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{`${props.title}`}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn có chắc chắc muốn {props.title} hay không? <br /> Hành vi này là không thể hoàn tác.
+            Bạn có chắc chắc muốn {props.title} này khỏi hệ thống hay không? <br /> Hành vi này là
+            không thể hoàn tác.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
           <Button onClick={handleAgree} className={classes.warning}>
-            Đồng ý
+            Đồng ý xóa
           </Button>
         </DialogActions>
       </Dialog>
