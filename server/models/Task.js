@@ -6,12 +6,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         start_date: {
-            type: DataTypes.DATE,
-            allowNull: false,
+            type: DataTypes.DATEONLY,
+            allowNull: true,
         },
         end_date: {
-            type: DataTypes.DATE,
-            allowNull: false,
+            type: DataTypes.DATEONLY,
+            allowNull: true,
         },
         is_finished: {
             type: DataTypes.BOOLEAN,

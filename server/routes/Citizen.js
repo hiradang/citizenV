@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {Citizen} = require('../models')
-const {Hamlet} = require('../models')
-const {Ward} = require('../models')
-const {City} = require('../models')
 const db = require("../models");
 router.get("/", async (req, res) => {
     const [result, metadata] = await db.sequelize.query(

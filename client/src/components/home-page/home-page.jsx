@@ -26,10 +26,10 @@ import Slide from '../slide/slide';
 import Citizen from '../all-citizen/allCitizen'
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
+import Tasks from '../tasks/tasks';
 
 
 const drawerWidth = 240;
-// const logoUrl = 'https://dichvucong.moh.gov.vn/byte-dvc-theme/images/logo%20-%20dangnhapbyt.png';
 
 HomePage.propTypes = {
   HomePage: PropTypes.array.isRequired,
@@ -42,6 +42,10 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor: '#f5f7ff',
+    height: '100%',
+    width: '100%',
+    padding: '0 50px',
     marginLeft: `-${drawerWidth}px`,
     ...(open && {
       transition: theme.transitions.create('margin', {
@@ -115,6 +119,7 @@ export default function HomePage({ listItems }) {
   const render = () => {
     if (location.pathname === '/trangchu') return <Slide />;
     if (location.pathname === '/danso') return <Citizen />;
+    if (location.pathname === '/congviec') return <Tasks />;
   };
 
   return (
@@ -173,7 +178,7 @@ export default function HomePage({ listItems }) {
         <Divider />
         {sideList()}
       </Drawer>
-      <Main open={open}>
+      <Main open={open} className="">
         <DrawerHeader />
         {render()}
       </Main>

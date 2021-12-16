@@ -1,16 +1,18 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser')
 const port = 3001;
 
 const db = require("./models");
 
 app.use(cors()); 
+app.use(cookieParser());
 app.use(express.json({strict: false}));
 
 //Router
 const authRouter = require("./routes/Account")
-app.use("/login", authRouter);
+app.use("/account", authRouter);
 
 const cityRouter = require("./routes/City")
 app.use("/city", cityRouter);
