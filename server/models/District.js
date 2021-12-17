@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    district_code: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+    hasAccount: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     id_city: {
       type: DataTypes.STRING,

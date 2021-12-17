@@ -188,6 +188,7 @@ function Manage() {
         axios.post(`http://localhost:3001/login`, {
           username: city.id,
           password: defaultPassword,
+          role: 'A2',
         }),
         axios.post(`http://localhost:3001/city/${city.id}`, {
           hasAccount: true,
@@ -212,6 +213,7 @@ function Manage() {
       axios.post(`http://localhost:3001/login`, {
         username: cityId,
         password: defaultPassword,
+        role: 'A2',
       }),
       axios.post(`http://localhost:3001/city/${cityId}`, {
         hasAccount: true,

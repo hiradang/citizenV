@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    hamlet_code: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    hasAccount: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     id_ward: {
       type: DataTypes.STRING,

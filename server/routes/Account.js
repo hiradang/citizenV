@@ -14,11 +14,12 @@ router.get("/update/:id", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
     bcrypt.hash(password, 10).then((hash) => {
       Account.create({
         username: username,
-        password: hash
+        password: hash,
+        role: role
       });
       res.json("SUCCESS");
     });
