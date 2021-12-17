@@ -1,0 +1,39 @@
+@import '../../app.scss';
+
+.infoText {
+  color: red;
+}
+
+.page-container {
+  padding: 40px;
+  background-color: #f5f7ff;
+
+  .actions {
+    margin-bottom: 40px;
+  }
+
+  .actionIcon {
+    color: $primary-color;
+    margin-right: 10px;
+  }
+}
+
+.buttons {
+  display: flex;
+  .button.actionButton {
+    margin-right: 20px;
+  }
+  .exportExcelBtn {
+    margin-left: 20px;
+  }
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addCity {
+  margin-bottom: 20px;
+}

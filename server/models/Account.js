@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const  Account= sequelize.define("Account", {
-        id_account: {
+        username: {
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         role: {
             type: DataTypes.STRING,
             allowNull: false,
-        }
+        },
     });
     return Account;
 };

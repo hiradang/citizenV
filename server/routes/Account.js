@@ -17,25 +17,15 @@ router.get('/update/:id', async (req, res) => {
   });
 });
 
-// router.get("/", async (req, res) => {
-//   const password = '01010101'
-//   bcrypt.hash(password, 10).then((hash) => {
-//     Account.create({
-//       id_account: password,
-//       password: hash,
-//       role: 'b2'
-//     });
-//     res.json("SUCCESS");
-//   });
-// });
-
-router.post('/', async (req, res) => {
-  const { username, password, role } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    Account.create({
-      id_account: username,
-      password: hash,
-      role: role,
+router.post("/", async (req, res) => {
+    const { username, password, role } = req.body;
+    bcrypt.hash(password, 10).then((hash) => {
+      Account.create({
+        username: username,
+        password: hash,
+        role: role
+      });
+      res.json("SUCCESS");
     });
     res.json('SUCCESS');
   });
@@ -52,7 +42,7 @@ router.post('/refresh', (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const user = await Account.findByPk(username);
+  const user = await Account.findOne({where: {username: username}});
   if (!user) res.json({ error: "User Doesn't Exist" });
   bcrypt.compare(password, user.password).then((match) => {
     if (!match) res.json({ error: 'Wrong Username And Password Combination' });
@@ -66,6 +56,16 @@ router.post('/login', async (req, res) => {
   refreshTokens.push(refreshToken)
   res.cookie('accessToken', token, {httpOnly: true})
   res.json({ username: user.id_account, role: user.role, accessToken: token });
+});
+
+router.delete("/:username", async (req, res) => {
+  const username = req.params.username;
+  Account.destroy({
+    where: {
+      username: username
+    } 
+  })
+  res.send("SUCCESS")
 });
 
 module.exports = router;

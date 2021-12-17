@@ -1,4 +1,4 @@
-// import './App.css';
+import './app.scss';
 import { Route, Switch, Redirect } from 'react-router';
 import HomePage from './components/home-page/home-page';
 import { roleA } from './constants/listItem';

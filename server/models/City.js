@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    hasAccount: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   });
   City.associate = (models) => {
     City.hasMany(models.District, {

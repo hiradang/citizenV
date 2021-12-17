@@ -23,11 +23,11 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles.scss';
 import Slide from '../slide/slide';
-import Citizen from '../all-citizen/allCitizen'
+import Citizen from '../all-citizen/allCitizen';
+import Manage from '../manage/main/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 import Tasks from '../tasks/tasks';
-
 
 const drawerWidth = 240;
 
@@ -120,6 +120,7 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/trangchu') return <Slide />;
     if (location.pathname === '/danso') return <Citizen />;
     if (location.pathname === '/congviec') return <Tasks />;
+    if (location.pathname === '/quanly') return <Manage />;
   };
 
   return (
