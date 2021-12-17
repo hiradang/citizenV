@@ -29,7 +29,6 @@ router.post("/", async (req, res) => {
     });
     res.json('SUCCESS');
   });
-});
 
 router.post('/refresh', (req, res) => {
   const refreshToken = req.body.token
