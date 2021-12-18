@@ -7,8 +7,8 @@ import './styles.scss';
 import Picker from './components/picker/picker';
 import clsx from 'clsx';
 // Tasks.propTypes = {};
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Cookies from 'js-cookie';
 // axios.defaults.withCredentials = true
 const initialRows = [
@@ -34,19 +34,19 @@ const cities = ['Hà Nội', 'Thanh Hóa'];
 
 function Tasks() {
   const [rows, setRows] = React.useState([]);
-  const [listCityName, setListCityName] = useState([])
-  var tempListCityName = []
-  useEffect(()=> {
-    axios.get("http://localhost:3001/city").then((response) =>{
+  const [listCityName, setListCityName] = useState([]);
+  var tempListCityName = [];
+  useEffect(() => {
+    axios.get('http://localhost:3001/city').then((response) => {
       for (let i = 0; i < response.data.length; i++) {
-        tempListCityName[i] = response.data[i].city_name
+        tempListCityName[i] = response.data[i].city_name;
       }
-      setListCityName(tempListCityName)
+      setListCityName(tempListCityName);
     });
-    axios.get("http://localhost:3001/task/city").then((response) =>{
-        setRows(response.data)
+    axios.get('http://localhost:3001/task/city').then((response) => {
+      setRows(response.data);
     });
-  }, [])
+  }, []);
   const { enqueueSnackbar } = useSnackbar();
 
   const showNoti = (message, type) => {
@@ -87,12 +87,27 @@ function Tasks() {
             endDate: end,
             // status: 'Chưa hoàn thành',
           };
-          
-        var timeStart = start.getFullYear().toString() + '-' + (start.getMonth() + 1).toString() + '-' + start.getDate().toString()
-        var timeEnd = end.getFullYear().toString() + '-' + (end.getMonth() + 1).toString() + '-' + end.getDate().toString()
-        axios.put(`http://localhost:3001/task/city/${id}`, {startDate: timeStart, endDate: timeEnd}).then((response) =>{
-          // setRows(response.data)
-      });
+
+          var timeStart =
+            start.getFullYear().toString() +
+            '-' +
+            (start.getMonth() + 1).toString() +
+            '-' +
+            start.getDate().toString();
+          var timeEnd =
+            end.getFullYear().toString() +
+            '-' +
+            (end.getMonth() + 1).toString() +
+            '-' +
+            end.getDate().toString();
+          axios
+            .put(`http://localhost:3001/task/city/${id}`, {
+              startDate: timeStart,
+              endDate: timeEnd,
+            })
+            .then((response) => {
+              // setRows(response.data)
+            });
           showNoti('Thay đổi thành công', 'success');
           return newRows;
         });
@@ -190,17 +205,31 @@ function Tasks() {
         row.startDate = start;
         row.endDate = end;
         // row.status = 0;
-        var timeStart = start.getFullYear().toString() + '-' + (start.getMonth() + 1).toString() + '-' + start.getDate().toString()
-        var timeEnd = end.getFullYear().toString() + '-' + (end.getMonth() + 1).toString() + '-' + end.getDate().toString()
-        axios.put(`http://localhost:3001/task/city/${row.id}`, {startDate: timeStart, endDate: timeEnd}, 
-        // {withCredentials: true}
-          // {headers: {
-          //   token: Cookies.get('token')
-          // }}
-        ).then((response) =>{
-          // setRows(response.data)
-          console.log(response.data)
-      });
+        var timeStart =
+          start.getFullYear().toString() +
+          '-' +
+          (start.getMonth() + 1).toString() +
+          '-' +
+          start.getDate().toString();
+        var timeEnd =
+          end.getFullYear().toString() +
+          '-' +
+          (end.getMonth() + 1).toString() +
+          '-' +
+          end.getDate().toString();
+        axios
+          .put(
+            `http://localhost:3001/task/city/${row.id}`,
+            { startDate: timeStart, endDate: timeEnd }
+            // {withCredentials: true}
+            // {headers: {
+            //   token: Cookies.get('token')
+            // }}
+          )
+          .then((response) => {
+            // setRows(response.data)
+            console.log(response.data);
+          });
         index++;
       }
     });
@@ -216,26 +245,32 @@ function Tasks() {
             <Picker listCity={listCityName} toggleApplyButton={updateBySelect} />
           </div>
           <div style={{ flexGrow: 1, padding: '20px' }}>
-            <DataGrid rows={rows.map((row) => {
-                if (row.startDate) {
-                  row = {
-                    ...row,
-                    startDate: new Date(row.startDate),
-                    endDate: new Date(row.endDate),
-                    status: row.status === 0 ? 'Chưa hoàn thành' : 'Hoàn thành',
-                    
-                  };
-                } else {
-                  row = {
-                    ...row,
-                    progress: 0,
-                    startDate: '',
-                    endDate: '',
-                    status: 'Chưa bắt đầu',
-                  };
-                }
-                return row;
-              })} columns={columns} pageSize={7} disableSelectionOnClick />
+            <div style={{ height: '80vh' }}>
+              <DataGrid
+                autoHeight
+                rows={rows.map((row) => {
+                  if (row.startDate) {
+                    row = {
+                      ...row,
+                      startDate: new Date(row.startDate),
+                      endDate: new Date(row.endDate),
+                      status: row.status == 0 ? 'Chưa hoàn thành' : 'Hoàn thành',
+                    };
+                  } else {
+                    row = {
+                      ...row,
+                      startDate: '',
+                      endDate: '',
+                      status: 'Chưa bắt đầu',
+                    };
+                  }
+                  return row;
+                })}
+                columns={columns}
+                pageSize={7}
+                disableSelectionOnClick
+              />
+            </div>
           </div>
         </div>
       </div>

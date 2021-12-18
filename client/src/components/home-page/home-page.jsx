@@ -28,6 +28,7 @@ import Manage from '../manage/main/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 import Tasks from '../tasks/tasks';
+import Census from '../census/census';
 
 const drawerWidth = 240;
 
@@ -105,7 +106,7 @@ export default function HomePage({ listItems }) {
       <Divider />
       <List disablePadding>
         {listItems.map((listItem, index) => (
-          <NavLink to={listItem.url} className="link">
+          <NavLink to={listItem.url} className="link" key={index}>
             <ListItem button key={index}>
               <ListItemIcon className="icon">{listItem.listIcon}</ListItemIcon>
               <ListItemText primary={listItem.listText} />
@@ -179,6 +180,7 @@ export default function HomePage({ listItems }) {
         <Divider />
         {sideList()}
       </Drawer>
+
       <Main open={open} className="">
         <DrawerHeader />
         {render()}
