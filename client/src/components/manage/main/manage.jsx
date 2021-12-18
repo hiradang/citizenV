@@ -136,24 +136,24 @@ function Manage() {
       };
     });
 
-    // promise.then((data) => {
-    //   const newCities = data.map((row) => {
-    //     axios
-    //       .post(`http://localhost:3001/city/`, {
-    //         cityCode: row['Mã tỉnh/thành'],
-    //         cityName: row['Tên tỉnh/thành'],
-    //       })
-    //       .then((res) => {});
-    //     return {
-    //       id: row['Mã tỉnh/thành'],
-    //       city_name: row['Tên tỉnh/thành'],
-    //       hasAccount: false,
-    //       isEditMode: false,
-    //       isChecked: false,
-    //     };
-    //   });
-    //   setCities(newCities);
-    // });
+    promise.then((data) => {
+      const newCities = data.map((row) => {
+        axios
+          .post(`http://localhost:3001/city/`, {
+            cityCode: row['Mã tỉnh/thành'],
+            cityName: row['Tên tỉnh/thành'],
+          })
+          .then((res) => {});
+        return {
+          id: row['Mã tỉnh/thành'],
+          city_name: row['Tên tỉnh/thành'],
+          hasAccount: false,
+          isEditMode: false,
+          isChecked: false,
+        };
+      });
+      setCities(newCities);
+    });
   };
 
   // Export File to Excel
