@@ -12,16 +12,16 @@ const initialRows = [
   {
     id: 1,
     cityName: 'Hà Nội',
-    startDate: new Date(2021, 0, 1), // year / month 0 - 11 / day 1 - 31
-    endDate: new Date(2021, 1, 1),
+    startDate: null, // year / month 0 - 11 / day 1 - 31
+    endDate: null,
     progress: 5000,
     status: 'Chưa hoàn thành',
   },
   {
     id: 2,
     cityName: 'Thanh Hóa',
-    startDate: new Date(2021, 0, 1), // year / month 0 - 11 / day 1 - 31
-    endDate: new Date(2021, 1, 1),
+    startDate: '2021-11-15', // year / month 0 - 11 / day 1 - 31
+    endDate: '2021-11-16',
     progress: 3000,
     status: 'Chưa hoàn thành',
   },
@@ -53,6 +53,7 @@ function Tasks() {
         params.endDate.getDate()
       );
 
+      console.log(start, end);
       const now = new Date(Date.now());
 
       const check = end - start;
@@ -180,7 +181,32 @@ function Tasks() {
             <Picker listCity={cities} toggleApplyButton={updateBySelect} />
           </div>
           <div style={{ flexGrow: 1, padding: '20px' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={7} disableSelectionOnClick />
+            <div style={{ height: '80vh' }}>
+              <DataGrid
+                autoHeight
+                rows={rows.map((row) => {
+                  if (row.startDate) {
+                    row = {
+                      ...row,
+                      startDate: new Date(row.startDate),
+                      endDate: new Date(row.endDate),
+                      status: row.status == 0 ? 'Chưa hoàn thành' : 'Hoàn thành',
+                    };
+                  } else {
+                    row = {
+                      ...row,
+                      startDate: '',
+                      endDate: '',
+                      status: 'Chưa bắt đầu',
+                    };
+                  }
+                  return row;
+                })}
+                columns={columns}
+                pageSize={7}
+                disableSelectionOnClick
+              />
+            </div>
           </div>
         </div>
       </div>
