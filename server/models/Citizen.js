@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        nation: {
+        ethnic: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         job: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
+        }
     });
     return Citizen;
 };

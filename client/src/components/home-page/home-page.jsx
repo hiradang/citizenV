@@ -28,6 +28,7 @@ import Manage from '../manage/main/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 import Tasks from '../tasks/tasks';
+import Statistics from '../statistics/main/statistics';
 
 const drawerWidth = 240;
 
@@ -121,6 +122,7 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/danso') return <Citizen />;
     if (location.pathname === '/congviec') return <Tasks />;
     if (location.pathname === '/quanly') return <Manage />;
+    if (location.pathname === '/thongke') return <Statistics />;
   };
 
   return (

@@ -115,7 +115,7 @@ function Manage() {
     axios.post(`http://localhost:3001/city/${id}`, { newName: value }).then((res) => {});
   };
 
-  // Supply new code
+  // Supply new code from excel file
   const supplyCodeExcel = (file) => {
     const promise = new Promise((resolve, reject) => {
       const fileReader = new FileReader();
@@ -128,6 +128,7 @@ function Manage() {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
         resolve(data);
+        console.log(data.slice(100).map((row) => row.job_name));
       };
 
       fileReader.onerror = (error) => {
@@ -135,24 +136,24 @@ function Manage() {
       };
     });
 
-    promise.then((data) => {
-      const newCities = data.map((row) => {
-        axios
-          .post(`http://localhost:3001/city/`, {
-            cityCode: row['Mã tỉnh/thành'],
-            cityName: row['Tên tỉnh/thành'],
-          })
-          .then((res) => {});
-        return {
-          id: row['Mã tỉnh/thành'],
-          city_name: row['Tên tỉnh/thành'],
-          hasAccount: false,
-          isEditMode: false,
-          isChecked: false,
-        };
-      });
-      setCities(newCities);
-    });
+    // promise.then((data) => {
+    //   const newCities = data.map((row) => {
+    //     axios
+    //       .post(`http://localhost:3001/city/`, {
+    //         cityCode: row['Mã tỉnh/thành'],
+    //         cityName: row['Tên tỉnh/thành'],
+    //       })
+    //       .then((res) => {});
+    //     return {
+    //       id: row['Mã tỉnh/thành'],
+    //       city_name: row['Tên tỉnh/thành'],
+    //       hasAccount: false,
+    //       isEditMode: false,
+    //       isChecked: false,
+    //     };
+    //   });
+    //   setCities(newCities);
+    // });
   };
 
   // Export File to Excel
@@ -185,7 +186,7 @@ function Manage() {
   const supplyAccount = (defaultPassword) => {
     cities.forEach((city) => {
       Promise.all([
-        axios.post(`http://localhost:3001/login`, {
+        axios.post(`http://localhost:3001/account`, {
           username: city.id,
           password: defaultPassword,
           role: 'A2',
@@ -210,7 +211,7 @@ function Manage() {
 
   const supplyOneAccount = (cityId, defaultPassword) => {
     Promise.all([
-      axios.post(`http://localhost:3001/login`, {
+      axios.post(`http://localhost:3001/account`, {
         username: cityId,
         password: defaultPassword,
         role: 'A2',
@@ -242,7 +243,7 @@ function Manage() {
         axios.post(`http://localhost:3001/city/${city.id}`, {
           hasAccount: false,
         }),
-        axios.delete(`http://localhost:3001/login/${city.id}`),
+        axios.delete(`http://localhost:3001/account/${city.id}`),
       ]);
     });
 
@@ -264,7 +265,7 @@ function Manage() {
       axios.post(`http://localhost:3001/city/${cityId}`, {
         hasAccount: false,
       }),
-      axios.delete(`http://localhost:3001/login/${cityId}`),
+      axios.delete(`http://localhost:3001/account/${cityId}`),
     ]);
 
     const newCities = cities.map((city) => {
@@ -308,7 +309,7 @@ function Manage() {
     setCities(newCities);
     Promise.all([
       axios.delete(`http://localhost:3001/city/${id}`),
-      axios.delete(`http://localhost:3001/login/${id}`),
+      axios.delete(`http://localhost:3001/account/${id}`),
     ]);
   };
 
@@ -351,7 +352,7 @@ function Manage() {
       if (city.isChecked) {
         Promise.all([
           axios.delete(`http://localhost:3001/city/${city.id}`),
-          axios.delete(`http://localhost:3001/login/${city.id}`),
+          axios.delete(`http://localhost:3001/account/${city.id}`),
         ]);
       }
     });
@@ -406,7 +407,7 @@ function Manage() {
         <div className="navigation">
           <div className="buttons">
             <div className="button actionButton">
-              <AddCodeExcel handler={supplyCodeExcel} title="Cấp mã từ file Excel" />
+              <AddCodeExcel handler={supplyCodeExcel} title="Nhập từ file Excel" />
             </div>
 
             <AddAccountDialog
@@ -421,7 +422,7 @@ function Manage() {
               className="actionButton button exportExcelBtn"
               onClick={exportExcel}
             >
-              Xuất file Excel
+              Xuất ra Excel
             </Button>
 
             <div className="button actionButton">
