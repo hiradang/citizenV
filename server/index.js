@@ -6,9 +6,18 @@ const port = 3001;
 
 const db = require("./models");
 
-app.use(cors()); 
 app.use(cookieParser());
+app.use(cors()); 
 app.use(express.json({strict: false}));
+// res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+// res.setHeader('Access-Control-Allow-Credentials', true)
+// app.use(function(req, res, next) { 
+//     // res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+//     res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); 
+//     res.header('Access-Control-Allow-Credentials', true); 
+//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'); 
+//     next(); 
+// });
 
 //Router
 const authRouter = require("./routes/Account")

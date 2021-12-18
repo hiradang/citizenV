@@ -9,7 +9,8 @@ import clsx from 'clsx';
 // Tasks.propTypes = {};
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import Cookies from 'js-cookie';
+// axios.defaults.withCredentials = true
 const initialRows = [
   {
     id: 1,
@@ -168,6 +169,11 @@ function Tasks() {
     },
   ];
 
+  // axios.interceptors.request.use((config) => {
+  //   config.headers.Authorization = Cookies.get('token')
+  //   return config
+  // })
+
   const updateBySelect = (select, start, end) => {
     if (select.length === 0) {
       showNoti('Vui lòng chọn Tỉnh / Thành phố', 'error');
@@ -186,11 +192,12 @@ function Tasks() {
         // row.status = 0;
         var timeStart = start.getFullYear().toString() + '-' + (start.getMonth() + 1).toString() + '-' + start.getDate().toString()
         var timeEnd = end.getFullYear().toString() + '-' + (end.getMonth() + 1).toString() + '-' + end.getDate().toString()
-        axios.put(`http://localhost:3001/task/city/${row.id}`, {startDate: timeStart, endDate: timeEnd}, {
-          headers: {
-            accessToken: sessionStorage.getItem("accessToken"),
-          },
-        }).then((response) =>{
+        axios.put(`http://localhost:3001/task/city/${row.id}`, {startDate: timeStart, endDate: timeEnd}, 
+        // {withCredentials: true}
+          // {headers: {
+          //   token: Cookies.get('token')
+          // }}
+        ).then((response) =>{
           // setRows(response.data)
           console.log(response.data)
       });
@@ -221,6 +228,7 @@ function Tasks() {
                 } else {
                   row = {
                     ...row,
+                    progress: 0,
                     startDate: '',
                     endDate: '',
                     status: 'Chưa bắt đầu',

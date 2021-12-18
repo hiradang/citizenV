@@ -12,10 +12,11 @@ router.get('/update/:id', async (req, res) => {
       {
         password: hash,
       },
-      { where: { id_account: id } }
+      { where: { username: id } }
     );
   });
 });
+
 
 router.post("/", async (req, res) => {
     const { username, password, role } = req.body;
@@ -30,14 +31,41 @@ router.post("/", async (req, res) => {
     res.json('SUCCESS');
   });
 
-router.post('/refresh', (req, res) => {
-  const refreshToken = req.body.token
-  if (!refreshToken) return res.json("You are not authenticated!")
+const generateAccessToken = (user) => {
+  return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, "importantsecret", {
+    expiresIn: "5s",
+  });
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, "refreshSecret");
+};
+
+router.post("/refresh", (req, res) => {
+  //take the refresh token from the user
+  const refreshToken = req.body.token;
+  //send error if there is no token or it's invalid
+  if (!refreshToken) return res.json("You are not authenticated!");
   if (!refreshTokens.includes(refreshToken)) {
-    return res.json("Refresh token is not valid!")
+    return res.json("Refresh token is not valid!");
   }
-  jwt.verify(refreshToken, 'refreshSecret')
-})
+  jwt.verify(refreshToken, "refreshSecret", (err, user) => {
+    err && console.log(err);
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+
+    refreshTokens.push(newRefreshToken);
+
+    res.json({
+      accessToken: newAccessToken,
+      refreshToken: jwt.sign({ id: user.id_account, role: user.role }, 'refreshSecret', {
+      })
+    });
+  });
+
+});
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -45,16 +73,14 @@ router.post('/login', async (req, res) => {
   if (!user) res.json({ error: "User Doesn't Exist" });
   bcrypt.compare(password, user.password).then((match) => {
     if (!match) res.json({ error: 'Wrong Username And Password Combination' });
+    else {
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+      refreshTokens.push(refreshToken);
+      res.cookie('token', accessToken)
+      res.json({ username: user.username, role: user.role, accessToken, refreshToken });
+    }
   });
-  var token = jwt.sign({ id: user.id_account, role: user.role }, 'importantsecret', {
-    expiresIn: '15m', // 24 hours
-  });
-  var refreshToken = jwt.sign({ id: user.id_account, role: user.role }, 'refreshSecret', {
-    expiresIn: '15m', // 24 hours
-  });
-  refreshTokens.push(refreshToken)
-  res.cookie('accessToken', token, {httpOnly: true})
-  res.json({ username: user.id_account, role: user.role, accessToken: token });
 });
 
 router.delete("/:username", async (req, res) => {
