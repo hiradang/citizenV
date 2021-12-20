@@ -28,6 +28,8 @@ function Statistics() {
   const [listDistrictName, setListDistrictName] = useState([]);
   const [listDistrict, setListDistrict] = useState([]);
   const [dataTable, setDataTable] = useState([]);
+  // Xet tieu chi lua chon khi thong ke
+  const [criteria, setCriteria] = useState('');
   const selectOptionNames = [
     'Chung',
     'Độ tuổi',
@@ -113,26 +115,6 @@ function Statistics() {
   }, [idWard]);
 
   function changeRows(item, name) {
-    // Mặc định cho địa chỉ là địa chỉ thường trú
-    // if (name === 'id_add') {
-    //   if (item === 'Địa chỉ tạm trú') {
-    //     addName.city_name = 'tempCity_name';
-    //     addName.district_name = 'tempDistrict_name';
-    //     addName.ward_name = 'tempWard_name';
-    //     addName.hamlet_name = 'tempHamlet_name';
-    //   } else if (item === 'Địa chỉ thường trú') {
-    //     addName.city_name = 'addCity_name';
-    //     addName.district_name = 'addDistrict_name';
-    //     addName.ward_name = 'addWard_name';
-    //     addName.hamlet_name = 'addHamlet_name';
-    //   } else {
-    //     addName.city_name = 'homeCity_name';
-    //     addName.district_name = 'homeDistrict_name';
-    //     addName.ward_name = 'homeWard_name';
-    //     addName.hamlet_name = 'homeHamlet_name';
-    //   }
-    // } else filter[name] = item;
-
     filter[name] = item;
 
     if (name === 'id_city') {
@@ -151,7 +133,7 @@ function Statistics() {
       if (filter.id_ward.length > 1) setListHamletName([]);
     }
     // if (item.length > 0) {
-    var temp = rows.filter((row) => {
+    var tempCitizens = rows.filter((row) => {
       return (
         (filter.id_district.indexOf(row[addName.district_name]) !== -1 ||
           filter.id_district.length === 0) &&
@@ -160,7 +142,7 @@ function Statistics() {
         (filter.id_hamlet.indexOf(row[addName.hamlet_name]) !== -1 || filter.id_hamlet.length === 0)
       );
     });
-    setListCitizen(temp);
+    setListCitizen(tempCitizens);
     // }
     if (item.length === 1) {
       if (name === 'id_city') {
@@ -176,15 +158,23 @@ function Statistics() {
     }
 
     if (name === 'id_criteria') {
+      var tempCriteria = '';
       if (item === 'Tôn giáo') {
-        setDataTable(convertToCountArray(listCitizen, 'religion'));
+        setCriteria('religion');
+        tempCriteria = 'religion';
       } else if (item === 'Nghề nghiệp') {
-        setDataTable(convertToCountArray(listCitizen, 'job'));
+        setCriteria('job');
+        tempCriteria = 'job';
       } else if (item === 'Trình độ văn hóa') {
-        setDataTable(convertToCountArray(listCitizen, 'level'));
+        setCriteria('level');
+        tempCriteria = 'level';
       } else if (item === 'Giới tính') {
-        setDataTable(convertToCountArray(listCitizen, 'gender'));
+        setCriteria('gender');
+        tempCriteria = 'gender';
       }
+      setDataTable(convertToCountArray(tempCitizens, tempCriteria));
+    } else {
+      setDataTable(convertToCountArray(tempCitizens, criteria));
     }
   }
 
@@ -223,16 +213,29 @@ function Statistics() {
             item="id_hamlet"
             changeItem={(item, name) => changeRows(item, name)}
           />
+        </Paper>
+
+        <div>
+          <div className="graph-container">
+            <div className="graph pieChart">
+              <PieChart input={dataTable} />
+            </div>
+            <div className="graph verticalBar">
+              <VerticalBar input={dataTable} width={500} />
+            </div>
+          </div>
+        </div>
+
+        <div>
           <Pagination
             page={page}
             rowsPerPage={rowsPerPage}
-            totalRecords={listCitizen.length}
+            totalRecords={dataTable.length}
             changePage={(page) => setPage(page)}
             changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
           />
-        </Paper>
-
-        <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+          <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+        </div>
       </Box>
     </div>
   );

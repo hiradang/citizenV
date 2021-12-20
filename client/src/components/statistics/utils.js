@@ -13,7 +13,6 @@ var convertToCountArray = function (citizens, attr) {
 
     // listCount = [Khong: 2, Phat giao: 1, Hoi giao: 1]
 
-
     const sorted = Object.keys(listCount).sort((a, b) => listCount[b] - listCount[a]);
     let listSorted = [];
     for (let i = 0; i < sorted.length; i++) {
@@ -26,6 +25,26 @@ var convertToCountArray = function (citizens, attr) {
     return listSorted;
 
 };
+
+// Lấy ra danh sách top N và phần còn lại
+// input = [Khong: 10, Phat giao: 9, Hoi giao: 8, "Nho giao": 2, "Thien chua giao": 1]
+// Voi n = 3 output tương ứng như sau
+// [Khong: 10, Phat giao: 9, Hoi giao: 8, "Con lai": 3]
+var getTopN = function(sortedList, n) {
+    console.log(sortedList);
+    var topN = sortedList.slice(0, n);
+    
+    var count = 0;
+    for (let i = n; i < sortedList.length; i++) {
+        count += sortedList[i].quantity;
+    }
+    topN.push({
+        name: "Còn lại",
+        quantity: count,
+    })
+    return topN;
+}
   
 exports.convertToCountArray = convertToCountArray;
+exports.getTopN = getTopN;
   

@@ -69,12 +69,12 @@ const headCells = [
   {
     id: 'key',
     numeric: false,
-    label: 'Số thứ tự',
+    label: 'STT',
   },
   {
     id: 'name',
     numeric: false,
-    label: 'Tên tỉnh/thành',
+    label: 'Tên',
   },
   {
     id: 'quantity',

@@ -1,0 +1,14 @@
+.graph-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin: 40px 0;
+}
+
+.graph.pieChart {
+  width: 30%;
+}
+
+.graph.verticalBar {
+  width: 50%;
+}
