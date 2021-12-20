@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 const ITEM_HEIGHT = 60;
 const ITEM_PADDING_TOP = 8;
@@ -20,14 +20,14 @@ const MenuProps = {
     },
   },
 };
-const names = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú']
+// const names = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú']
 export default function SelectItem(props) {
   const [itemName, setItemName] = React.useState('');
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    props.changeItem(value,props.item)
+    props.changeItem(value, props.item);
     if (value.indexOf('All') > -1) {
       if (props.names.length === itemName.length) {
         setItemName([]);
@@ -41,10 +41,10 @@ export default function SelectItem(props) {
         // On autofill we get a the stringified value.
         typeof value === 'string' ? value.split(',') : value
       );
-    //   props.changeItem( typeof value === 'string' ? value.split(',') : value, props.item)
+      //   props.changeItem( typeof value === 'string' ? value.split(',') : value, props.item)
     }
   };
-  
+
   return (
     <FormControl sx={{ m: 2, width: 200 }}>
       <InputLabel id="demo-multiple-checkbox-label">Chọn {props.label}</InputLabel>
@@ -53,7 +53,7 @@ export default function SelectItem(props) {
         id="demo-multiple-checkbox"
         value={itemName}
         onChange={handleChange}
-        input={<OutlinedInput label= {`Chọn ${props.label}`} />}
+        input={<OutlinedInput label={`Chọn ${props.label}`} />}
         // renderValue={(selected) =>
         //   selected.length === props.names.length ? 'All' : selected.join(', ')
         // }
@@ -63,8 +63,7 @@ export default function SelectItem(props) {
           <Checkbox checked={itemName.length === props.names.length} />
           <ListItemText primary="All" />
         </MenuItem> */}
-        {names.map((name) => 
-        (
+        {props.names.map((name) => (
           <MenuItem key={name} value={name}>
             {/* <Checkbox checked={itemName.indexOf(name) > -1} value = {name}/> */}
             <ListItemText primary={name} />

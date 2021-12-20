@@ -21,6 +21,7 @@ export default function Citizen() {
   const [listDistrictName, setListDistrictName] = useState([]);
   const [listDistrict, setListDistrict] = useState([]);
   const [searchId, setSearchId] = useState('');
+  const selectOptionName = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú'];
   const [filter, setFilter] = useState({
     id_city: [],
     id_district: [],
@@ -172,6 +173,7 @@ export default function Citizen() {
             label="Địa điểm"
             item="id_add"
             changeItem={(item, name) => changeRows(item, name)}
+            names={selectOptionName}
           ></SelectOption>
           <Select
             names={listCityName}
