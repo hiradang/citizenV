@@ -2,6 +2,7 @@ import '../style.scss';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -16,7 +17,11 @@ import VerticalBar from '../charts/VerticalBar';
 import HorizontalBar from '../charts/HorizontalBar';
 import LineChart from '../charts/LineChart';
 
+import General from '../general-page/General';
+
 var convertToCountArray = require('../utils').convertToCountArray;
+var convertAgeToArray = require('../utils').convertAgeToArray;
+var convertAgeJump10 = require('../utils').convertAgeJump10;
 
 function Statistics() {
   const [page, setPage] = React.useState(1);
@@ -162,33 +167,83 @@ function Statistics() {
       if (item === 'Tôn giáo') {
         setCriteria('religion');
         tempCriteria = 'religion';
+        setDataTable(convertToCountArray(tempCitizens, tempCriteria));
       } else if (item === 'Nghề nghiệp') {
         setCriteria('job');
         tempCriteria = 'job';
+        setDataTable(convertToCountArray(tempCitizens, tempCriteria));
       } else if (item === 'Trình độ văn hóa') {
         setCriteria('level');
         tempCriteria = 'level';
+        setDataTable(convertToCountArray(tempCitizens, tempCriteria));
       } else if (item === 'Giới tính') {
         setCriteria('gender');
         tempCriteria = 'gender';
+        setDataTable(convertToCountArray(tempCitizens, tempCriteria));
+      } else if (item === 'Chung') {
+        setCriteria('general');
+      } else if (item === 'Độ tuổi') {
+        setCriteria('age');
+        tempCriteria = 'age';
+        let countArray = convertAgeToArray(tempCitizens);
+        setDataTable(convertAgeJump10(countArray));
       }
-      setDataTable(convertToCountArray(tempCitizens, tempCriteria));
     } else {
-      setDataTable(convertToCountArray(tempCitizens, criteria));
+      if (criteria === 'age') {
+        let countArray = convertAgeToArray(tempCitizens);
+        setDataTable(convertAgeJump10(countArray));
+      } else setDataTable(convertToCountArray(tempCitizens, criteria));
     }
   }
+
+  // Chèn loại biểu đồ tùy thuộc vào từng loại tiêu chí
+  const chooseDisplayInfo = () => {
+    if (criteria === 'general' || criteria === '') {
+      return <General citizens={listCitizen} />;
+    } else if (criteria === 'age') {
+      return (
+        <div>
+          <div className="graph verticalBar center">
+            <VerticalBar input={dataTable} criteria={criteria} />
+          </div>
+
+          <div className="graph lineChart center">
+            <LineChart input={dataTable} criteria={criteria} />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <div className="graph-container">
+            <div className="graph pieChart">
+              <PieChart input={dataTable} criteria={criteria} />
+            </div>
+            <div className="graph verticalBar">
+              <VerticalBar input={dataTable} criteria={criteria} width={500} />
+            </div>
+          </div>
+
+          <div>
+            <Pagination
+              page={page}
+              rowsPerPage={rowsPerPage}
+              totalRecords={dataTable.length}
+              changePage={(page) => setPage(page)}
+              changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+            />
+            <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+          </div>
+        </div>
+      );
+    }
+  };
 
   return (
     <div className="container">
       <h2>Kết quả điều tra dân số </h2>
       <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-          <SelectOption
-            label="Tiêu chí"
-            item="id_criteria"
-            changeItem={(item, name) => changeRows(item, name)}
-            names={selectOptionNames}
-          ></SelectOption>
           <Select
             names={listCityName}
             label="Tỉnh/Thành phố"
@@ -213,29 +268,16 @@ function Statistics() {
             item="id_hamlet"
             changeItem={(item, name) => changeRows(item, name)}
           />
+
+          <SelectOption
+            label="Tiêu chí"
+            item="id_criteria"
+            changeItem={(item, name) => changeRows(item, name)}
+            names={selectOptionNames}
+          ></SelectOption>
+
+          {chooseDisplayInfo()}
         </Paper>
-
-        <div>
-          <div className="graph-container">
-            <div className="graph pieChart">
-              <PieChart input={dataTable} />
-            </div>
-            <div className="graph verticalBar">
-              <VerticalBar input={dataTable} width={500} />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <Pagination
-            page={page}
-            rowsPerPage={rowsPerPage}
-            totalRecords={dataTable.length}
-            changePage={(page) => setPage(page)}
-            changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-          />
-          <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
-        </div>
       </Box>
     </div>
   );

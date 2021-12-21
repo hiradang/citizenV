@@ -3,12 +3,29 @@ import { Chart } from 'chart.js/auto';
 import { Pie } from 'react-chartjs-2';
 
 var getTopN = require('../utils').getTopN;
+var convertToPercent = require('../utils').convertToPercent;
+var convertFromCriteriaToName = require('../utils').convertFromCriteriaToName;
 
 export default function PieChart(props) {
   let input = [];
   if (props.input.length > 6) {
     input = getTopN(props.input, 6);
   } else input = props.input;
+
+  input = convertToPercent(input);
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      title: {
+        display: true,
+        text: `Biểu đồ thể hiện tỉ lệ ${convertFromCriteriaToName(props.criteria)} (đơn vị: %)`,
+      },
+    },
+  };
 
   const data = {
     labels: input.map((ele) => ele.name),
@@ -39,5 +56,5 @@ export default function PieChart(props) {
     ],
   };
 
-  return <Pie data={data} />;
+  return <Pie data={data} options={options} />;
 }

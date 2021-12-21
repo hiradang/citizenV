@@ -1,3 +1,15 @@
+.center {
+  margin: 0 auto;
+}
+
+.container {
+  padding-bottom: 40px;
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
 .graph-container {
   display: flex;
   justify-content: space-around;
@@ -11,4 +23,9 @@
 
 .graph.verticalBar {
   width: 50%;
+}
+
+.graph.lineChart {
+  width: 50%;
+  margin: 40px auto;
 }

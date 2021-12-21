@@ -74,12 +74,22 @@ const headCells = [
   {
     id: 'name',
     numeric: false,
-    label: 'Tên',
+    label: 'Tên địa phương',
   },
   {
     id: 'quantity',
     numeric: false,
-    label: 'Số lượng',
+    label: 'Tổng dân số',
+  },
+  {
+    id: 'quantity_male',
+    numeric: false,
+    label: 'Số lượng nam',
+  },
+  {
+    id: 'quantity_female',
+    numeric: false,
+    label: 'Số lượng nữ',
   },
 ];
 
@@ -148,8 +158,10 @@ export default function TableCitizen(props) {
             .map((row, index) => {
               return (
                 <TableRow hover key={row.id_citizen}>
-                  <TableCell align="left">{index + 1}</TableCell>
+                  <TableCell align="left">{index}</TableCell>
                   <TableCell align="left">{row.name}</TableCell>
+                  <TableCell align="left">{row.quantity}</TableCell>
+                  <TableCell align="left">{row.quantity}</TableCell>
                   <TableCell align="left">{row.quantity}</TableCell>
                 </TableRow>
               );

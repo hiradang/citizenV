@@ -4,6 +4,7 @@ import { Bar } from 'react-chartjs-2';
 import faker from 'faker';
 
 const getTopN = require('../utils').getTopN;
+var convertFromCriteriaToName = require('../utils').convertFromCriteriaToName;
 
 export default function VerticalBar(props) {
   const options = {
@@ -14,27 +15,24 @@ export default function VerticalBar(props) {
       },
       title: {
         display: true,
-        text: 'Chart.js Bar Chart',
+        text: `Biểu đồ thể hiện số lượng theo ${convertFromCriteriaToName(props.criteria)}`,
       },
     },
   };
 
-  let input = [];
-
-  if (props.input.length > 5) {
-    input = getTopN(props.input, 5);
+  if (props.input.length > 5 && props.criteria !== 'age') {
+    var input = getTopN(props.input, 5);
+    // Khong lay con lai
+    input = input.slice(0, 5);
   } else input = props.input;
 
-  // Khong lay con lai
-  const newTop5 = input.slice(0, 5);
-  const labels = newTop5.map((ele) => ele.name);
-
+  var labels = input.map((ele) => ele.name);
   const data = {
     labels,
     datasets: [
       {
-        label: 'Giới tính',
-        data: newTop5.map((ele) => ele.quantity),
+        label: convertFromCriteriaToName(props.criteria),
+        data: input.map((ele) => ele.quantity),
         backgroundColor: 'rgba(144, 245, 186, 0.5)',
         borderColor: 'rgba(144, 245, 186, 1)',
       },
