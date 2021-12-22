@@ -11,6 +11,7 @@ import Search from '../searchCitizen';
 import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import '../styleCitizen.scss';
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
@@ -31,6 +32,7 @@ export default function Citizen() {
     ward_name: 'addWard_name',
     hamlet_name: 'addHamlet_name',
   };
+  const selectOptionName = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú'];
   const [cityName, setCityName] = useState('');
   const idCity = Cookies.get('user');
   const [idDistrict, setIdDistrict] = useState('');
@@ -158,6 +160,7 @@ export default function Citizen() {
             label="Địa điểm"
             item="id_add"
             changeItem={(item, name) => changeRows(item, name)}
+            names={selectOptionName}
           ></SelectOption>
 
           <Select
