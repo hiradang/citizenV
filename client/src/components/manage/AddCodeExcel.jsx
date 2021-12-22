@@ -41,7 +41,7 @@ export default function FormDialog(props) {
 
   return (
     <div>
-      <Button variant="contained" onClick={handleClickOpen} startIcon={<AddIcon />}>
+      <Button variant="contained" onClick={handleClickOpen}>
         {props.title}
       </Button>
       <Dialog open={open} onClose={handleClose}>
@@ -49,8 +49,7 @@ export default function FormDialog(props) {
         <DialogContent>
           <DialogContentText>
             Trước tiên hãy xuất file Excel và nhập thông tin theo đúng định dạng đã được quy định
-            trong file. <br />
-            Đăng tải file đó lên để tiến hành khai báo và cấp mã.
+            trong file. Tải file lên để tiến hành khai báo và cấp mã.
           </DialogContentText>
           <DialogContentText className={classes.warning}>{notification}</DialogContentText>
           <input

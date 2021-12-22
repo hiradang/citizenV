@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 export default function CustomTableCell(props) {
   const { isEditMode } = props.source;
   return (
-    <TableCell align="left">
+    <TableCell>
       {isEditMode ? (
         <Input
           value={props.source[props.name]}

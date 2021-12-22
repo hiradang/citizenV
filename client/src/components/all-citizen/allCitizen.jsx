@@ -10,6 +10,7 @@ import TableCitizen from './TableCitizen';
 import Search from './searchCitizen';
 import SelectOption from './selectOption';
 import { useEffect, useState } from 'react';
+import './styleCitizen.scss';
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
@@ -164,40 +165,42 @@ export default function Citizen() {
     }
   }
   return (
-    <div className="container">
+    <div className="container-all-citizen">
       <h2>Danh sách dân số </h2>
       <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-          <SelectOption
-            label="Địa điểm"
-            item="id_add"
-            changeItem={(item, name) => changeRows(item, name)}
-          ></SelectOption>
-          <Select
-            names={listCityName}
-            label="Tỉnh/Thành phố"
-            item="id_city"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listDistrictName}
-            label="Quận/Huyện"
-            item="id_district"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listWardName}
-            label="Phường/Xã"
-            item="id_ward"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listHamletName}
-            label="Thôn/Xóm"
-            item="id_hamlet"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
+          <div className="search-bar">
+            <SelectOption
+              label="Địa điểm"
+              item="id_add"
+              changeItem={(item, name) => changeRows(item, name)}
+            ></SelectOption>
+            <Select
+              names={listCityName}
+              label="Tỉnh/Thành phố"
+              item="id_city"
+              changeItem={(item, name) => changeRows(item, name)}
+            />
+            <Select
+              names={listDistrictName}
+              label="Quận/Huyện"
+              item="id_district"
+              changeItem={(item, name) => changeRows(item, name)}
+            />
+            <Select
+              names={listWardName}
+              label="Phường/Xã"
+              item="id_ward"
+              changeItem={(item, name) => changeRows(item, name)}
+            />
+            <Select
+              names={listHamletName}
+              label="Thôn/Xóm"
+              item="id_hamlet"
+              changeItem={(item, name) => changeRows(item, name)}
+            />
+            <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
+          </div>
           <Pagination
             page={page}
             rowsPerPage={rowsPerPage}

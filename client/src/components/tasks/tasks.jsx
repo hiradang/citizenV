@@ -239,7 +239,7 @@ function Tasks() {
 
   return (
     <div className="wrapper">
-      <div style={{ height: '82%', width: '100%', backgroundColor: 'white' }}>
+      <div style={{ height: '95%', width: '100%', backgroundColor: 'white' }}>
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
           <div style={{ flexGrow: 0, padding: '20px 20px 0 20px' }}>
             <Picker listCity={listCityName} toggleApplyButton={updateBySelect} />

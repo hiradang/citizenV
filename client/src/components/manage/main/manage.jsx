@@ -20,7 +20,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 // Components
-import Search from '../Search';
+import Search from '../components/search/Search';
 import CustomTableCell from '../EditableCell';
 import AddCityDialog from '../AddCityDialog';
 import AddAccountDialog from '../AddAccountDialog';
@@ -402,132 +402,146 @@ function Manage() {
   };
 
   return (
-    <div className="page-container">
-      <div className="actions">
-        <div className="navigation">
-          <div className="buttons">
-            <div className="button actionButton">
-              <AddCodeExcel handler={supplyCodeExcel} title="Nhập từ file Excel" />
-            </div>
+    <div className="grid container-manage">
+      <div className="row first">
+        <div className="col l-2-4 m-5 c-12">
+          <div className="actionButton">
+            <AddCityDialog title="Thêm Tỉnh/Thành phố" handler={handleAddNewCity} />
+          </div>
+        </div>
+        <div className="col l-2 m-3 c-12">
+          <div className="actionButton">
+            <AddCodeExcel handler={supplyCodeExcel} title="Nhập từ Excel" />
+          </div>
+        </div>
 
-            <AddAccountDialog
-              title="Cấp tài khoản"
-              className="actionButton button"
-              variant="contained"
-              handler={supplyAccount}
-            />
+        <div className="col l-1-8 m-3 c-12">
+          <div className="actionButton">
+            <AddAccountDialog title="Cấp tài khoản" variant="contained" handler={supplyAccount} />
+          </div>
+        </div>
 
-            <Button
-              variant="contained"
-              className="actionButton button exportExcelBtn"
-              onClick={exportExcel}
-            >
+        <div className="col l-1-8 m-3 c-12">
+          <div className="actionButton">
+            <Button variant="contained" onClick={exportExcel}>
               Xuất ra Excel
             </Button>
-
-            <div className="button actionButton">
-              <ConfirmResetAccount handler={resetAccount} title="Reset lại tài khoản" />
-            </div>
           </div>
-
-          <Search className="searchBar" handler={handleSearch} />
+        </div>
+        <div className="col l-1-92 m-4 c-12">
+          <div className="actionButton">
+            <ConfirmResetAccount handler={resetAccount} title="Reset lại tài khoản" />
+          </div>
         </div>
       </div>
 
-      <div className="addCity">
-        <AddCityDialog title="Thêm tỉnh/thành phố" handler={handleAddNewCity} />
+      <div className="row second">
+        <div className="col l-2-4 m-4 c-12">
+          <Search handler={handleSearch} />
+        </div>
       </div>
 
-      <Paper>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={cities.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-        <Table aria-label="table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">STT</TableCell>
-              <TableCell align="left">Tên tỉnh/thành</TableCell>
-              <TableCell align="left">Mã Tỉnh/thành</TableCell>
-              <TableCell align="left">Tài khoản</TableCell>
-              <TableCell align="left">Hành động</TableCell>
-              <TableCell align="right">
-                <input type="checkbox" checked={isAllChecked} onChange={handleCheckboxAll} />
-              </TableCell>
-              <TableCell align="left">
-                <ConfirmDeleteSelected
-                  handler={deleteSelectedCity}
-                  title="Xóa các tỉnh thành đã chọn"
-                />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {cities.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((city, key) => (
-              <TableRow key={city.key}>
-                <TableCell>{key + 1}</TableCell>
-                <CustomTableCell source={city} name="city_name" handleOnChange={onChangeCityName} />
-                <CustomTableCell source={city} name="id" handleOnChange={onChangeCityCode} />
-                <TableCell>
-                  {city.hasAccount ? (
-                    <AddAccountDialog
-                      title="Đang hoạt động"
-                      className="actionButton button"
-                      variant="outlined"
-                      handler={resetOneAccount}
-                      cityId={city.id}
+      <div className="row container-table">
+        <div className="col l-12 m-12 c-12">
+          <Paper className="row container-table">
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={cities.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+            <Table aria-label="table" className="table-manage">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">STT</TableCell>
+                  <TableCell align="center">Tên</TableCell>
+                  <TableCell align="center">Mã</TableCell>
+                  <TableCell align="center">Tài khoản</TableCell>
+                  <TableCell align="center">Hành động</TableCell>
+                  <TableCell align="right" className="last-column">
+                    <ConfirmDeleteSelected
+                      handler={deleteSelectedCity}
+                      title="Xóa các tỉnh thành đã chọn"
                     />
-                  ) : (
-                    <AddAccountDialog
-                      title="Chưa cấp"
-                      className="actionButton button"
-                      variant="outlined"
-                      color="error"
-                      cityId={city.id}
-                      handler={supplyOneAccount}
-                    />
-                  )}
-                </TableCell>
-                <TableCell>
-                  {city.isEditMode ? (
-                    <>
-                      <IconButton aria-label="done" onClick={() => onToggleEditMode(city.id)}>
-                        <DoneIcon />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <>
-                      <IconButton aria-label="delete" onClick={() => onToggleEditMode(city.id)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton>
-                        <ConfirmDialog
-                          title="xoá tỉnh/thành phố"
-                          handler={deleteCity}
-                          id={city.id}
+                    <input type="checkbox" checked={isAllChecked} onChange={handleCheckboxAll} />
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {cities
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((city, key) => (
+                    <TableRow key={city.key}>
+                      <TableCell>{key + 1}</TableCell>
+                      <CustomTableCell
+                        source={city}
+                        name="city_name"
+                        handleOnChange={onChangeCityName}
+                      />
+                      <CustomTableCell source={city} name="id" handleOnChange={onChangeCityCode} />
+                      <TableCell>
+                        {city.hasAccount ? (
+                          <AddAccountDialog
+                            title="Đang hoạt động"
+                            className="actionButton button"
+                            variant="outlined"
+                            handler={resetOneAccount}
+                            cityId={city.id}
+                          />
+                        ) : (
+                          <AddAccountDialog
+                            title="Chưa cấp"
+                            className="actionButton button"
+                            variant="outlined"
+                            color="error"
+                            cityId={city.id}
+                            handler={supplyOneAccount}
+                          />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {city.isEditMode ? (
+                          <>
+                            <IconButton aria-label="done" onClick={() => onToggleEditMode(city.id)}>
+                              <DoneIcon />
+                            </IconButton>
+                          </>
+                        ) : (
+                          <>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => onToggleEditMode(city.id)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton>
+                              <ConfirmDialog
+                                title="xoá tỉnh/thành phố"
+                                handler={deleteCity}
+                                id={city.id}
+                              />
+                            </IconButton>
+                          </>
+                        )}
+                      </TableCell>
+                      <TableCell className="row-right">
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          checked={city.isChecked}
+                          onChange={(e) => onChangeCheckbox(city.id, e.target.checked)}
                         />
-                      </IconButton>
-                    </>
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    checked={city.isChecked}
-                    onChange={(e) => onChangeCheckbox(city.id, e.target.checked)}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }

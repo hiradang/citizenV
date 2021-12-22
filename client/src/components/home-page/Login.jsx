@@ -1,114 +1,99 @@
-import React from 'react';
-import { useState } from 'react';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import Cookies from 'js-cookie';
-import './styles.scss';
-import logoUrl from '../../constants/images/logo.png';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Button from '@mui/material/Button';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import * as yup from 'yup';
+import logoUrl from '../../constants/images/logo.png';
+import InputField from '../form-control/inputField/inputField';
+import PasswordField from '../form-control/passwordField/passwordField';
+import './styles.scss';
+import '../../grid.scss';
+
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const submit = (e) => {
-    // e.preventDefault();
-    const data = { username: username, password: password };
+  const schema = yup.object().shape({
+    username: yup
+      .string()
+      .required('Bạn chưa điền tên đăng nhập')
+      .test('Độ dài', 'Tên đăng nhập không hợp lệ', (value) => {
+        return value.length % 2 === 0 && value.length >= 2 && value.length <= 8;
+      }),
+    password: yup.string().required('Bạn chưa điền mật khẩu'),
+  });
+
+  const form = useForm({
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+    resolver: yupResolver(schema),
+  });
+
+  const { isSubmitting } = form.formState;
+
+  const handleSubmit = (values) => {
+    const data = values;
     axios.post('http://localhost:3001/account/login', data).then((response) => {
       console.log(response.data);
-          if (response.data.error) {
-
-              Swal.fire({
-                  title: "Oops...",
-                  text: response.data.error,
-                  icon: "question",
-                  button: "Done",
-
-              })
-          } else {
-            Cookies.set('user', response.data.username, {
-                //expires: new Date(new Date(Date.now()).getTime() + 60*60 * 1000),
-                expires: 1/2,
-                secure: true,
-              });
-              Cookies.set('token', response.data.accessToken, { expires: 1 / 2, secure: true });
-              Cookies.set('role', response.data.role, { expires: 1 / 2, secure: true });
-              Cookies.set('refreshToken', response.data.refreshToken, { expires: 1 / 2, secure: true });
-              window.location.reload();
-            }
+      if (response.data.error) {
+        Swal.fire({
+          title: 'Oops...',
+          text: response.data.error,
+          icon: 'question',
+          button: 'Done',
+        });
+      } else {
+        Cookies.set('user', response.data.username, {
+          //expires: new Date(new Date(Date.now()).getTime() + 60*60 * 1000),
+          expires: 1 / 2,
+          secure: true,
+        });
+        Cookies.set('token', response.data.accessToken, { expires: 1 / 2, secure: true });
+        Cookies.set('role', response.data.role, { expires: 1 / 2, secure: true });
+        Cookies.set('refreshToken', response.data.refreshToken, { expires: 1 / 2, secure: true });
+        window.location.reload();
+      }
     });
   };
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   return (
     <div class="container-login">
-      <div className="logo">
-        <img src={logoUrl} alt="" />
-        <span>Hệ thống điều tra dân số CitizenV</span>
-      </div>
-      <Box>
-        <div class="login-input">
-          <form method="POST" action="/login">
-            <div class="input-box">
-              <TextField
-                id="outlined-basic"
-                label="Username"
-                fullWidth
-                // helperText="Incorrect entry." error
-                onChange={(event) => {
-                  setUsername(event.target.value);
-                }}
-              />
-            </div>
-            <div class="input-box">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-              <OutlinedInput
-                fullWidth
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                label="Password"
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </div>
-            <Button variant="contained" onClick={(e) => submit(e) } fullWidth>Đăng nhập</Button>
-            {/* <button
-              type="submit"
-              id="submit"
-              class="btn btn-primary btn-submit"
-              onClick={(e) => submit(e)}
-            >
-              Đăng nhập
-            </button> */}
-          </form>
+      <div className="row">
+        <div className="col l-1 l-o-4 m-1 m-o-4 c-2 c-o-2">
+          <img src={logoUrl} alt="" className="img-login" />
         </div>
-      </Box>
+        <div className="col l-3 m-4 c-6" style={{ position: 'relative' }}>
+          <i className="title-login">Điều tra dân số</i>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col l-4 l-o-4 m-6 m-o-3 c-12">
+          <div class="login-input">
+            <form
+              method="POST"
+              action="/login"
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="login-form"
+            >
+              <InputField name="username" label="Tên đăng nhập" form={form} />
+              <PasswordField name="password" label="Mật khẩu" form={form} />
+
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                color="primary"
+                variant="contained"
+                size="medium"
+              >
+                Đăng nhập
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

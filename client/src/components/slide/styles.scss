@@ -1,23 +1,55 @@
-.container {
-  padding-bottom: 50px;
+@import '../../grid.scss';
+@import '../../app.scss';
 
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.container-slide {
+  padding: 0 70px 50px 70px;
 }
 
 h2 {
+  padding: 30px 0;
+  text-align: center;
   color: #4b49ac;
 }
 
-.slide {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
+.content-slide {
+  color: #4b49ac;
 }
 
-.label.MuiTypography-root {
-  font-weight: 600;
-  padding: 0;
-  padding-bottom: 20px;
+.col > .MuiPaper-elevation.title-slide {
+  border-radius: 10px 10px 0 0;
+}
+
+.col > .MuiPaper-elevation.footer-slide {
+  border-radius: 0 0 10px 10px;
+}
+
+// responsive tablet
+@media (min-width: 740px) and (max-width: 1023px) {
+  .container-slide {
+    height: 93.5vh;
+    padding: 0 50px 50px 50px;
+  }
+}
+
+// >= tablet <= pc low resolution
+@media (min-width: 1024px) and (max-width: 1239px) {
+  .container-slide {
+    height: 95vh;
+  }
+}
+
+// responsive mobile
+@media (max-width: 739px) {
+  .container-slide {
+    height: 92vh;
+    padding: 0 10px;
+  }
+
+  h2 {
+    font-size: 17px;
+  }
+
+  .content-slide {
+    font-size: 15px;
+  }
 }
