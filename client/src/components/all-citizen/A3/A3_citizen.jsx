@@ -4,26 +4,21 @@ import axios from 'axios';
 // import './styles.scss';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Pagination from './Pagination';
-import Select from './select';
-import TableCitizen from './TableCitizen';
-import Search from './searchCitizen';
-import SelectOption from './selectOption';
+import Pagination from '../Pagination';
+import Select from '../select';
+import TableCitizen from '../TableCitizen';
+import Search from '../searchCitizen';
+import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [listCitizen, setListCitizen] = useState([]);
-  const [listCityName, setListCityName] = useState([]);
   const [rows, setRows] = useState([]);
-  const [listCity, setListCity] = useState([]);
-  const [listDistrictName, setListDistrictName] = useState([]);
-  const [listDistrict, setListDistrict] = useState([]);
   const [searchId, setSearchId] = useState('');
   const [filter, setFilter] = useState({
-    id_city: [],
-    id_district: [],
     id_ward: [],
     id_hamlet: [],
   });
@@ -33,51 +28,52 @@ export default function Citizen() {
     ward_name: 'addWard_name',
     hamlet_name: 'addHamlet_name',
   };
-  const [idCity, setIdCity] = useState('');
-  const [idDistrict, setIdDistrict] = useState('');
+  const [districtName, setDistrictName] = useState('');
+  const [cityName, setCityName] = useState('');
+  const idDistrict = Cookies.get('user');
+  var idCity = idDistrict.toString().substr(0,2);
+  console.log(idCity)
   const [idWard, setIdWard] = useState('');
   const [listWardName, setListWardName] = useState([]);
   const [listWard, setListWard] = useState([]);
   const [listHamletName, setListHamletName] = useState([]);
   const [listHamlet, setListHamlet] = useState([]);
-  var tempListCityName = [];
-  var tempListDistrictName = [];
+  
   var tempListWardName = [];
   var tempListHamletName = [];
+
   useEffect(() => {
-    axios.get('http://localhost:3001/city').then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        tempListCityName[i] = response.data[i].city_name;
-      }
-      setListCityName(tempListCityName);
-      setListCity(response.data);
+    axios.get(`http://localhost:3001/district/id?id=${idDistrict}`).then((response) => {
+      setDistrictName(response.data.district_name);
     });
-    axios.get('http://localhost:3001/citizen').then((response) => {
+    axios.get(`http://localhost:3001/city/${idCity}`).then((response) => {
+      setCityName(response.data.city_name);
+    });
+    axios.get(`http://localhost:3001/citizen/`).then((response) => {
       setRows(response.data);
-      setListCitizen(response.data);
+      var temp = response.data.filter((row) => {
+        return row.address.indexOf(idCity) === 0;
+      });
+      setListCitizen(temp);
+    });
+    axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
+      let tempListWardName = [];
+      for (let i = 0; i < response.data.length; i++) {
+        tempListWardName[tempListWardName.length] = response.data[i].ward_name;
+      }
+      setListWardName(tempListWardName);
+      setListWard(response.data);
     });
   }, []);
+
   useEffect(() => {
-    // if (searchId !== '') {
-    console.log(searchId);
-    axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
-      setListCitizen(response.data);
-    });
-    // }
-  }, [searchId]);
-  useEffect(() => {
-    if (idCity !== '') {
-      axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
-            tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
-          }
-        }
-        setListDistrictName(tempListDistrictName);
-        setListDistrict(response.data);
+    if (searchId != '') {
+      axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
+        setListCitizen(response.data);
       });
     }
-  }, [idCity]);
+  }, [searchId]);
+
   useEffect(() => {
     if (idDistrict !== '') {
       axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
@@ -104,6 +100,7 @@ export default function Citizen() {
       });
     }
   }, [idWard]);
+  // console.log(listCitizen)
   function changeRows(item, name) {
     if (name === 'id_add') {
       if (item === 'Địa chỉ tạm trú') {
@@ -123,14 +120,7 @@ export default function Citizen() {
         addName.hamlet_name = 'homeHamlet_name';
       }
     } else filter[name] = item;
-    if (name === 'id_city') {
-      filter.id_district = [];
-      filter.id_ward = [];
-      filter.id_hamlet = [];
-      if (filter.id_city.length > 1) setListDistrictName([]);
-      setListWardName([]);
-      setListHamletName([]);
-    } else if (name === 'id_district') {
+    if (name === 'id_district') {
       filter.id_ward = [];
       filter.id_hamlet = [];
       if (filter.id_district.length > 1) setListWardName([]);
@@ -141,9 +131,7 @@ export default function Citizen() {
     // if (item.length > 0) {
     var temp = rows.filter((row) => {
       return (
-        (filter.id_district.indexOf(row[addName.district_name]) !== -1 ||
-          filter.id_district.length === 0) &&
-        (filter.id_city.indexOf(row[addName.city_name]) !== -1 || filter.id_city.length === 0) &&
+        row[addName.district_name] === districtName && row[addName.city_name] === cityName &&
         (filter.id_ward.indexOf(row[addName.ward_name]) !== -1 || filter.id_ward.length === 0) &&
         (filter.id_hamlet.indexOf(row[addName.hamlet_name]) !== -1 || filter.id_hamlet.length === 0)
       );
@@ -151,13 +139,7 @@ export default function Citizen() {
     setListCitizen(temp);
     // }
     if (item.length === 1) {
-      if (name === 'id_city') {
-        let index = listCity.findIndex((x) => x.city_name === item[0]);
-        setIdCity(listCity[index].id_city);
-      } else if (name === 'id_district') {
-        let index = listDistrict.findIndex((x) => x.district_name === item[0]);
-        setIdDistrict(listDistrict[index].id_district);
-      } else if (name === 'id_ward') {
+      if (name === 'id_ward') {
         let index = listWard.findIndex((x) => x.ward_name === item[0]);
         setIdWard(listWard[index].id_ward);
       }
@@ -165,7 +147,7 @@ export default function Citizen() {
   }
   return (
     <div className="container">
-      <h2>Danh sách dân số </h2>
+      <h2>Danh sách dân số {districtName}, {cityName}</h2>
       <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
           <SelectOption
@@ -173,18 +155,6 @@ export default function Citizen() {
             item="id_add"
             changeItem={(item, name) => changeRows(item, name)}
           ></SelectOption>
-          <Select
-            names={listCityName}
-            label="Tỉnh/Thành phố"
-            item="id_city"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listDistrictName}
-            label="Quận/Huyện"
-            item="id_district"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
           <Select
             names={listWardName}
             label="Phường/Xã"

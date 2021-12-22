@@ -30,20 +30,35 @@ const initialRows = [
   // },
 ];
 
-const cities = ['Hà Nội', 'Thanh Hóa'];
+const role = Cookies.get('role')
 
+const nameTitle = (role === 'A1' ? 'Tỉnh / Thành phố' : (role === 'A2' ? 'Quận / Huyện' : 
+                  (role === 'A3' ? 'Xã / Phường' : 'Thôn / Xóm')))
+const nameData = (role === 'A1' ? 'city' : (role === 'A2' ? 'district' : 
+                  (role === 'A3' ? 'ward' : 'hamlet')))            
 function Tasks() {
+  
   const [rows, setRows] = React.useState([]);
   const [listCityName, setListCityName] = useState([]);
   var tempListCityName = [];
   useEffect(() => {
-    axios.get('http://localhost:3001/city').then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        tempListCityName[i] = response.data[i].city_name;
-      }
-      setListCityName(tempListCityName);
-    });
-    axios.get('http://localhost:3001/task/city').then((response) => {
+    if (nameData === 'city') {
+      axios.get(`http://localhost:3001/${nameData}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          tempListCityName[i] = response.data[i].city_name;
+        }
+        setListCityName(tempListCityName);
+      });
+    } else {
+      axios.get(`http://localhost:3001/${nameData}/${Cookies.get('user')}`).then((response) => {
+        let name = nameData + '_name'
+        for (let i = 0; i < response.data.length; i++) {
+          tempListCityName[i] = response.data[i][name];
+        }
+        setListCityName(tempListCityName);
+      });
+    }
+    axios.get(`http://localhost:3001/task/${nameData}`).then((response) => {
       setRows(response.data);
     });
   }, []);
@@ -101,7 +116,7 @@ function Tasks() {
             '-' +
             end.getDate().toString();
           axios
-            .put(`http://localhost:3001/task/city/${id}`, {
+            .put(`http://localhost:3001/task/${id}`, {
               startDate: timeStart,
               endDate: timeEnd,
             })
@@ -129,7 +144,7 @@ function Tasks() {
     },
     {
       field: 'cityName',
-      headerName: 'Tỉnh / Thành phố',
+      headerName: nameTitle,
       type: 'string',
       sortable: false,
       flex: 1.2,
@@ -191,7 +206,7 @@ function Tasks() {
 
   const updateBySelect = (select, start, end) => {
     if (select.length === 0) {
-      showNoti('Vui lòng chọn Tỉnh / Thành phố', 'error');
+      showNoti(`Vui lòng chọn ${nameTitle}`, 'error');
       return;
     }
     if (start - end >= 0) {
@@ -219,7 +234,7 @@ function Tasks() {
           end.getDate().toString();
         axios
           .put(
-            `http://localhost:3001/task/city/${row.id}`,
+            `http://localhost:3001/task/${row.id}`,
             { startDate: timeStart, endDate: timeEnd }
             // {withCredentials: true}
             // {headers: {
@@ -242,7 +257,7 @@ function Tasks() {
       <div style={{ height: '82%', width: '100%', backgroundColor: 'white' }}>
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
           <div style={{ flexGrow: 0, padding: '20px 20px 0 20px' }}>
-            <Picker listCity={listCityName} toggleApplyButton={updateBySelect} />
+            <Picker listCity={listCityName} nameTitle = {nameTitle} toggleApplyButton={updateBySelect} />
           </div>
           <div style={{ flexGrow: 1, padding: '20px' }}>
             <div style={{ height: '80vh' }}>

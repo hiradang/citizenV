@@ -35,12 +35,11 @@ function Login() {
           } else {
             Cookies.set('user', response.data.username, {
                 //expires: new Date(new Date(Date.now()).getTime() + 60*60 * 1000),
-                expires: 1/2,
+                expires: 1,
                 secure: true,
               });
-              Cookies.set('token', response.data.accessToken, { expires: 1 / 2, secure: true });
-              Cookies.set('role', response.data.role, { expires: 1 / 2, secure: true });
-              Cookies.set('refreshToken', response.data.refreshToken, { expires: 1 / 2, secure: true });
+              Cookies.set('token', response.data.accessToken, { expires: 1, secure: true });
+              Cookies.set('role', response.data.role, { expires: 1, secure: true });
               window.location.reload();
             }
     });
