@@ -10,6 +10,7 @@ import TableCitizen from '../TableCitizen';
 import Search from '../searchCitizen';
 import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
+import './styleCitizen.scss';
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);

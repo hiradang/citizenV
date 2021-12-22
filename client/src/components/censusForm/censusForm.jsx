@@ -33,11 +33,10 @@ const MenuProps = {
 };
 
 function CensusForm({ onSubmit }) {
-
   //id_hamlet của quê quán, địa chỉ thường trú, tạm trú
-  const [addressId, setAddressId] = useState('')
-  const [address1Id, setAddress1Id] = useState('')
-  const [address2Id, setAddress2Id] = useState('')
+  const [addressId, setAddressId] = useState('');
+  const [address1Id, setAddress1Id] = useState('');
+  const [address2Id, setAddress2Id] = useState('');
 
   //id+name của quê quán
   const [listCityFull, setListCityFull] = useState([]);
@@ -55,7 +54,6 @@ function CensusForm({ onSubmit }) {
   const [listWard2Full, setListWard2Full] = useState([]);
   const [listHamlet2Full, setListHamlet2Full] = useState([]);
 
-  
   const { enqueueSnackbar } = useSnackbar();
   const showNoti = () => {
     enqueueSnackbar('Một số trường chưa có dữ liệu, vui lòng kiểm tra lại', { variant: 'error' });
@@ -110,7 +108,7 @@ function CensusForm({ onSubmit }) {
       for (let i = 0; i < response.data.length; i++) {
         listCityName[i] = response.data[i].city_name;
       }
-      setListCity(listCityName)
+      setListCity(listCityName);
       setListCityFull(response.data);
     });
   }, []);
@@ -161,7 +159,7 @@ function CensusForm({ onSubmit }) {
   useEffect(() => {
     if (address.hamlet) {
       let index = listHamletFull.findIndex((x) => x.hamlet_name === address.hamlet);
-      setAddressId(listHamletFull[index].id_hamlet)
+      setAddressId(listHamletFull[index].id_hamlet);
     }
   }, [address.hamlet]);
 
@@ -211,7 +209,7 @@ function CensusForm({ onSubmit }) {
   useEffect(() => {
     if (address1.hamlet) {
       let index = listHamlet1Full.findIndex((x) => x.hamlet_name === address1.hamlet);
-      setAddress1Id(listHamlet1Full[index].id_hamlet)
+      setAddress1Id(listHamlet1Full[index].id_hamlet);
     }
   }, [address1.hamlet]);
 
@@ -261,11 +259,9 @@ function CensusForm({ onSubmit }) {
   useEffect(() => {
     if (address2.hamlet) {
       let index = listHamlet2Full.findIndex((x) => x.hamlet_name === address2.hamlet);
-      setAddress2Id(listHamlet2Full[index].id_hamlet)
+      setAddress2Id(listHamlet2Full[index].id_hamlet);
     }
   }, [address2.hamlet]);
-
-
 
   //Validate Họ và tên + CCCD / CMND
   const schema = yup.object().shape({
@@ -332,9 +328,8 @@ function CensusForm({ onSubmit }) {
   };
 
   const handleSubmit = (values) => {
-    console.log(values)
+    console.log(values);
     if (onSubmit) {
-      
       // values là object chứa: Họ tên + CCCD / CMND
       // information chứa: Ngày sinh / Giới tính / Tôn giáo / Dân tộc / Trình độ / Nghề nghiệp
       const check =
@@ -342,7 +337,7 @@ function CensusForm({ onSubmit }) {
         checkValidField(address) &&
         checkValidField(address1) &&
         checkValidField(address2);
-        
+
       if (!check) {
         showNoti();
         return;

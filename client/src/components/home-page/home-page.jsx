@@ -34,7 +34,7 @@ import Cookies from 'js-cookie';
 import UpdatePass from './updatePass'
 import Dialog from '@mui/material/Dialog';
 
-const drawerWidth = 240;
+const drawerWidth = '20vw';
 
 HomePage.propTypes = {
   HomePage: PropTypes.array.isRequired,
@@ -50,8 +50,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     backgroundColor: '#f5f7ff',
     height: '100%',
     width: '100%',
-    padding: '0 50px',
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft: `-${drawerWidth}`,
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
@@ -70,8 +69,8 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
+    minWidth: `calc(100vw - ${drawerWidth})`,
+    marginLeft: `${drawerWidth}`,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -83,7 +82,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
@@ -124,7 +122,7 @@ export default function HomePage({ listItems }) {
 
 
   const sideList = () => (
-    <Box className="menuSliderContainer" component="div">
+    <Box className="menu-container" component="div">
       <Divider />
       <List disablePadding>
         {listItems.map((listItem, index) => (
@@ -157,6 +155,7 @@ export default function HomePage({ listItems }) {
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
+            id="toggle-button"
             color="inherit"
             onClick={toggleSideBar}
             edge="start"
@@ -165,24 +164,25 @@ export default function HomePage({ listItems }) {
             <MenuIcon />
           </IconButton>
 
-          <img src={logoUrl} alt="" />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-            fontWeight={600}
-            fontSize="16px"
-          >
-            <i>CitizenV</i>
-          </Typography>
-
+          <div className="logo-and-name">
+            <img src={logoUrl} alt="" className="logo-header" />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1 }}
+              fontWeight={600}
+              fontSize="16px"
+            >
+              <i>CitizenV</i>
+            </Typography>
+          </div>
           <IconButton
             size="large"
             color="inherit"
             className="accountIcon"
             onClick={toggleUserClick}
           >
-            <AccountCircleIcon />
+            <AccountCircleIcon fontSize="inherit" />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -195,6 +195,7 @@ export default function HomePage({ listItems }) {
             boxSizing: 'border-box',
           },
         }}
+        className="appbar"
         variant="persistent"
         anchor="left"
         open={open}

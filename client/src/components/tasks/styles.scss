@@ -1,3 +1,6 @@
+@import '../../app.scss';
+@import '../../grid.scss';
+
 .wrapper {
   height: 100vh;
   width: 100%;
@@ -51,4 +54,33 @@ ul.MuiDataGrid-menuList > li.MuiMenuItem-root.MuiButtonBase-root:nth-child(3) {
   > button.MuiDataGrid-menuIconButton {
   position: absolute;
   right: -5px;
+}
+
+// responsive tablet
+@media (min-width: 740px) and (max-width: 1023px) {
+  .container-manage {
+    padding: 30px 19px;
+    min-width: 768px;
+    // height: 100vh;
+
+    & > .first {
+      row-gap: 16px;
+    }
+
+    .second {
+      padding: 16px 0;
+    }
+  }
+}
+
+// >= tablet <= pc low resolution
+@media (min-width: 1024px) and (max-width: 1239px) {
+}
+
+// responsive mobile
+@media (max-width: 739px) {
+}
+
+/* > PC medium resolution  */
+@media (min-width: 1113px) {
 }

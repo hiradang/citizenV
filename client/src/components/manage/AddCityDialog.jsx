@@ -52,7 +52,7 @@ export default function FormDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen} startIcon={<AddIcon />}>
+      <Button variant="contained" onClick={handleClickOpen}>
         {props.title}
       </Button>
       <Dialog open={open} onClose={handleClose}>

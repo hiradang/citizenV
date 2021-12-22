@@ -9,11 +9,12 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
+// import img1 from '../../constants/images/1.jpg'
 import './styles.scss';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
-const label = 'Các Sự Kiện Của Đất Nước Đang Diễn Ra';
+const label = 'Các sự kiện đang diễn ra ';
 
 const images = [
   {
@@ -56,22 +57,28 @@ function Slide() {
   };
 
   return (
-    <div className="container">
-      <h2>Hệ thống điều tra dân số CitizenV</h2>
-      <div className="slide">
-        <Box sx={{ maxWidth: 800, flexGrow: 1 }}>
+    <div className="grid container-slide">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <h2>Hệ thống điều tra dân số CitizenV</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col l-10 l-o-1 m-10 m-o-1 c-12">
           <Paper
+            className="title-slide"
             square
             elevation={0}
             sx={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               height: 50,
               pl: 2,
               bgcolor: 'background.default',
             }}
           >
-            <Typography className="label">{images[activeStep].label}</Typography>
+            <h3 className="content-slide">{images[activeStep].label}</h3>
           </Paper>
           <AutoPlaySwipeableViews
             axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -97,6 +104,7 @@ function Slide() {
             ))}
           </AutoPlaySwipeableViews>
           <MobileStepper
+            className="footer-slide"
             steps={maxSteps}
             position="static"
             activeStep={activeStep}
@@ -113,7 +121,7 @@ function Slide() {
               </Button>
             }
           />
-        </Box>
+        </div>
       </div>
     </div>
   );
