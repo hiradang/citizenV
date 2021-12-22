@@ -21,7 +21,6 @@ router.get('/:idDistrict', validateToken, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 
 // Khi thay đổi thì sẽ tạo newCode: "value"
 // Hàm này có thể update wardCode, wardName, hasAccount, quantity khi có dữ gửi đến (1, 2, hoặc cả 3)
@@ -60,6 +59,3 @@ router.post("/:wardId", async (req, res) => {
   });
 
 module.exports = router;
-=======
-module.exports = router;
->>>>>>> origin/authmiddleware
