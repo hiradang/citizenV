@@ -18,6 +18,7 @@ import HorizontalBar from '../charts/HorizontalBar';
 import LineChart from '../charts/LineChart';
 
 import General from '../general-page/General';
+import Statistic from '../../../constants/images/statistics/statistic.svg';
 
 var convertToCountArray = require('../utils').convertToCountArray;
 var convertAgeToArray = require('../utils').convertAgeToArray;
@@ -39,6 +40,7 @@ function Statistics() {
     'Chung',
     'Độ tuổi',
     'Giới tính',
+    'Dân tộc',
     'Tôn giáo',
     'Nghề nghiệp',
     'Trình độ văn hóa',
@@ -180,8 +182,14 @@ function Statistics() {
         setCriteria('gender');
         tempCriteria = 'gender';
         setDataTable(convertToCountArray(tempCitizens, tempCriteria));
+      } else if (item === 'Dân tộc') {
+        setCriteria('ethnic');
+        tempCriteria = 'ethnic';
+        setDataTable(convertToCountArray(tempCitizens, tempCriteria));
       } else if (item === 'Chung') {
         setCriteria('general');
+        tempCriteria = 'general';
+        setDataTable(tempCitizens);
       } else if (item === 'Độ tuổi') {
         setCriteria('age');
         tempCriteria = 'age';
@@ -197,9 +205,16 @@ function Statistics() {
   }
 
   // Chèn loại biểu đồ tùy thuộc vào từng loại tiêu chí
-  const chooseDisplayInfo = () => {
-    if (criteria === 'general' || criteria === '') {
-      return <General citizens={listCitizen} />;
+  const chooseDisplayInfo = function () {
+    if (criteria === 'general') {
+      return <General citizens={dataTable} />;
+      // return 'running';
+    } else if (criteria === '') {
+      return (
+        <div className="statistic-img">
+          <img src={Statistic} alt="statistic" />
+        </div>
+      );
     } else if (criteria === 'age') {
       return (
         <div>
@@ -242,7 +257,7 @@ function Statistics() {
   return (
     <div className="container">
       <h2>Kết quả điều tra dân số </h2>
-      <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
+      <Box sx={{ maxWidth: 1200, flexGrow: 1 }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
           <Select
             names={listCityName}

@@ -29,7 +29,7 @@ export const data = {
   datasets: [
     {
       label: 'Dataset 1',
-      data: labels.map(() => faker.datatype.number({ min: 0, max: 100 })),
+      data: labels.map(() => faker.datatype.number({ min: -100, max: 0 })),
       borderColor: 'rgb(255, 99, 132)',
       backgroundColor: 'rgba(255, 99, 132, 0.5)',
     },

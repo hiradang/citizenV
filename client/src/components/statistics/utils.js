@@ -80,7 +80,9 @@ export function convertFromCriteriaToName(criteria){
         case "gender":
             return "Giới tính"
         case "age":
-            return "Độ tuổi"
+            return "Độ tuổi";
+        case "ethinic":
+            return "Dân tộc"
         default:
             return ""
     }

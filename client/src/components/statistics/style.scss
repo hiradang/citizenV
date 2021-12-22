@@ -29,3 +29,78 @@
   width: 50%;
   margin: 40px auto;
 }
+
+.statistic-img {
+  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+
+  img {
+    width: 80%;
+  }
+}
+
+// General page
+
+.general-container {
+  .header {
+    font-size: 2.4rem;
+    margin: 20px auto;
+    text-align: center;
+  }
+
+  h3 {
+    font-size: 2rem;
+  }
+
+  .figure {
+    font-size: 2.4rem;
+    color: aliceblue;
+    background-color: #7977fc;
+    padding: 4px 10px;
+    border-radius: 10px;
+  }
+
+  // Population + gender ratio
+  .population {
+    // margin: 0 auto;
+
+    .detail {
+      display: flex;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .gender-icon {
+      width: 50%;
+    }
+  }
+
+  // Religion
+  .religion {
+    .religion-img {
+      display: flex;
+      justify-content: center;
+    }
+
+    img {
+      width: 60%;
+    }
+  }
+
+  // Dan toc
+  .ethnic {
+    .ethnic-img {
+      display: flex;
+      justify-content: center;
+    }
+
+    img {
+      width: 60%;
+    }
+  }
+}

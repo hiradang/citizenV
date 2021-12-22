@@ -60,7 +60,7 @@ export default function Citizen() {
   }, []);
   useEffect(() => {
     // if (searchId !== '') {
-    console.log(searchId);
+    // console.log(searchId);
     axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
       setListCitizen(response.data);
     });

@@ -51,6 +51,13 @@ router.post("/:cityId", async (req, res) => {
         },
         {where: {id_city: cityId}});
     }
+    if (req.body.quantity !== null) {
+      const quantity = req.body.quantity;
+      await City.update({
+          quantity_city: quantity
+      },
+      {where: {id_city: cityId}});
+    }
     res.json("Update successfully");
   });
 
