@@ -1,19 +1,35 @@
 const express = require('express');
 const router = express.Router();
 const {City} = require('../models')
-
+const { validateToken } = require("../middlewares/AuthMiddleware");
 const db = require("../models");
 
-router.get("/", async (req, res) => {
+// Lấy thông tin tất cả thành phố 
+router.get("/",validateToken, async (req, res) => {
+  if (req.user.role !== 'A1') {
+    return res.json('Không có quyền truy cập')
+  }
     const listCity = await City.findAll({
         attributes: ['id_city', 'city_name', 'quantity_city', 'hasAccount']
     });
     res.json(listCity);
 })
 
+//Lấy thông tin một thành phố
+router.get("/:id",validateToken, async (req, res) => {
+  const cityId = req.params.id; 
+  if (req.user.role !== 'A1' && req.user.id.indexOf(cityId) !== 0) {
+    return res.json('Không có quyền truy cập')
+  }
+    const listCity = await City.findByPk(cityId);
+    res.json(listCity);
+})
 
 // Them moi mot thanh pho
-router.post("/", async (req, res) => {
+router.post("/",validateToken, async (req, res) => {
+  if (req.user.role !== 'A1') {
+    return res.json('Không có quyền truy cập')
+  }
     const { cityName, cityCode } = req.body;
     City.create({
         id_city: cityCode,
@@ -27,7 +43,10 @@ router.post("/", async (req, res) => {
 
 // Khi thay đổi thì sẽ tạo newCode: "value"
 // Hàm này có thể update cityCode, cityName, hasAccount khi có dữ gửi đến (1, 2, hoặc cả 3)
-router.post("/:cityId", async (req, res) => {
+router.post("/:cityId",validateToken, async (req, res) => {
+  if (req.user.role !== 'A1') {
+    return res.json('Không có quyền truy cập')
+  }
     const cityId = req.params.cityId; 
     // Kiểm tra và sửa đổi id_city
     if (req.body.newName !== null) {
@@ -61,8 +80,11 @@ router.post("/:cityId", async (req, res) => {
     res.json("Update successfully");
   });
 
-
-  router.delete("/:id", async (req, res) => {
+//Xóa một thành phố
+  router.delete("/:id",validateToken, async (req, res) => {
+    if (req.user.role !== 'A1') {
+      return res.json('Không có quyền truy cập')
+    }
     const id = req.params.id;
     console.log(id);
     City.destroy({

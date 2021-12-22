@@ -188,8 +188,7 @@ function Manage() {
       Promise.all([
         axios.post(`http://localhost:3001/account`, {
           username: city.id,
-          password: defaultPassword,
-          role: 'A2',
+          password: defaultPassword
         }),
         axios.post(`http://localhost:3001/city/${city.id}`, {
           hasAccount: true,
@@ -214,7 +213,6 @@ function Manage() {
       axios.post(`http://localhost:3001/account`, {
         username: cityId,
         password: defaultPassword,
-        role: 'A2',
       }),
       axios.post(`http://localhost:3001/city/${cityId}`, {
         hasAccount: true,

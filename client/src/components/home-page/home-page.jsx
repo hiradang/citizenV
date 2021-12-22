@@ -23,12 +23,16 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles.scss';
 import Slide from '../slide/slide';
-import Citizen from '../all-citizen/allCitizen';
+import Citizen from '../all-citizen/Citizen';
 import Manage from '../manage/main/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 import Tasks from '../tasks/tasks';
 import Statistics from '../statistics/main/statistics';
+import CensusForm from '../census/census'
+import Cookies from 'js-cookie';
+import UpdatePass from './updatePass'
+import Dialog from '@mui/material/Dialog';
 
 const drawerWidth = 240;
 
@@ -101,6 +105,24 @@ export default function HomePage({ listItems }) {
     setAnchorEl(null);
   };
 
+  const [openD, setOpenD] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setAnchorEl(null);
+    setOpenD(true);
+  };
+
+  const handleClose = () => {
+    setOpenD(false);
+  };
+  const Logout = () => {
+      Cookies.remove('user');
+      Cookies.remove('role');
+      Cookies.remove('token')
+      window.location.reload()
+  }
+
+
   const sideList = () => (
     <Box className="menuSliderContainer" component="div">
       <Divider />
@@ -123,10 +145,14 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/congviec') return <Tasks />;
     if (location.pathname === '/quanly') return <Manage />;
     if (location.pathname === '/thongke') return <Statistics />;
+    if (location.pathname === '/nhaplieu') return <CensusForm/>
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
+      <Dialog open={openD} onClose={handleClose} fullWidth>
+        <UpdatePass handleClose = {handleClose}/>
+      </Dialog>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -199,10 +225,10 @@ export default function HomePage({ listItems }) {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={toggleCloseUserMenu} className="menuItem">
-          Trang cá nhân
+        <MenuItem onClick={handleClickOpen} className="menuItem">
+          Thay đổi mật khẩu
         </MenuItem>
-        <MenuItem onClick={toggleCloseUserMenu} className="menuItem">
+        <MenuItem onClick={Logout} className="menuItem">
           Đăng xuất
         </MenuItem>
       </Menu>

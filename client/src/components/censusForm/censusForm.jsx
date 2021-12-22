@@ -9,13 +9,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { useSnackbar } from 'notistack';
 import { listCareer, listEthnic, listLevel, listReligion } from '../../constants/listAboutPeople';
 import InputField from '../form-control/inputField/inputField';
 import './styles.scss';
+import axios from 'axios';
 
 CensusForm.propTypes = {
   onSubmit: PropTypes.func,
@@ -32,12 +33,33 @@ const MenuProps = {
 };
 
 function CensusForm({ onSubmit }) {
-  const { enqueueSnackbar } = useSnackbar();
 
+  //id_hamlet của quê quán, địa chỉ thường trú, tạm trú
+  const [addressId, setAddressId] = useState('')
+  const [address1Id, setAddress1Id] = useState('')
+  const [address2Id, setAddress2Id] = useState('')
+
+  //id+name của quê quán
+  const [listCityFull, setListCityFull] = useState([]);
+  const [listDistrictFull, setListDistrictFull] = useState([]);
+  const [listWardFull, setListWardFull] = useState([]);
+  const [listHamletFull, setListHamletFull] = useState([]);
+
+  //id+name của địa chỉ thường trú
+  const [listDistrict1Full, setListDistrict1Full] = useState([]);
+  const [listWard1Full, setListWard1Full] = useState([]);
+  const [listHamlet1Full, setListHamlet1Full] = useState([]);
+
+  //id+name của địa chỉ tạm trú
+  const [listDistrict2Full, setListDistrict2Full] = useState([]);
+  const [listWard2Full, setListWard2Full] = useState([]);
+  const [listHamlet2Full, setListHamlet2Full] = useState([]);
+
+  
+  const { enqueueSnackbar } = useSnackbar();
   const showNoti = () => {
     enqueueSnackbar('Một số trường chưa có dữ liệu, vui lòng kiểm tra lại', { variant: 'error' });
   };
-
   // Thông tin cơ bản
   const [information, setInformation] = useState({
     dateOfBirth: new Date(),
@@ -48,9 +70,6 @@ function CensusForm({ onSubmit }) {
     career: '',
   });
 
-  //Lấy dữ liệu list Tỉnh / Thành phố rồi vứt vào biến listCity
-  const listCity = ['Tỉnh Thanh Hóa', 'Tỉnh Nam Định'];
-
   // Quê quán
   const [address, setAddress] = useState({
     hamlet: '',
@@ -58,14 +77,10 @@ function CensusForm({ onSubmit }) {
     district: '',
     city: '',
   });
-
+  const [listCity, setListCity] = useState([]);
   const [listDistrict, setListDistrict] = useState([]);
   const [listWard, setListWard] = useState([]);
   const [listHamlet, setListHamlet] = useState([]);
-
-  const [disableDistrict, setDisableDistrict] = useState(true);
-  const [disableWard, setDisableWard] = useState(true);
-  const [disableHamlet, setDisableHamlet] = useState(true);
 
   // Địa chỉ thường trú
   const [address1, setAddress1] = useState({
@@ -74,14 +89,9 @@ function CensusForm({ onSubmit }) {
     district: '',
     city: '',
   });
-
   const [listDistrict1, setListDistrict1] = useState([]);
   const [listWard1, setListWard1] = useState([]);
   const [listHamlet1, setListHamlet1] = useState([]);
-
-  const [disableDistrict1, setDisableDistrict1] = useState(true);
-  const [disableWard1, setDisableWard1] = useState(true);
-  const [disableHamlet1, setDisableHamlet1] = useState(true);
 
   // Địa chỉ tạm trú
   const [address2, setAddress2] = useState({
@@ -90,14 +100,172 @@ function CensusForm({ onSubmit }) {
     district: '',
     city: '',
   });
-
   const [listDistrict2, setListDistrict2] = useState([]);
   const [listWard2, setListWard2] = useState([]);
   const [listHamlet2, setListHamlet2] = useState([]);
 
-  const [disableDistrict2, setDisableDistrict2] = useState(true);
-  const [disableWard2, setDisableWard2] = useState(true);
-  const [disableHamlet2, setDisableHamlet2] = useState(true);
+  useEffect(() => {
+    var listCityName = [];
+    axios.get('http://localhost:3001/city').then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        listCityName[i] = response.data[i].city_name;
+      }
+      setListCity(listCityName)
+      setListCityFull(response.data);
+    });
+  }, []);
+
+  //Lấy dữ liệu cho quê quán
+  useEffect(() => {
+    if (address.city) {
+      let index = listCityFull.findIndex((x) => x.city_name === address.city);
+      let id_city = listCityFull[index].id_city;
+      var listDistrictName = [];
+      axios.get(`http://localhost:3001/district/${id_city}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listDistrictName[i] = response.data[i].district_name;
+        }
+        setListDistrict(listDistrictName);
+        setListDistrictFull(response.data);
+      });
+    }
+  }, [address.city]);
+  useEffect(() => {
+    if (address.district) {
+      let index = listDistrictFull.findIndex((x) => x.district_name === address.district);
+      let id_district = listDistrictFull[index].id_district;
+      var listWardName = [];
+      axios.get(`http://localhost:3001/ward/${id_district}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listWardName[i] = response.data[i].ward_name;
+        }
+        setListWard(listWardName);
+        setListWardFull(response.data);
+      });
+    }
+  }, [address.district]);
+  useEffect(() => {
+    if (address.ward) {
+      let index = listWardFull.findIndex((x) => x.ward_name === address.ward);
+      let id_ward = listWardFull[index].id_ward;
+      var listHamletName = [];
+      axios.get(`http://localhost:3001/hamlet/${id_ward}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listHamletName[i] = response.data[i].hamlet_name;
+        }
+        setListHamlet(listHamletName);
+        setListHamletFull(response.data);
+      });
+    }
+  }, [address.ward]);
+  useEffect(() => {
+    if (address.hamlet) {
+      let index = listHamletFull.findIndex((x) => x.hamlet_name === address.hamlet);
+      setAddressId(listHamletFull[index].id_hamlet)
+    }
+  }, [address.hamlet]);
+
+  //Lấy dữ liệu cho địa chỉ thường trú
+  useEffect(() => {
+    if (address1.city) {
+      let index = listCityFull.findIndex((x) => x.city_name === address1.city);
+      let id_city = listCityFull[index].id_city;
+      var listDistrictName = [];
+      axios.get(`http://localhost:3001/district/${id_city}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listDistrictName[i] = response.data[i].district_name;
+        }
+        setListDistrict1(listDistrictName);
+        setListDistrict1Full(response.data);
+      });
+    }
+  }, [address1.city]);
+  useEffect(() => {
+    if (address1.district) {
+      let index = listDistrict1Full.findIndex((x) => x.district_name === address1.district);
+      let id_district = listDistrict1Full[index].id_district;
+      var listWardName = [];
+      axios.get(`http://localhost:3001/ward/${id_district}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listWardName[i] = response.data[i].ward_name;
+        }
+        setListWard1(listWardName);
+        setListWard1Full(response.data);
+      });
+    }
+  }, [address1.district]);
+  useEffect(() => {
+    if (address1.ward) {
+      let index = listWard1Full.findIndex((x) => x.ward_name === address1.ward);
+      let id_ward = listWard1Full[index].id_ward;
+      var listHamletName = [];
+      axios.get(`http://localhost:3001/hamlet/${id_ward}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listHamletName[i] = response.data[i].hamlet_name;
+        }
+        setListHamlet1(listHamletName);
+        setListHamlet1Full(response.data);
+      });
+    }
+  }, [address1.ward]);
+  useEffect(() => {
+    if (address1.hamlet) {
+      let index = listHamlet1Full.findIndex((x) => x.hamlet_name === address1.hamlet);
+      setAddress1Id(listHamlet1Full[index].id_hamlet)
+    }
+  }, [address1.hamlet]);
+
+  //Lấy dữ liệu cho địa chỉ tạm trú
+  useEffect(() => {
+    if (address2.city) {
+      let index = listCityFull.findIndex((x) => x.city_name === address2.city);
+      let id_city = listCityFull[index].id_city;
+      var listDistrictName = [];
+      axios.get(`http://localhost:3001/district/${id_city}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listDistrictName[i] = response.data[i].district_name;
+        }
+        setListDistrict2(listDistrictName);
+        setListDistrict2Full(response.data);
+      });
+    }
+  }, [address2.city]);
+  useEffect(() => {
+    if (address2.district) {
+      let index = listDistrict2Full.findIndex((x) => x.district_name === address2.district);
+      let id_district = listDistrict2Full[index].id_district;
+      var listWardName = [];
+      axios.get(`http://localhost:3001/ward/${id_district}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listWardName[i] = response.data[i].ward_name;
+        }
+        setListWard2(listWardName);
+        setListWard2Full(response.data);
+      });
+    }
+  }, [address2.district]);
+  useEffect(() => {
+    if (address2.ward) {
+      let index = listWard2Full.findIndex((x) => x.ward_name === address2.ward);
+      let id_ward = listWard2Full[index].id_ward;
+      var listHamletName = [];
+      axios.get(`http://localhost:3001/hamlet/${id_ward}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listHamletName[i] = response.data[i].hamlet_name;
+        }
+        setListHamlet2(listHamletName);
+        setListHamlet2Full(response.data);
+      });
+    }
+  }, [address2.ward]);
+  useEffect(() => {
+    if (address2.hamlet) {
+      let index = listHamlet2Full.findIndex((x) => x.hamlet_name === address2.hamlet);
+      setAddress2Id(listHamlet2Full[index].id_hamlet)
+    }
+  }, [address2.hamlet]);
+
+
 
   //Validate Họ và tên + CCCD / CMND
   const schema = yup.object().shape({
@@ -148,7 +316,6 @@ function CensusForm({ onSubmit }) {
         return value.split(' ').length === 1;
       }),
   });
-
   const form = useForm({
     defaultValues: {
       name: '',
@@ -165,7 +332,9 @@ function CensusForm({ onSubmit }) {
   };
 
   const handleSubmit = (values) => {
+    console.log(values)
     if (onSubmit) {
+      
       // values là object chứa: Họ tên + CCCD / CMND
       // information chứa: Ngày sinh / Giới tính / Tôn giáo / Dân tộc / Trình độ / Nghề nghiệp
       const check =
@@ -173,16 +342,16 @@ function CensusForm({ onSubmit }) {
         checkValidField(address) &&
         checkValidField(address1) &&
         checkValidField(address2);
-
+        
       if (!check) {
         showNoti();
         return;
       } else {
-        onSubmit(values, information, address, address1, address2);
+        onSubmit(values, information, addressId, address1Id, address2Id);
 
         // Dữ liệu chuẩn và ko bị thiếu trường nào thì reset lại toàn bộ các trường
-        form.reset();
-        // Reset lại thông ti cơ bản
+        // form.reset();
+        // Reset lại thông tin cơ bản
         setInformation({
           dateOfBirth: new Date(),
           gender: '',
@@ -215,7 +384,6 @@ function CensusForm({ onSubmit }) {
       }
     }
   };
-
   return (
     <div className="wrapper">
       <div style={{ height: '82%', width: '100%', backgroundColor: 'white' }}>
@@ -324,14 +492,6 @@ function CensusForm({ onSubmit }) {
                     ...address,
                     city: newValue,
                   });
-
-                  // Có Tỉnh / Thành phố => Lấy dữ liệu Quận Huyện tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableDistrict = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address.city) setDisableDistrict(false)
-                  // else setDisableDistrict(true);
                 }}
                 value={address.city}
                 options={listCity}
@@ -340,21 +500,13 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableDistrict}
+                disabled={!address.city ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress({
                     ...address,
                     district: newValue,
                   });
-
-                  // Có Quận / Huyện => Lấy dữ liệu Xã / Phường tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableWard = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address.district) setDisableWard(false)
-                  // else setDisableWard(true);
                 }}
                 value={address.district}
                 options={listDistrict}
@@ -363,21 +515,13 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableWard}
+                disabled={!address.district ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress({
                     ...address,
                     ward: newValue,
                   });
-
-                  // Có Xã / Phường => Lấy dữ liệu Thôn / Khu phố tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableHamlet = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address.ward) setDisableHamlet(false)
-                  // else setDisableHamlet(true);
                 }}
                 value={address.ward}
                 options={listWard}
@@ -386,7 +530,7 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableHamlet}
+                disabled={!address.ward ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress({
@@ -410,14 +554,6 @@ function CensusForm({ onSubmit }) {
                     ...address1,
                     city: newValue,
                   });
-
-                  // Có Tỉnh / Thành phố => Lấy dữ liệu Quận Huyện tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableDistrict1 = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address1.city) setDisableDistrict1(false)
-                  // else setDisableDistrict1(true);
                 }}
                 value={address1.city}
                 options={listCity}
@@ -426,21 +562,13 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableDistrict1}
+                disabled={!address1.city ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress1({
                     ...address1,
                     district: newValue,
                   });
-
-                  // Có Quận / Huyện => Lấy dữ liệu Xã / Phường tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableWard1 = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address1.district) setDisableWard1(false)
-                  // else setDisableWard1(true);
                 }}
                 value={address1.district}
                 options={listDistrict1}
@@ -449,21 +577,13 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableWard1}
+                disabled={!address1.district ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress1({
                     ...address1,
                     ward: newValue,
                   });
-
-                  // Có Xã / Phường => Lấy dữ liệu Thôn / Khu phố tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableHamlet1 = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address1.ward) setDisableHamlet1(false)
-                  // else setDisableHamlet1(true);
                 }}
                 value={address1.ward}
                 options={listWard1}
@@ -472,7 +592,7 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableHamlet1}
+                disabled={!address1.ward ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress1({
@@ -496,14 +616,6 @@ function CensusForm({ onSubmit }) {
                     ...address2,
                     city: newValue,
                   });
-
-                  // Có Tỉnh / Thành phố => Lấy dữ liệu Quận Huyện tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableDistrict2 = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address2.city) setDisableDistrict2(false)
-                  // else setDisableDistrict2(true);
                 }}
                 value={address2.city}
                 options={listCity}
@@ -512,21 +624,13 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableDistrict2}
+                disabled={!address2.city ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress2({
                     ...address2,
                     district: newValue,
                   });
-
-                  // Có Quận / Huyện => Lấy dữ liệu Xã / Phường tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableWard2 = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address2.district) setDisableWard2(false)
-                  // else setDisableWard2(true);
                 }}
                 value={address2.district}
                 options={listDistrict2}
@@ -535,21 +639,13 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableWard2}
+                disabled={!address2.district ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress2({
                     ...address2,
                     ward: newValue,
                   });
-
-                  // Có Xã / Phường => Lấy dữ liệu Thôn / Khu phố tại đây
-                  // .... code
-                  // Loan xử lý
-                  // Sau khi lấy dữ liệu xong thì set biến disableHamlet2 = false
-                  // Mở cmt đoạn code bên dưới là được
-                  // if (address2.ward) setDisableHamlet2(false)
-                  // else setDisableHamlet2(true);
                 }}
                 value={address2.ward}
                 options={listWard2}
@@ -558,7 +654,7 @@ function CensusForm({ onSubmit }) {
 
               <Autocomplete
                 disablePortal
-                disabled={disableHamlet2}
+                disabled={!address2.ward ? true : false}
                 className="select-address"
                 onChange={(event, newValue) => {
                   setAddress2({

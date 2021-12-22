@@ -3,9 +3,20 @@ const router = express.Router();
 const { Account } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-let refreshTokens = []
+const { validateToken } = require("../middlewares/AuthMiddleware");
 
-router.get('/update/:id', async (req, res) => {
+// router.get('/' ,async (req, res) => {
+//   bcrypt.hash('password', 10).then((hash) => {
+//     Account.create({
+//       username: '01010101',
+//       password: hash,
+//       role: 'B2'
+//     });
+//     res.json('SUCCESS');
+//   });
+// });
+
+router.get('/update/:id', validateToken ,async (req, res) => {
   const id = req.params.id;
   bcrypt.hash(id, 10).then((hash) => {
     Account.update(
@@ -17,9 +28,15 @@ router.get('/update/:id', async (req, res) => {
   });
 });
 
-
-router.post("/", async (req, res) => {
-    const { username, password, role } = req.body;
+// Cấp tài khoản 
+router.post("/", validateToken,async (req, res) => {
+    const { username, password } = req.body;
+    let role = ''
+    const roleAuth = req.user.role;
+    if (roleAuth === 'A1') role = 'A2'
+    else if (roleAuth === 'A2') role = 'A3'
+    else if (roleAuth === 'A3') role = 'B1'
+    else role = 'B2'
     bcrypt.hash(password, 10).then((hash) => {
       Account.create({
         username: username,
@@ -31,59 +48,25 @@ router.post("/", async (req, res) => {
     res.json('SUCCESS');
   });
 
-const generateAccessToken = (user) => {
-  return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, "importantsecret", {
-    expiresIn: "5s",
-  });
-};
-
-const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, "refreshSecret");
-};
-
-router.post("/refresh", (req, res) => {
-  //take the refresh token from the user
-  const refreshToken = req.body.token;
-  //send error if there is no token or it's invalid
-  if (!refreshToken) return res.json("You are not authenticated!");
-  if (!refreshTokens.includes(refreshToken)) {
-    return res.json("Refresh token is not valid!");
-  }
-  jwt.verify(refreshToken, "refreshSecret", (err, user) => {
-    err && console.log(err);
-    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-
-    const newAccessToken = generateAccessToken(user);
-    const newRefreshToken = generateRefreshToken(user);
-
-    refreshTokens.push(newRefreshToken);
-
-    res.json({
-      accessToken: newAccessToken,
-      refreshToken: jwt.sign({ id: user.id_account, role: user.role }, 'refreshSecret', {
-      })
-    });
-  });
-
-});
-
+// Xác thực thông tin đăng nhập
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const user = await Account.findOne({where: {username: username}});
-  if (!user) res.json({ error: "User Doesn't Exist" });
+  if (!user) res.json({ error: "Tài khoản không tồn tại" });
   bcrypt.compare(password, user.password).then((match) => {
-    if (!match) res.json({ error: 'Wrong Username And Password Combination' });
+    if (!match) res.json({ error: 'Mật khẩu không chính xác' });
     else {
-      const accessToken = generateAccessToken(user);
-      const refreshToken = generateRefreshToken(user);
-      refreshTokens.push(refreshToken);
+      const accessToken = jwt.sign({ id: user.username, role: user.role }, "importantsecret", {
+        expiresIn: "24h",
+      });
       res.cookie('token', accessToken)
-      res.json({ username: user.username, role: user.role, accessToken, refreshToken });
+      res.json({ username: user.username, role: user.role, accessToken });
     }
   });
 });
 
-router.delete("/:username", async (req, res) => {
+// Xóa 1 tài khoản
+router.delete("/:username", validateToken, async (req, res) => {
   const username = req.params.username;
   Account.destroy({
     where: {

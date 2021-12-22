@@ -203,7 +203,7 @@ export default function TableCitizen(props) {
                         <TableCell align="left">
                         {row.tempHamlet_name}, {row.tempWard_name}, {row.tempDistrict_name}, {row.tempCity_name}
                         </TableCell>
-                        <TableCell align="left">Kinh</TableCell>
+                        <TableCell align="left">{row.ethnic}</TableCell>
                         <TableCell align="left">{row.religion}</TableCell>
                         <TableCell align="left">{row.level}</TableCell>
                         <TableCell align="left">{row.job}</TableCell>

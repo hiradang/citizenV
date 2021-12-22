@@ -82,7 +82,7 @@ Picker.defaultProps = {
   listCity: [],
 };
 
-function Picker({ listCity, toggleApplyButton }) {
+function Picker({ listCity, nameTitle, toggleApplyButton }) {
   const classes = useStyles();
 
   const [selected, setSelected] = useState([]);
@@ -115,13 +115,13 @@ function Picker({ listCity, toggleApplyButton }) {
       }}
     >
       <FormControl className={classes.formControl}>
-        <InputLabel>Chọn Tỉnh / Thành phố</InputLabel>
+        <InputLabel>Chọn {nameTitle}</InputLabel>
         <Select
           multiple
           value={selected}
           onChange={select}
           renderValue={(selected) => selected.join(', ')}
-          input={<OutlinedInput label="Chọn Tỉnh / Thành phố" />}
+          input={<OutlinedInput label={`Chọn ${nameTitle}`} />}
           MenuProps={MenuProps}
         >
           <MenuItem

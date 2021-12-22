@@ -4,11 +4,11 @@ import axios from 'axios';
 // import './styles.scss';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Pagination from './Pagination';
-import Select from './select';
-import TableCitizen from './TableCitizen';
-import Search from './searchCitizen';
-import SelectOption from './selectOption';
+import Pagination from '../Pagination';
+import Select from '../select';
+import TableCitizen from '../TableCitizen';
+import Search from '../searchCitizen';
+import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
 
 export default function Citizen() {
@@ -64,7 +64,6 @@ export default function Citizen() {
     axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
       setListCitizen(response.data);
     });
-    // }
   }, [searchId]);
   useEffect(() => {
     if (idCity !== '') {
@@ -166,7 +165,7 @@ export default function Citizen() {
   }
   return (
     <div className="container">
-      <h2>Danh sách dân số </h2>
+      <h2>Danh sách dân số toàn quốc</h2>
       <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
           <SelectOption
