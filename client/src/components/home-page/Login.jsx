@@ -79,13 +79,7 @@ function Login() {
               <InputField name="username" label="Tên đăng nhập" form={form} />
               <PasswordField name="password" label="Mật khẩu" form={form} />
 
-              <Button
-                disabled={isSubmitting}
-                type="submit"
-                color="primary"
-                variant="contained"
-                size="medium"
-              >
+              <Button type="submit" color="primary" variant="contained" size="medium">
                 Đăng nhập
               </Button>
             </form>
