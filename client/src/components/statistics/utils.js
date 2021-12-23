@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment, { max } from 'moment';
 
 // Lọc mảng citizen ra chỉ lấy các tiêu chí và đếm số lượng theo tiêu chí đó
 export function convertToCountArray (citizens, attr) {
@@ -33,7 +33,6 @@ export function convertToCountArray (citizens, attr) {
 // Voi n = 3 output tương ứng như sau
 // [Khong: 10, Phat giao: 9, Hoi giao: 8, "Con lai": 3]
 export function getTopN(sortedList, n) {
-    console.log(sortedList);
     var topN = sortedList.slice(0, n);
     
     var count = 0;
@@ -97,7 +96,6 @@ export function calculateAge(dob) {
 // output: [{name: 1, quantity: 240}, {name: 2, quantity: 203}, {name: 3, quantity: 230}, ...
 // {name: 99, quantity: 50}]
 export function convertAgeToArray(citizens) {
-    console.log(citizens[0])
     let ageArray = citizens.map((citizen) => {
         return (calculateAge(citizen.date_of_birth))
     })
@@ -133,5 +131,55 @@ export function convertAgeJump10(countArray) {
         })
     }
     return result;
+}
+
+// Tính số lượng người trên một độ tuổi nhất định
+export function countNumberOverAge(citizens, age) {
+    let filteredArray = citizens.filter((citizen) => calculateAge(citizen.date_of_birth) >= 15);
+    return filteredArray.length;
+}
+
+
+// input: [{name: Haiphong, quantity: 2000}, {name: HaNoi, quantity: 5000},
+// {name: Danang, quantity: 1000}, {name: Ho Chi Minh, quantity: 4000}]
+
+// output: {maxLocal: {name: HaNoi, quantity: 5000}, minLocal: {name: Danang, quantity: 1000}}
+export function findLargertAndSmallest(listLocals) {
+    let minLocal = listLocals[0];
+    let maxLocal = listLocals[0];
+    listLocals.forEach((local) => {
+        if (local.quantity > maxLocal.quantity) {
+            maxLocal = local;
+        }
+        if (local.quantity < minLocal.quantity) {
+            minLocal = local;
+        }
+    })
+    return {
+        minLocal: minLocal,
+        maxLocal: maxLocal
+    }
+}
+
+
+// Tỉ lệ nam, nữ của trẻ khi sinh, tính trên các trẻ có tuổi dưới 1
+export function calculateBoyGirlRatio(citizens) {
+    let countBoy = 0;
+    let countGirl = 0;
+    citizens.forEach((citizen) => {
+        if (calculateAge(citizen.date_of_birth) < 1) {
+            if (citizen.gender === 'Nam') {
+                countBoy++;
+            } else countGirl++;
+        }
+    })
+
+    if (countBoy && countGirl) {
+        return {
+            countBoy: (countBoy / countGirl * 100).toFixed(0),
+            countGirl: 100
+        }
+    }
+    return null;
 }
 
