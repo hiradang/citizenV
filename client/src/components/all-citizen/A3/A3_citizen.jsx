@@ -22,6 +22,7 @@ export default function Citizen() {
     id_ward: [],
     id_hamlet: [],
   });
+  const selectOptionName = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú'];
   var addName = {
     city_name: 'addCity_name',
     district_name: 'addDistrict_name',
@@ -154,6 +155,7 @@ export default function Citizen() {
             label="Địa điểm"
             item="id_add"
             changeItem={(item, name) => changeRows(item, name)}
+            names={selectOptionName}
           ></SelectOption>
           <Select
             names={listWardName}

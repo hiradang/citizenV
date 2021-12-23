@@ -7,8 +7,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
-import { useEffect } from 'react';
 
 const ITEM_HEIGHT = 60;
 const ITEM_PADDING_TOP = 8;
@@ -44,7 +42,6 @@ export default function SelectItem(props) {
       //   props.changeItem( typeof value === 'string' ? value.split(',') : value, props.item)
     }
   };
-
   return (
     <FormControl sx={{ m: 2, width: 200 }}>
       <InputLabel id="demo-multiple-checkbox-label">Chọn {props.label}</InputLabel>
