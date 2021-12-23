@@ -76,7 +76,7 @@ export default function FormDialog(props) {
           <>
             <DialogContent>
               <DialogContentText>
-                Tên đăng nhập sẽ được cấp giống với mã tỉnh/thành phố. <br />
+                Tên đăng nhập sẽ được cấp giống với mã {props.name}. <br />
                 Hãy cấp một mật khẩu mặc định.
               </DialogContentText>
               <DialogContentText className={classes.warning}>{notification}</DialogContentText>
