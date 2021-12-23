@@ -188,7 +188,7 @@ function Manage() {
       Promise.all([
         axios.post(`http://localhost:3001/account`, {
           username: city.id,
-          password: defaultPassword
+          password: defaultPassword,
         }),
         axios.post(`http://localhost:3001/city/${city.id}`, {
           hasAccount: true,

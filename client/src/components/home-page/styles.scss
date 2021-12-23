@@ -143,6 +143,19 @@ i.title-login {
   }
 }
 
+.container-change-pass {
+  padding: 20px 16px 30px 16px;
+
+  .MuiDialogContent-root {
+    padding: 0 24px 16px 24px;
+  }
+
+  h3 {
+    text-align: center;
+    color: #4b49ac;
+  }
+}
+
 // responsive tablet
 @media (min-width: 740px) and (max-width: 1023px) {
   // login

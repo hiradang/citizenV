@@ -1,8 +1,6 @@
 // import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 import axios from 'axios';
-// import './styles.scss';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Pagination from '../Pagination';
 import Select from '../select';
@@ -11,6 +9,90 @@ import Search from '../searchCitizen';
 import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
 import '../styleCitizen.scss';
+
+// const citizenFix = [
+//   {
+//     id_citizen: '010047276406',
+//     citizen_name: 'Dương Viễn Cảnh',
+//     date_of_birth: '1923-01-31',
+//     gender: 'Nam',
+//     hometown: '01260303',
+//     tempAddress: '17090503',
+//     address: '24170705',
+//     ethnic: 'Chu-ru',
+//     religion: 'Cơ đốc Phục lâm',
+//     level: 'Trung học cơ sở',
+//     job: 'Ca sĩ',
+//     createdAt: null,
+//     updatedAt: null,
+//     addHamlet_name: 'Thôn 5',
+//     addWard_name: 'Xã Ia Phang',
+//     addDistrict_name: 'Huyện Chư Pưh',
+//     addCity_name: 'Tỉnh Gia Lai',
+//     tempHamlet_name: 'Khu phố 3',
+//     tempWard_name: 'Thị trấn Rạch Gốc',
+//     tempDistrict_name: 'Huyện Ngọc Hiển',
+//     tempCity_name: 'Tỉnh Cà Mau',
+//     homeHamlet_name: 'Thôn 3',
+//     homeWard_name: 'Xã Bích Hòa',
+//     homeDistrict_name: 'Huyện Thanh Oai',
+//     homeCity_name: 'Thành phố Hà Nội',
+//   },
+//   {
+//     id_citizen: '010050431794',
+//     citizen_name: 'Lý Hữu Minh',
+//     date_of_birth: '1923-11-07',
+//     gender: 'Nam',
+//     hometown: '01271703',
+//     tempAddress: '27102502',
+//     address: '15030603',
+//     ethnic: 'Mường',
+//     religion: "Tôn giáo Baha'l",
+//     level: 'Trung học cơ sở',
+//     job: 'Streamer',
+//     createdAt: null,
+//     updatedAt: null,
+//     addHamlet_name: 'Thôn 3',
+//     addWard_name: 'Xã Thanh Phú',
+//     addDistrict_name: 'Thị xã Bình Long',
+//     addCity_name: 'Tỉnh Bình Phước',
+//     tempHamlet_name: 'Thôn 2',
+//     tempWard_name: 'Xã Cẩm Sơn',
+//     tempDistrict_name: 'Huyện Cẩm Xuyên',
+//     tempCity_name: 'Tỉnh Hà Tĩnh',
+//     homeHamlet_name: 'Thôn 3',
+//     homeWard_name: 'Xã Nguyễn Trãi',
+//     homeDistrict_name: 'Huyện Thường Tín',
+//     homeCity_name: 'Thành phố Hà Nội',
+//   },
+//   {
+//     id_citizen: '010085013557',
+//     citizen_name: 'Hoàng Trung Thành',
+//     date_of_birth: '1987-10-03',
+//     gender: 'Nam',
+//     hometown: '07020301',
+//     tempAddress: '01140503',
+//     address: '13070903',
+//     ethnic: 'Khơ mú',
+//     religion: 'Hồi giáo',
+//     level: 'Trung học cơ sở',
+//     job: 'Nhà khảo sát',
+//     createdAt: null,
+//     updatedAt: null,
+//     addHamlet_name: 'Thôn 3',
+//     addWard_name: 'Xã Tây Bình',
+//     addDistrict_name: 'Huyện Tây Sơn',
+//     addCity_name: 'Tỉnh Bình Định',
+//     tempHamlet_name: 'Thôn 3',
+//     tempWard_name: 'Xã Hữu Hoà',
+//     tempDistrict_name: 'Huyện Thanh Trì',
+//     tempCity_name: 'Thành phố Hà Nội',
+//     homeHamlet_name: 'Khu phố 1',
+//     homeWard_name: 'Phường Phước Nguyên',
+//     homeDistrict_name: 'Thành phố Bà Rịa',
+//     homeCity_name: 'Tỉnh Bà Rịa - Vũng Tàu',
+//   },
+// ];
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
@@ -46,6 +128,7 @@ export default function Citizen() {
   var tempListDistrictName = [];
   var tempListWardName = [];
   var tempListHamletName = [];
+
   useEffect(() => {
     axios.get('http://localhost:3001/city').then((response) => {
       for (let i = 0; i < response.data.length; i++) {
@@ -165,51 +248,81 @@ export default function Citizen() {
     }
   }
   return (
-    <div className="container">
-      <h2>Danh sách dân số toàn quốc</h2>
-      <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <SelectOption
-            label="Địa điểm"
-            item="id_add"
-            changeItem={(item, name) => changeRows(item, name)}
-            names={selectOptionName}
-          ></SelectOption>
-          <Select
-            names={listCityName}
-            label="Tỉnh/Thành phố"
-            item="id_city"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listDistrictName}
-            label="Quận/Huyện"
-            item="id_district"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listWardName}
-            label="Phường/Xã"
-            item="id_ward"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listHamletName}
-            label="Thôn/Xóm"
-            item="id_hamlet"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
-          <Pagination
-            page={page}
-            rowsPerPage={rowsPerPage}
-            totalRecords={listCitizen.length}
-            changePage={(page) => setPage(page)}
-            changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-          />
-          <TableCitizen rows={listCitizen} page={page} rowsPerPage={rowsPerPage} />
-        </Paper>
-      </Box>
+    <div className="grid container-all-citizen">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <h2>Danh sách dân số toàn quốc</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <Paper>
+            <div className="row first">
+              <div className="col l-2 m-5 c-12">
+                <SelectOption
+                  label="Địa điểm"
+                  item="id_add"
+                  changeItem={(item, name) => changeRows(item, name)}
+                  names={selectOptionName}
+                ></SelectOption>
+              </div>
+              <div className="col l-2-4 m-5 c-12">
+                <Select
+                  names={listCityName}
+                  label="Tỉnh/Thành phố"
+                  item="id_city"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-4 m-5 c-12">
+                <Select
+                  names={listDistrictName}
+                  label="Quận/Huyện"
+                  item="id_district"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2 m-5 c-12">
+                <Select
+                  names={listWardName}
+                  label="Phường/Xã"
+                  item="id_ward"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2 m-5 c-12">
+                <Select
+                  names={listHamletName}
+                  label="Thôn/Xóm"
+                  item="id_hamlet"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-3 m-5 c-12">
+                <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col l-12 m-12 c-12">
+                <Pagination
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  totalRecords={listCitizen.length}
+                  changePage={(page) => setPage(page)}
+                  changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                />
+              </div>
+            </div>
+
+            <div className="row table-container">
+              <div className="col l-12 m-12 c-12">
+                <TableCitizen rows={listCitizen} page={page} rowsPerPage={rowsPerPage} />
+              </div>
+            </div>
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }

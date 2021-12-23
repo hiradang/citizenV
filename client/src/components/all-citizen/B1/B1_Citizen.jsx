@@ -1,8 +1,6 @@
 // import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 import axios from 'axios';
-// import './styles.scss';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Pagination from '../Pagination';
 import Select from '../select';
@@ -11,6 +9,7 @@ import Search from '../searchCitizen';
 import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import '../styleCitizen.scss';
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
@@ -32,19 +31,19 @@ export default function Citizen() {
   const [cityName, setCityName] = useState('');
   const [wardName, setWardName] = useState('');
   const idWard = Cookies.get('user');
-  var idCity = idWard.toString().substr(0,2);
-  var idDistrict = idWard.toString().substr(0,4);
-  console.log(idDistrict)
+  var idCity = idWard.toString().substr(0, 2);
+  var idDistrict = idWard.toString().substr(0, 4);
+  console.log(idDistrict);
   const [listHamletName, setListHamletName] = useState([]);
   const [listHamlet, setListHamlet] = useState([]);
-  
+
   var tempListWardName = [];
   var tempListHamletName = [];
 
   useEffect(() => {
     axios.get(`http://localhost:3001/ward/id?id=${idWard}`).then((response) => {
-        setWardName(response.data.ward_name);
-      });
+      setWardName(response.data.ward_name);
+    });
     axios.get(`http://localhost:3001/district/id?id=${idDistrict}`).then((response) => {
       setDistrictName(response.data.district_name);
     });
@@ -98,41 +97,67 @@ export default function Citizen() {
     // if (item.length > 0) {
     var temp = rows.filter((row) => {
       return (
-        row[addName.district_name] === districtName && row[addName.city_name] === cityName &&
+        row[addName.district_name] === districtName &&
+        row[addName.city_name] === cityName &&
         row[addName.ward_name] === wardName &&
         (filter.id_hamlet.indexOf(row[addName.hamlet_name]) !== -1 || filter.id_hamlet.length === 0)
       );
     });
     setListCitizen(temp);
-    
   }
   return (
-    <div className="container">
-      <h2>Danh sách dân số {wardName}, {districtName}, {cityName}</h2>
-      <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <SelectOption
-            label="Địa điểm"
-            item="id_add"
-            changeItem={(item, name) => changeRows(item, name)}
-          ></SelectOption>
-          <Select
-            names={listHamletName}
-            label="Thôn/Xóm"
-            item="id_hamlet"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
-          <Pagination
-            page={page}
-            rowsPerPage={rowsPerPage}
-            totalRecords={listCitizen.length}
-            changePage={(page) => setPage(page)}
-            changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-          />
-          <TableCitizen rows={listCitizen} page={page} rowsPerPage={rowsPerPage} />
-        </Paper>
-      </Box>
+    <div className="grid container-all-citizen">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <h2>
+            Danh sách dân số {wardName}, {districtName}, {cityName}
+          </h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <Paper>
+            <div className="row first">
+              <div className="col l-3 m-5 c-12">
+                <SelectOption
+                  label="Địa điểm"
+                  item="id_add"
+                  changeItem={(item, name) => changeRows(item, name)}
+                ></SelectOption>
+              </div>
+              <div className="col l-3 m-5 c-12">
+                <Select
+                  names={listHamletName}
+                  label="Thôn/Xóm"
+                  item="id_hamlet"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-3 m-5 c-12">
+                <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col l-12 m-12 c-12">
+                <Pagination
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  totalRecords={listCitizen.length}
+                  changePage={(page) => setPage(page)}
+                  changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                />
+              </div>
+            </div>
+
+            <div className="row table-container">
+              <div className="col l-12 m-12 c-12">
+                <TableCitizen rows={listCitizen} page={page} rowsPerPage={rowsPerPage} />
+              </div>
+            </div>
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { useEffect } from 'react';
 
-const ITEM_HEIGHT = 60;
+const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
@@ -46,11 +46,9 @@ export default function SelectItem(props) {
   };
 
   return (
-    <FormControl sx={{ m: 2, width: 200 }}>
-      <InputLabel id="demo-multiple-checkbox-label">Chọn {props.label}</InputLabel>
+    <FormControl>
+      <InputLabel>Chọn {props.label}</InputLabel>
       <Select
-        labelId="demo-multiple-checkbox-label"
-        id="demo-multiple-checkbox"
         value={itemName}
         onChange={handleChange}
         input={<OutlinedInput label={`Chọn ${props.label}`} />}

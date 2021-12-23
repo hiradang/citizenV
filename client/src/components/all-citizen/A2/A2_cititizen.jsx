@@ -1,8 +1,7 @@
 // import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 import axios from 'axios';
-// import './styles.scss';
-import Box from '@mui/material/Box';
+import '../styleCitizen.scss';
 import Paper from '@mui/material/Paper';
 import Pagination from '../Pagination';
 import Select from '../select';
@@ -150,45 +149,72 @@ export default function Citizen() {
     }
   }
   return (
-    <div className="container">
-      <h2>Danh sách dân số {cityName}</h2>
-      <Box sx={{ maxWidth: 1300, flexGrow: 1 }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <SelectOption
-            label="Địa điểm"
-            item="id_add"
-            changeItem={(item, name) => changeRows(item, name)}
-          ></SelectOption>
+    <div className="grid container-all-citizen">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <h2>Danh sách dân số {cityName}</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <Paper>
+            <div className="row first">
+              <div className="col l-2-4 m-5 c-12">
+                <SelectOption
+                  label="Địa điểm"
+                  item="id_add"
+                  changeItem={(item, name) => changeRows(item, name)}
+                ></SelectOption>
+              </div>
+              <div className="col l-2-4 m-5 c-12">
+                <Select
+                  names={listDistrictName}
+                  label="Quận/Huyện"
+                  item="id_district"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-4 m-5 c-12">
+                <Select
+                  names={listWardName}
+                  label="Phường/Xã"
+                  item="id_ward"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-4 m-5 c-12">
+                <Select
+                  names={listHamletName}
+                  label="Thôn/Xóm"
+                  item="id_hamlet"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-3 m-12 c-12">
+                <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
+              </div>
+            </div>
 
-          <Select
-            names={listDistrictName}
-            label="Quận/Huyện"
-            item="id_district"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listWardName}
-            label="Phường/Xã"
-            item="id_ward"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listHamletName}
-            label="Thôn/Xóm"
-            item="id_hamlet"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
-          <Pagination
-            page={page}
-            rowsPerPage={rowsPerPage}
-            totalRecords={listCitizen.length}
-            changePage={(page) => setPage(page)}
-            changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-          />
-          <TableCitizen rows={listCitizen} page={page} rowsPerPage={rowsPerPage} />
-        </Paper>
-      </Box>
+            <div className="row">
+              <div className="col l-12 m-12 c-12">
+                <Pagination
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  totalRecords={listCitizen.length}
+                  changePage={(page) => setPage(page)}
+                  changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+                />
+              </div>
+            </div>
+
+            <div className="row table-container">
+              <div className="col l-12 m-12 c-12">
+                <TableCitizen rows={listCitizen} page={page} rowsPerPage={rowsPerPage} />
+              </div>
+            </div>
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }
