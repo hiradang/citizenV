@@ -21,6 +21,27 @@ router.get('/:idDistrict', validateToken, async (req, res) => {
   }
 });
 
+
+// Them mot xa/phuong moi
+router.post("/",validateToken, async (req, res) => {
+  if (req.user.role !== 'A3') {
+    return res.json('Không có quyền truy cập')
+  }
+
+  try {
+    const { wardName, wardCode, idDistrict } = req.body;
+    Ward.create({
+        id_ward: wardCode,
+        ward_name: wardName,
+        hasAccount: false,
+        quantity_ward: 0,
+        id_district: idDistrict,
+    });
+    res.json("SUCCESS");
+  } catch(err) {
+  }
+});
+
 // Khi thay đổi thì sẽ tạo newCode: "value"
 // Hàm này có thể update wardCode, wardName, hasAccount, quantity khi có dữ gửi đến (1, 2, hoặc cả 3)
 router.post('/:wardId', async (req, res) => {
@@ -63,6 +84,20 @@ router.post('/:wardId', async (req, res) => {
     );
   }
   res.json('Update successfully');
+});
+
+//Xóa một xa/phuong
+router.delete("/:id",validateToken, async (req, res) => {
+  if (req.user.role !== 'A3') {
+    return res.json('Không có quyền truy cập')
+  }
+  const id = req.params.id;
+  Ward.destroy({
+    where: {
+      id_ward: id
+    } 
+  })
+  res.send("SUCCESS")
 });
 
 module.exports = router;

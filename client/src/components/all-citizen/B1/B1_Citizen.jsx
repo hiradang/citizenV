@@ -27,6 +27,7 @@ export default function Citizen() {
     ward_name: 'addWard_name',
     hamlet_name: 'addHamlet_name',
   };
+  const selectOptionName = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú'];
   const [districtName, setDistrictName] = useState('');
   const [cityName, setCityName] = useState('');
   const [wardName, setWardName] = useState('');

@@ -47,6 +47,11 @@
     font-size: 2.4rem;
     margin: 20px auto;
     text-align: center;
+
+    p {
+      font-size: 1.6rem;
+      color: #999;
+    }
   }
 
   h3 {
@@ -78,6 +83,25 @@
     .gender-icon {
       width: 50%;
     }
+
+    .population-img {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .boygirl-img {
+    display: flex;
+    justify-content: center;
+
+    img {
+      width: 60%;
+    }
+  }
+
+  // laborCount
+  .laborCount {
+    text-align: center;
   }
 
   // Religion
@@ -102,5 +126,10 @@
     img {
       width: 60%;
     }
+  }
+
+  .printButton {
+    margin-left: 20px;
+    margin-top: 50px;
   }
 }

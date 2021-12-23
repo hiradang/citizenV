@@ -23,6 +23,10 @@ import Statistic from '../../../constants/images/statistics/statistic.svg';
 var convertToCountArray = require('../utils').convertToCountArray;
 var convertAgeToArray = require('../utils').convertAgeToArray;
 var convertAgeJump10 = require('../utils').convertAgeJump10;
+var convertToPercent = require('../utils').convertToPercent;
+var getTopN = require('../utils').getTopN;
+var countNumberOverAge = require('../utils').countNumberOverAge;
+var calculateBoyGirlRatio = require('../utils').calculateBoyGirlRatio;
 
 function Statistics() {
   const [page, setPage] = React.useState(1);
@@ -36,6 +40,10 @@ function Statistics() {
   const [dataTable, setDataTable] = useState([]);
   // Xet tieu chi lua chon khi thong ke
   const [criteria, setCriteria] = useState('');
+  // Data general statistic
+  const [generalStatistic, setGeneralStatistic] = useState({});
+  const [listLocal, setListLocal] = useState([]);
+  // Các tiêu chí khi thống kê
   const selectOptionNames = [
     'Chung',
     'Độ tuổi',
@@ -57,6 +65,7 @@ function Statistics() {
     ward_name: 'addWard_name',
     hamlet_name: 'addHamlet_name',
   };
+
   const [idCity, setIdCity] = useState('');
   const [idDistrict, setIdDistrict] = useState('');
   const [idWard, setIdWard] = useState('');
@@ -122,6 +131,56 @@ function Statistics() {
   }, [idWard]);
 
   function changeRows(item, name) {
+    // Send list selected id to general statistic
+    if (name === 'id_city') {
+      if (item.length === 0) {
+        let listLocal = listCity.map((city) => {
+          return {
+            name: city.city_name,
+            quantity: city.quantity_city,
+          };
+        });
+        setListLocal(listLocal);
+      } else {
+        let listLocal = item.map((local) => {
+          let index = listCity.findIndex((x) => x.city_name === local);
+          return {
+            name: listCity[index].city_name,
+            quantity: listCity[index].quantity_city,
+          };
+        });
+        setListLocal(listLocal);
+      }
+    } else if (name === 'id_district') {
+      let listLocal = item.map((local) => {
+        let index = listDistrict.findIndex((x) => x.district_name === local);
+        return {
+          name: listDistrict[index].district_name,
+          quantity: listDistrict[index].quantity_district,
+        };
+      });
+      setListLocal(listLocal);
+    } else if (name === 'id_ward') {
+      let listLocal = item.map((local) => {
+        let index = listWard.findIndex((x) => x.ward_name === local);
+        return {
+          name: listWard[index].ward_name,
+          quantity: listWard[index].quantity_ward,
+        };
+      });
+      setListLocal(listLocal);
+    } else if (name === 'id_hamlet') {
+      let listLocal = item.map((local) => {
+        let index = listHamlet.findIndex((x) => x.hamlet_name === local);
+        return {
+          name: listHamlet[index].hamlet_name,
+          quantity: listHamlet[index].quantity_hamlet,
+        };
+      });
+      setListLocal(listLocal);
+    }
+
+    // Set filter
     filter[name] = item;
 
     if (name === 'id_city') {
@@ -164,6 +223,24 @@ function Statistics() {
       }
     }
 
+    // Xét thông tin cho thống kê chung
+    var tempGenderArray = convertToCountArray(tempCitizens, 'gender');
+    tempGenderArray = convertToPercent(tempGenderArray);
+    let tempReligionArray = convertToCountArray(tempCitizens, 'religion');
+    let tempEthnicArray = convertToCountArray(tempCitizens, 'ethnic');
+    // age >= 15, trong độ tuổi lao động
+    let over15 = countNumberOverAge(tempCitizens, 15);
+    let countBoyGirl = calculateBoyGirlRatio(tempCitizens);
+
+    setGeneralStatistic({
+      totalPopulation: tempCitizens.length,
+      genderArray: tempGenderArray,
+      mostPopularEthnic: getTopN(tempEthnicArray, 1),
+      mostPopularReligion: getTopN(tempReligionArray, 2),
+      laborCount: over15,
+      countBoyGirl: countBoyGirl,
+    });
+
     if (name === 'id_criteria') {
       var tempCriteria = '';
       if (item === 'Tôn giáo') {
@@ -189,7 +266,6 @@ function Statistics() {
       } else if (item === 'Chung') {
         setCriteria('general');
         tempCriteria = 'general';
-        setDataTable(tempCitizens);
       } else if (item === 'Độ tuổi') {
         setCriteria('age');
         tempCriteria = 'age';
@@ -207,7 +283,7 @@ function Statistics() {
   // Chèn loại biểu đồ tùy thuộc vào từng loại tiêu chí
   const chooseDisplayInfo = function () {
     if (criteria === 'general') {
-      return <General citizens={dataTable} />;
+      return <General statisticData={generalStatistic} listLocal={listLocal} />;
       // return 'running';
     } else if (criteria === '') {
       return (

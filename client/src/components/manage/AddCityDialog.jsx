@@ -39,11 +39,12 @@ export default function FormDialog(props) {
   const handleSubmit = () => {
     // Kiểm tra hợp thức dữ liệu đầu vào
     if (cityName && cityCode) {
-      if (isVietnamese(cityName) && cityName.length > 1 && cityName.length < 200) {
+      if (cityName.length > 1 && cityName.length < 200) {
         props.handler(cityName, cityCode);
         // Đóng modal lại
         setOpen(false);
       } else {
+        setOpen(false);
       }
     } else {
       setNotification('Bạn phải nhập đầy đủ thông tin');
@@ -53,10 +54,10 @@ export default function FormDialog(props) {
   return (
     <div>
       <Button variant="contained" onClick={handleClickOpen}>
-        {props.title}
+        Thêm {props.title}
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{props.title}</DialogTitle>
+        <DialogTitle>Thêm {props.title}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Điền các thông tin cần sau. Các thông tin có dấu * là bắt buộc.
@@ -66,7 +67,7 @@ export default function FormDialog(props) {
             autoFocus
             margin="dense"
             id="cityName"
-            label="Tên thành phố (*)"
+            label={`Tên ${props.title} (*)`}
             type="text"
             fullWidth
             variant="standard"
@@ -77,7 +78,7 @@ export default function FormDialog(props) {
           <TextField
             margin="dense"
             id="cityCode"
-            label="Mã thành phố (*)"
+            label={`Mã ${props.title} (*)`}
             type="text"
             fullWidth
             variant="standard"

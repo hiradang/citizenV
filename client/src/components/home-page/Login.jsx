@@ -50,7 +50,6 @@ function Login() {
         });
         Cookies.set('token', response.data.accessToken, { expires: 1 / 2, secure: true });
         Cookies.set('role', response.data.role, { expires: 1 / 2, secure: true });
-        Cookies.set('refreshToken', response.data.refreshToken, { expires: 1 / 2, secure: true });
         window.location.reload();
       }
     });
@@ -79,7 +78,13 @@ function Login() {
               <InputField name="username" label="Tên đăng nhập" form={form} />
               <PasswordField name="password" label="Mật khẩu" form={form} />
 
-              <Button type="submit" color="primary" variant="contained" size="medium">
+              <Button
+                //disabled={isSubmitting}
+                type="submit"
+                color="primary"
+                variant="contained"
+                size="medium"
+              >
                 Đăng nhập
               </Button>
             </form>
