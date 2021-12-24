@@ -137,57 +137,57 @@ export default function Citizen() {
       setListCityName(tempListCityName);
       setListCity(response.data);
     });
-    // axios.get('http://localhost:3001/citizen').then((response) => {
-    setRows(citizenFix);
-    setListCitizen(citizenFix);
-    // });
+    axios.get('http://localhost:3001/citizen').then((response) => {
+      setRows(response.data);
+      setListCitizen(response.data);
+    });
   }, []);
-  // useEffect(() => {
-  //   // if (searchId !== '') {
-  //   // console.log(searchId);
-  //   axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
-  //     setListCitizen(response.data);
-  //   });
-  // }, [searchId]);
-  // useEffect(() => {
-  //   if (idCity !== '') {
-  //     axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
-  //           tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
-  //         }
-  //       }
-  //       setListDistrictName(tempListDistrictName);
-  //       setListDistrict(response.data);
-  //     });
-  //   }
-  // }, [idCity]);
-  // useEffect(() => {
-  //   if (idDistrict !== '') {
-  //     axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
-  //           tempListWardName[tempListWardName.length] = response.data[i].ward_name;
-  //         }
-  //       }
-  //       setListWardName(tempListWardName);
-  //       setListWard(response.data);
-  //     });
-  //   }
-  // }, [idDistrict]);
-  // useEffect(() => {
-  //   if (idWard !== '') {
-  //     axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
-  //           tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
-  //         }
-  //       }
-  //       setListHamletName(tempListHamletName);
-  //       setListHamlet(response.data);
-  //     });
-  //   }
-  // }, [idWard]);
+  useEffect(() => {
+    // if (searchId !== '') {
+    // console.log(searchId);
+    axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
+      setListCitizen(response.data);
+    });
+  }, [searchId]);
+  useEffect(() => {
+    if (idCity !== '') {
+      axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
+            tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
+          }
+        }
+        setListDistrictName(tempListDistrictName);
+        setListDistrict(response.data);
+      });
+    }
+  }, [idCity]);
+  useEffect(() => {
+    if (idDistrict !== '') {
+      axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
+            tempListWardName[tempListWardName.length] = response.data[i].ward_name;
+          }
+        }
+        setListWardName(tempListWardName);
+        setListWard(response.data);
+      });
+    }
+  }, [idDistrict]);
+  useEffect(() => {
+    if (idWard !== '') {
+      axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
+            tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
+          }
+        }
+        setListHamletName(tempListHamletName);
+        setListHamlet(response.data);
+      });
+    }
+  }, [idWard]);
   function changeRows(item, name) {
     if (name === 'id_add') {
       if (item === 'Địa chỉ tạm trú') {

@@ -2,6 +2,7 @@ import './app.scss';
 import { Route, Switch, Redirect } from 'react-router';
 import HomePage from './components/home-page/home-page';
 import { roleA } from './constants/listItem';
+import { roleB2 } from './constants/listItem';
 import Login from './components/home-page/Login';
 import Cookies from 'js-cookie';
 import { useState } from 'react';

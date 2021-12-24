@@ -29,12 +29,13 @@ import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 import Tasks from '../tasks/main/TaskHome';
 import Statistics from '../statistics/main/statistics';
-import CensusForm from '../census/census'
+import CensusForm from '../census/census';
 import Cookies from 'js-cookie';
-import UpdatePass from './updatePass'
+import UpdatePass from './updatePass';
 import Dialog from '@mui/material/Dialog';
 
 const drawerWidth = '20vw';
+const idUser = Cookies.get('user');
 
 HomePage.propTypes = {
   HomePage: PropTypes.array.isRequired,
@@ -114,12 +115,11 @@ export default function HomePage({ listItems }) {
     setOpenD(false);
   };
   const Logout = () => {
-      Cookies.remove('user');
-      Cookies.remove('role');
-      Cookies.remove('token')
-      window.location.reload()
-  }
-
+    Cookies.remove('user');
+    Cookies.remove('role');
+    Cookies.remove('token');
+    window.location.reload();
+  };
 
   const sideList = () => (
     <Box className="menu-container" component="div">
@@ -143,13 +143,13 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/congviec') return <Tasks />;
     if (location.pathname === '/quanly') return <Manage />;
     if (location.pathname === '/thongke') return <Statistics />;
-    if (location.pathname === '/nhaplieu') return <CensusForm/>
+    if (location.pathname === '/nhaplieu') return <CensusForm />;
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <Dialog open={openD} onClose={handleClose} fullWidth>
-        <UpdatePass handleClose = {handleClose}/>
+        <UpdatePass handleClose={handleClose} />
       </Dialog>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -176,6 +176,19 @@ export default function HomePage({ listItems }) {
               <i>CitizenV</i>
             </Typography>
           </div>
+
+          <div className="username">
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1 }}
+              fontWeight={400}
+              fontSize="14px"
+            >
+              <i>User: {idUser}</i>
+            </Typography>
+          </div>
+
           <IconButton
             size="large"
             color="inherit"
