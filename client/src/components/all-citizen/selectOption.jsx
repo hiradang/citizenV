@@ -8,12 +8,12 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 
-const ITEM_HEIGHT = 60;
+const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      maxHeight: ITEM_HEIGHT * 3 + ITEM_PADDING_TOP,
       width: 250,
     },
   },
@@ -43,11 +43,9 @@ export default function SelectItem(props) {
     }
   };
   return (
-    <FormControl sx={{ m: 2, width: 200 }}>
-      <InputLabel id="demo-multiple-checkbox-label">Chọn {props.label}</InputLabel>
+    <FormControl>
+      <InputLabel>Chọn {props.label}</InputLabel>
       <Select
-        labelId="demo-multiple-checkbox-label"
-        id="demo-multiple-checkbox"
         value={itemName}
         onChange={handleChange}
         input={<OutlinedInput label={`Chọn ${props.label}`} />}

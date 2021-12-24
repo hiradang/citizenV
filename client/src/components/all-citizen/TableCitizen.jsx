@@ -13,8 +13,6 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
-
-
 function descendingComparator(a, b, orderBy) {
   if (orderBy === 'date_of_birth') {
     let yearA = a[orderBy].slice(0, 4);
@@ -30,7 +28,7 @@ function descendingComparator(a, b, orderBy) {
     if (dayA > dayB) return -1;
     if (dayA < dayB) return 1;
   }
-  if (orderBy === 'id_hamlet' || orderBy === 'address1'  || orderBy ==='address2') {
+  if (orderBy === 'id_hamlet' || orderBy === 'address1' || orderBy === 'address2') {
     if (a.id_city > b.id_city) return -1;
     if (a.id_city < b.id_city) return 1;
     if (a.id_district > b.id_district) return -1;
@@ -116,7 +114,7 @@ const headCells = [
   {
     id: 'level',
     numeric: false,
-    label: 'Trình độ học vấn',
+    label: 'Trình độ',
   },
   {
     id: 'job',
@@ -137,21 +135,26 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align="left"
+            align="center"
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.id === 'date_of_birth' && (
+              <>
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : 'asc'}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.id ? (
+                    <Box component="span" sx={visuallyHidden}>
+                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </Box>
+                  ) : null}
+                </TableSortLabel>
+              </>
+            )}
+            {headCell.id !== 'date_of_birth' && `${headCell.label}`}
           </TableCell>
         ))}
       </TableRow>
@@ -176,43 +179,48 @@ export default function TableCitizen(props) {
   };
 
   return (
-          <TableContainer>
-            <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={props.rows.length}
-              />
-              <TableBody>
-                {stableSort(props.rows, getComparator(order, orderBy))
-                  .slice((props.page - 1) * props.rowsPerPage, props.page * props.rowsPerPage)
-                  .map((row, index) => {
-                    return (
-                      <TableRow hover key={row.id_citizen}>
-                        <TableCell align="left">{row.id_citizen}</TableCell>
-                        <TableCell align="left">{row.citizen_name}</TableCell>
-                        <TableCell align="left">{row.date_of_birth.substr(8,10)}/{row.date_of_birth.substr(5,2)}/{row.date_of_birth.substr(0,4)}</TableCell>
-                        <TableCell align="left">{row.gender}</TableCell>
-                        <TableCell align="left">
-                          {row.homeHamlet_name}, {row.homeWard_name}, {row.homeDistrict_name}, {row.homeCity_name}
-                        </TableCell>
-                        <TableCell align="left">
-                        {row.addHamlet_name}, {row.addWard_name}, {row.addDistrict_name}, {row.addCity_name}
-                        </TableCell>
-                        <TableCell align="left">
-                        {row.tempHamlet_name}, {row.tempWard_name}, {row.tempDistrict_name}, {row.tempCity_name}
-                        </TableCell>
-                        <TableCell align="left">{row.ethnic}</TableCell>
-                        <TableCell align="left">{row.religion}</TableCell>
-                        <TableCell align="left">{row.level}</TableCell>
-                        <TableCell align="left">{row.job}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-      
+    <TableContainer>
+      <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+        <EnhancedTableHead
+          order={order}
+          orderBy={orderBy}
+          onRequestSort={handleRequestSort}
+          rowCount={props.rows.length}
+        />
+        <TableBody>
+          {stableSort(props.rows, getComparator(order, orderBy))
+            .slice((props.page - 1) * props.rowsPerPage, props.page * props.rowsPerPage)
+            .map((row, index) => {
+              return (
+                <TableRow hover key={row.id_citizen}>
+                  <TableCell align="center">{row.id_citizen}</TableCell>
+                  <TableCell align="center">{row.citizen_name}</TableCell>
+                  <TableCell align="center">
+                    {row.date_of_birth.substr(8, 10)}/{row.date_of_birth.substr(5, 2)}/
+                    {row.date_of_birth.substr(0, 4)}
+                  </TableCell>
+                  <TableCell align="center">{row.gender}</TableCell>
+                  <TableCell align="center">
+                    {row.homeHamlet_name}, {row.homeWard_name}, {row.homeDistrict_name},{' '}
+                    {row.homeCity_name}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.addHamlet_name}, {row.addWard_name}, {row.addDistrict_name},{' '}
+                    {row.addCity_name}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.tempHamlet_name}, {row.tempWard_name}, {row.tempDistrict_name},{' '}
+                    {row.tempCity_name}
+                  </TableCell>
+                  <TableCell align="center">{row.ethnic}</TableCell>
+                  <TableCell align="center">{row.religion}</TableCell>
+                  <TableCell align="center">{row.level}</TableCell>
+                  <TableCell align="center">{row.job}</TableCell>
+                </TableRow>
+              );
+            })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
