@@ -77,58 +77,58 @@ function Statistics() {
   var tempListDistrictName = [];
   var tempListWardName = [];
   var tempListHamletName = [];
-  useEffect(() => {
-    axios.get('http://localhost:3001/city').then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        tempListCityName[i] = response.data[i].city_name;
-      }
-      setListCityName(tempListCityName);
-      setListCity(response.data);
-    });
-    axios.get('http://localhost:3001/citizen').then((response) => {
-      setRows(response.data);
-      setListCitizen(response.data);
-    });
-  }, []);
-  useEffect(() => {
-    if (idCity !== '') {
-      axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
-            tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
-          }
-        }
-        setListDistrictName(tempListDistrictName);
-        setListDistrict(response.data);
-      });
-    }
-  }, [idCity]);
-  useEffect(() => {
-    if (idDistrict !== '') {
-      axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
-            tempListWardName[tempListWardName.length] = response.data[i].ward_name;
-          }
-        }
-        setListWardName(tempListWardName);
-        setListWard(response.data);
-      });
-    }
-  }, [idDistrict]);
-  useEffect(() => {
-    if (idWard !== '') {
-      axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
-            tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
-          }
-        }
-        setListHamletName(tempListHamletName);
-        setListHamlet(response.data);
-      });
-    }
-  }, [idWard]);
+  // useEffect(() => {
+  //   axios.get('http://localhost:3001/city').then((response) => {
+  //     for (let i = 0; i < response.data.length; i++) {
+  //       tempListCityName[i] = response.data[i].city_name;
+  //     }
+  //     setListCityName(tempListCityName);
+  //     setListCity(response.data);
+  //   });
+  //   axios.get('http://localhost:3001/citizen').then((response) => {
+  //     setRows(response.data);
+  //     setListCitizen(response.data);
+  //   });
+  // }, []);
+  // useEffect(() => {
+  //   if (idCity !== '') {
+  //     axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
+  //       for (let i = 0; i < response.data.length; i++) {
+  //         if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
+  //           tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
+  //         }
+  //       }
+  //       setListDistrictName(tempListDistrictName);
+  //       setListDistrict(response.data);
+  //     });
+  //   }
+  // }, [idCity]);
+  // useEffect(() => {
+  //   if (idDistrict !== '') {
+  //     axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
+  //       for (let i = 0; i < response.data.length; i++) {
+  //         if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
+  //           tempListWardName[tempListWardName.length] = response.data[i].ward_name;
+  //         }
+  //       }
+  //       setListWardName(tempListWardName);
+  //       setListWard(response.data);
+  //     });
+  //   }
+  // }, [idDistrict]);
+  // useEffect(() => {
+  //   if (idWard !== '') {
+  //     axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
+  //       for (let i = 0; i < response.data.length; i++) {
+  //         if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
+  //           tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
+  //         }
+  //       }
+  //       setListHamletName(tempListHamletName);
+  //       setListHamlet(response.data);
+  //     });
+  //   }
+  // }, [idWard]);
 
   function changeRows(item, name) {
     // Send list selected id to general statistic
@@ -293,83 +293,128 @@ function Statistics() {
       );
     } else if (criteria === 'age') {
       return (
-        <div>
-          <div className="graph verticalBar center">
-            <VerticalBar input={dataTable} criteria={criteria} />
-          </div>
+        <div className="grid container-age-chart">
+          <div className="row age-chart">
+            <div className="col l-8 l-o-2 m-8 m-o-2 c-11 c-o-0-5 ">
+              <VerticalBar input={dataTable} criteria={criteria} />
+            </div>
 
-          <div className="graph lineChart center">
-            <LineChart input={dataTable} criteria={criteria} />
+            <div className="col l-8 l-o-2 m-8 m-o-2 c-11 c-o-0-5">
+              <LineChart input={dataTable} criteria={criteria} />
+            </div>
           </div>
         </div>
       );
     } else {
       return (
         <div>
-          <div className="graph-container">
-            <div className="graph pieChart">
-              <PieChart input={dataTable} criteria={criteria} />
-            </div>
-            <div className="graph verticalBar">
-              <VerticalBar input={dataTable} criteria={criteria} width={500} />
+          <div className="grid graph-container">
+            <div className="row">
+              <div className="col l-5 l-o-1 m-5 m-o-1 c-11 c-o-0-5">
+                <PieChart input={dataTable} criteria={criteria} />
+              </div>
+
+              <div className="col l-5 l-o-0 m-5 m-o-0 c-11 c-o-0-5">
+                <VerticalBar input={dataTable} criteria={criteria} width={500} />
+              </div>
             </div>
           </div>
 
-          <div>
-            <Pagination
-              page={page}
-              rowsPerPage={rowsPerPage}
-              totalRecords={dataTable.length}
-              changePage={(page) => setPage(page)}
-              changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-            />
-            <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+          <div className="row">
+            <div className="col l-12 m-12 c-12">
+              <Pagination
+                page={page}
+                rowsPerPage={rowsPerPage}
+                totalRecords={dataTable.length}
+                changePage={(page) => setPage(page)}
+                changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col l-12 m-12 c-12">
+              <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+            </div>
           </div>
         </div>
       );
     }
   };
 
+  // Ở A1 sẽ có 5 select nhưng từ A2 trở xuống số select sẽ giảm
+
+  // A2: Có 4 select Quận/Huyện, Phường/Xã, Thôn/Xóm và Tiêu chí
+  // Chia theo grid sẽ được bọc trong các cột theo thứ tự lần lượt từ Huyện -> Tiêu chí:
+  // col l-2-4 m-5 c-12 / col l-2-4 m-5 c-12 / col l-2-4 m-5 c-12 / col l-2 m-5 c-12
+
+  // A3: Chỉ còn 3 select Phường/Xã, Thôn/Xóm và Tiêu chí
+  // col l-3 m-5 c-12 / col l-3 m-5 c-12 / col l-3 m-5 c-12
+
+  // B1: Chỉ còn 2 select Thôn/Xóm và Tiêu chí
+  // col l-5 m-5 c-12 / col l-5 m-5 c-12
+
+  // Bình làm role tự bọc mấy cái select theo t viết trên đây cho từng role nhé <3
+
   return (
-    <div className="container">
-      <h2>Kết quả điều tra dân số </h2>
-      <Box sx={{ maxWidth: 1200, flexGrow: 1 }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <Select
-            names={listCityName}
-            label="Tỉnh/Thành phố"
-            item="id_city"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listDistrictName}
-            label="Quận/Huyện"
-            item="id_district"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listWardName}
-            label="Phường/Xã"
-            item="id_ward"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listHamletName}
-            label="Thôn/Xóm"
-            item="id_hamlet"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
+    <div className="grid container-statistic">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <h2>Kết quả điều tra dân số </h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <Paper>
+            <div className="row first">
+              <div className="col l-2-52 m-5 c-12">
+                <Select
+                  names={listCityName}
+                  label="Tỉnh/Thành phố"
+                  item="id_city"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-2 m-5 c-12">
+                <Select
+                  names={listDistrictName}
+                  label="Quận/Huyện"
+                  item="id_district"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-1 m-5 c-12">
+                <Select
+                  names={listWardName}
+                  label="Phường/Xã"
+                  item="id_ward"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2 m-5 c-12">
+                <Select
+                  names={listHamletName}
+                  label="Thôn/Xóm"
+                  item="id_hamlet"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-1-8 m-5 c-12">
+                <SelectOption
+                  label="Tiêu chí"
+                  item="id_criteria"
+                  changeItem={(item, name) => changeRows(item, name)}
+                  names={selectOptionNames}
+                ></SelectOption>
+              </div>
+            </div>
 
-          <SelectOption
-            label="Tiêu chí"
-            item="id_criteria"
-            changeItem={(item, name) => changeRows(item, name)}
-            names={selectOptionNames}
-          ></SelectOption>
-
-          {chooseDisplayInfo()}
-        </Paper>
-      </Box>
+            <div className="row container-chart">
+              <div className="col l-12 m-12 c-12">{chooseDisplayInfo()}</div>
+            </div>
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }

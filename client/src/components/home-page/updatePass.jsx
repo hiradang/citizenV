@@ -8,8 +8,16 @@ import * as yup from 'yup';
 import PasswordField from '../form-control/passwordField/passwordField';
 
 function UpdatePass(props) {
+  // Lấy một khẩu hiện tại rồi cho vào biến crPass nhé Loan:
+  const crPass = '';
+
   const schema = yup.object().shape({
-    current: yup.string().required('Chưa nhập mật khẩu hiện tại'),
+    current: yup
+      .string()
+      .required('Chưa nhập mật khẩu hiện tại')
+      .test('check cũ mới', 'Mật khẩu không chính xác', (value) => {
+        return value === crPass;
+      }),
     new: yup
       .string()
       .required('Chưa nhập mật khẩu mới')
