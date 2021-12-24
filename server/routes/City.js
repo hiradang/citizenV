@@ -9,14 +9,13 @@ router.get("/",validateToken, async (req, res) => {
   if (req.user.role !== 'A1') {
     return res.json('Không có quyền truy cập')
   }
-    const listCity = await City.findAll({
-        attributes: ['id_city', 'city_name', 'quantity_city', 'hasAccount']
-    });
+    const listCity = await City.findAll();
     res.json(listCity);
 })
 
 //Lấy thông tin một thành phố
 router.get("/:id",validateToken, async (req, res) => {
+  console.log(req.params.id)
   const cityId = req.params.id; 
   if (req.user.role !== 'A1' && req.user.id.indexOf(cityId) !== 0) {
     return res.json('Không có quyền truy cập')
@@ -91,7 +90,6 @@ router.post("/:cityId",validateToken, async (req, res) => {
       return res.json('Không có quyền truy cập')
     }
     const id = req.params.id;
-    console.log(id);
     City.destroy({
       where: {
         id_city: id
@@ -99,5 +97,16 @@ router.post("/:cityId",validateToken, async (req, res) => {
     })
     res.send("SUCCESS")
   });
+
+  router.put("/:id", validateToken, async (req, res) => {
+    if (req.user.role !== 'A1') {
+      return res.json('Không có quyền truy cập')
+    }
+    const id = req.params.id;
+    await City.update({
+      canDeclare: false
+    },
+    {where: {id_city: id}})
+  })
 
 module.exports = router;

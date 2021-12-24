@@ -11,5 +11,5 @@ export default function Citizen() {
     return <A1_Citizen/>
   else if (role === 'A2') return <A2_Citizen/>
   else if (role === 'A3') return <A3_Citizen/>
-  else return <B1_Citizen/>
+  else if (role === 'B1')return <B1_Citizen/>
 }

@@ -11,7 +11,7 @@ DayPicker.propTypes = {
   initialValue: PropTypes.object.isRequired,
 };
 
-function DayPicker({ label, getData, initialValue }) {
+function DayPicker({ label, getData, initialValue, initEnd }) {
   const [value, setValue] = React.useState(initialValue);
 
   const handleChange = (newValue) => {
@@ -28,8 +28,8 @@ function DayPicker({ label, getData, initialValue }) {
           value={value}
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}
-          maxDate={new Date(value.getFullYear(), 11, 31)}
-          minDate={new Date(value.getFullYear(), 0, 1)}
+          maxDate={initEnd}
+          minDate={new Date(Date.now())}
         />
       </LocalizationProvider>
     </div>

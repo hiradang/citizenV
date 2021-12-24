@@ -189,18 +189,7 @@ function Tasks() {
         return `${valueFormatted} người`;
       },
     },
-    {
-      field: 'status',
-      headerName: 'Trạng thái',
-      type: 'number',
-      sortable: false,
-      flex: 1,
-      cellClassName: (params) =>
-        clsx('status', {
-          negative: params.value === 'Chưa hoàn thành',
-          positive: params.value === 'Hoàn thành',
-        }),
-    },
+    
     {
       field: 'actions',
       type: 'actions',
@@ -256,7 +245,18 @@ function Tasks() {
     setRows(newRows);
     showNoti('Thay đổi thành công', 'success');
   };
-  
+
+  const updateByComplete = () => {
+    axios
+      .put(
+        `http://localhost:3001/task/complete`            
+      )
+      .then((response) => {
+        // setRows(response.data)
+        console.log(response.data);
+      });
+showNoti('Thay đổi thành công', 'success');
+};
   return (
     <div className="wrapper">
       {declare === false  ? <div className="statistic-img" style={{ height: '80%', width: '80%'}}>
@@ -267,7 +267,7 @@ function Tasks() {
         <div style={{ height: '95%', width: '100%', backgroundColor: 'white' }}>
         <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
           <div style={{ flexGrow: 0, padding: '20px 20px 0 20px' }}>
-            <Picker listCity={listCityName} nameTitle = {nameTitle} toggleApplyButton={updateBySelect}  initEnd = {initEnd}/>
+            <Picker listCity={listCityName} nameTitle = {nameTitle} toggleApplyButton={updateBySelect} toggleCompleteButton={updateByComplete} initEnd = {initEnd}/>
           </div>
           <div style={{ flexGrow: 1, padding: '20px' }}>
             <div style={{ height: '80vh' }}>
