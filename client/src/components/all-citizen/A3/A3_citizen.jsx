@@ -164,6 +164,7 @@ export default function Citizen() {
                   label="Địa điểm"
                   item="id_add"
                   changeItem={(item, name) => changeRows(item, name)}
+                  names = {selectOptionName}
                 ></SelectOption>
               </div>
               <div className="col l-2-4 m-5 c-12">
