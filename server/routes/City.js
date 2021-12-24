@@ -28,16 +28,21 @@ router.get("/:id",validateToken, async (req, res) => {
 // Them moi mot thanh pho
 router.post("/",validateToken, async (req, res) => {
   if (req.user.role !== 'A1') {
-    return res.json('Không có quyền truy cập')
+    res.json('Không có quyền truy cập')
+  } else {
+    try {
+      const { cityName, cityCode } = req.body;
+      await City.create({
+          id_city: cityCode,
+          city_name: cityName,
+          hasAccount: false,
+          quantity_city: 0
+      });
+      res.json("SUCCESS");
+    } catch(e) {
+      console.log(e)
+    }
   }
-    const { cityName, cityCode } = req.body;
-    City.create({
-        id_city: cityCode,
-        city_name: cityName,
-        hasAccount: false,
-        quantity_city: 0
-    });
-    res.json("SUCCESS");
   });
 
 

@@ -50,6 +50,18 @@ export default function FormDialog(props) {
           <DialogContentText>
             Trước tiên hãy xuất file Excel và nhập thông tin theo đúng định dạng đã được quy định
             trong file. Tải file lên để tiến hành khai báo và cấp mã.
+            <br /> <b>Lưu ý: </b>
+            <p>
+              <i>- Giữ nguyên dòng tiêu đề của mỗi cột.</i>
+            </p>
+            <p>
+              <i>
+                - Những dòng thiếu dữ liệu 1 trong 2 cột tên hoặc mã sẽ thông thể thêm thành công.
+              </i>
+            </p>
+            <p>
+              <i>- Những dữ liệu đã nhập sẽ bị ghi đè.</i>
+            </p>
           </DialogContentText>
           <DialogContentText className={classes.warning}>{notification}</DialogContentText>
           <input

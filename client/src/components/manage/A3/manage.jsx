@@ -19,6 +19,7 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Cookies from 'js-cookie';
+import { useSnackbar } from 'notistack';
 
 // Components
 import Search from '../components/search/Search';
@@ -29,6 +30,7 @@ import ConfirmDialog from '../ConfirmDeleteOne';
 import ConfirmDeleteSelected from '../ConfirmDeleteSelected';
 import ConfirmResetAccount from '../ConfirmResetAccount';
 import AddCodeExcel from '../AddCodeExcel';
+import { isNumber, isVietnamese } from '../../../constants/utils/CheckText';
 var removeVietnameseTones = require('../../../constants/utils/CheckText').removeVietnameseTones;
 
 function Manage() {
@@ -41,6 +43,7 @@ function Manage() {
 
   // Checkbox - Id của các thành phố khi được checkbox
   const [isAllChecked, setAllChecked] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
@@ -49,7 +52,7 @@ function Manage() {
         response.data.map((element) => {
           return {
             id: element.id_ward,
-            ward_name: element.ward_name,
+            name: element.ward_name,
             hasAccount: element.hasAccount,
             isEditMode: false,
             isChecked: false,
@@ -132,7 +135,11 @@ function Manage() {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
         resolve(data);
-        console.log(data.slice(100).map((row) => row.job_name));
+        if (data.length === 0) {
+          enqueueSnackbar('Không có dữ liệu', { variant: 'error' });
+        } else {
+          resolve(data);
+        }
       };
 
       fileReader.onerror = (error) => {
@@ -141,26 +148,36 @@ function Manage() {
     });
 
     promise.then((data) => {
-      const newCities = data.map((row) => {
-        return {
-          id: row['Mã phường/xã'],
-          ward_name: row['Tên phường/xã'],
-          hasAccount: false,
-          isEditMode: false,
-          isChecked: false,
-        };
-      });
+      deleteWard();
 
+      let newWards = [];
       data.forEach((row) => {
-        axios
-          .post(`http://localhost:3001/ward/`, {
-            wardCode: row['Mã phường/xã'],
-            wardName: row['Tên phường/xã'],
+        if (
+          row['Tên xã/phường'] &&
+          row['Mã xã/phường'] &&
+          isVietnamese(row['Tên xã/phường']) &&
+          isNumber(row['Mã xã/phường'])
+        ) {
+          axios.post(`http://localhost:3001/ward/`, {
+            wardName: row['Tên xã/phường'],
+            wardCode: row['Mã xã/phường'],
             idDistrict: idDistrict,
-          })
-          .then((res) => {});
+          });
+          newWards.push({
+            id: row['Mã xã/phường'],
+            name: row['Tên xã/phường'],
+            hasAccount: false,
+            isEditMode: false,
+            isChecked: false,
+          });
+        }
       });
-      setWards(newCities);
+      if (newWards.length > 0) {
+        setWards(newWards);
+        enqueueSnackbar('Thêm thành công', { variant: 'Success' });
+      } else {
+        enqueueSnackbar('Thêm không thành công', { variant: 'error' });
+      }
     });
   };
 
@@ -168,15 +185,26 @@ function Manage() {
   const exportExcel = () => {
     var wb = XLSX.utils.book_new();
     wb.SheetNames.push('Sheet 1');
-    var ws = XLSX.utils.json_to_sheet(
-      wards.map((ward, key) => {
-        return {
-          STT: key + 1,
-          'Tên xã/phường': ward.ward_name,
-          'Mã xã/phường': ward.id,
-        };
-      })
-    );
+
+    if (wards.length === 0) {
+      var ws = XLSX.utils.json_to_sheet([
+        {
+          STT: 'Số thứ tự',
+          'Tên xã/phường': 'Nhập tên của xã/phường',
+          'Mã xã/phường': 'Nhập mã của xã/phường phố gồm 6 chữ số, 4 chữ số đầu là mã quận/huyện',
+        },
+      ]);
+    } else {
+      ws = XLSX.utils.json_to_sheet(
+        wards.map((ward, key) => {
+          return {
+            STT: key + 1,
+            'Tên xã/phường': ward.name,
+            'Mã xã/phường': ward.id,
+          };
+        })
+      );
+    }
     wb.Sheets['Sheet 1'] = ws;
 
     var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -191,6 +219,7 @@ function Manage() {
       new Blob([s2ab(wbout)], { type: 'application/octet-stream' }),
       'Danh sách xã/phường.xlsx'
     );
+    enqueueSnackbar('Lưu file thành công', { variant: 'Success' });
   };
 
   // Supply account
@@ -210,13 +239,14 @@ function Manage() {
     const newWards = wards.map((ward) => {
       return {
         id: ward.id,
-        ward_name: ward.ward_name,
+        name: ward.name,
         hasAccount: true,
         isEditMode: false,
         isChecked: ward.isChecked,
       };
     });
     setWards(newWards);
+    enqueueSnackbar('Cấp thành công', { variant: 'Success' });
   };
 
   const supplyOneAccount = (cityId, defaultPassword) => {
@@ -234,7 +264,7 @@ function Manage() {
       return city.id === cityId
         ? {
             id: city.id,
-            ward_name: city.ward_name,
+            name: city.name,
             hasAccount: true,
             isEditMode: false,
             isChecked: city.isChecked,
@@ -242,6 +272,7 @@ function Manage() {
         : city;
     });
     setWards(newCities);
+    enqueueSnackbar('Cấp thành công', { variant: 'Success' });
   };
 
   // Reset all account
@@ -259,13 +290,14 @@ function Manage() {
     const newwards = wards.map((ward) => {
       return {
         id: ward.id,
-        ward_name: ward.ward_name,
+        name: ward.name,
         hasAccount: false,
         isEditMode: false,
         isChecked: ward.isChecked,
       };
     });
     setWards(newwards);
+    enqueueSnackbar('Reset thành công', { variant: 'Success' });
   };
 
   // Reset one account
@@ -281,7 +313,7 @@ function Manage() {
       return city.id === wardId
         ? {
             id: city.id,
-            ward_name: city.ward_name,
+            name: city.name,
             hasAccount: false,
             isEditMode: false,
             isChecked: city.isChecked,
@@ -289,6 +321,7 @@ function Manage() {
         : city;
     });
     setWards(newCities);
+    enqueueSnackbar('Reset thành công', { variant: 'Success' });
   };
 
   // Add new ward
@@ -301,13 +334,14 @@ function Manage() {
 
     const newward = {
       id: wardCode,
-      ward_name: wardName,
+      name: wardName,
       hasAccount: false,
       isEditMode: false,
       isChecked: false,
     };
     const newwards = [...wards, newward];
     setWards(newwards);
+    enqueueSnackbar('Thêm thành công', { variant: 'Success' });
   };
 
   // Delete ward
@@ -323,6 +357,7 @@ function Manage() {
       axios.delete(`http://localhost:3001/ward/${id}`),
       axios.delete(`http://localhost:3001/account/${id}`),
     ]);
+    enqueueSnackbar('Xóa thành công', { variant: 'Success' });
   };
 
   // Handle search
@@ -331,7 +366,7 @@ function Manage() {
       const wards = response.data.map((element) => {
         return {
           id: element.id_ward,
-          ward_name: element.ward_name,
+          name: element.ward_name,
           hasAccount: element.hasAccount,
           isEditMode: false,
           isChecked: element.isChecked,
@@ -343,7 +378,7 @@ function Manage() {
         setWards(wards);
       } else {
         let newward = wards.filter((city, index) => {
-          return removeVietnameseTones(city.ward_name).toLowerCase().includes(typed);
+          return removeVietnameseTones(city.name).toLowerCase().includes(typed);
         });
         setWards(newward);
       }
@@ -371,6 +406,7 @@ function Manage() {
 
     // Reset lại danh sách các city đã được chọn
     setAllChecked(false);
+    enqueueSnackbar('Xóa thành công', { variant: 'Success' });
 
     // Reset lại các checkbox
     // const listCheckbox = document.querySelectorAll('.checkbox');
@@ -384,7 +420,7 @@ function Manage() {
     const newCities = wards.map((city) => {
       return {
         id: city.id,
-        ward_name: city.ward_name,
+        name: city.name,
         hasAccount: city.hasAccount,
         isEditMode: false,
         isChecked: e.target.checked,
@@ -399,7 +435,7 @@ function Manage() {
       return ward.id === id
         ? {
             id: ward.id,
-            ward_name: ward.ward_name,
+            name: ward.name,
             hasAccount: ward.hasAccount,
             isEditMode: false,
             isChecked: checked,
@@ -418,7 +454,7 @@ function Manage() {
       <div className="row first">
         <div className="col l-2-4 m-5 c-12">
           <div className="actionButton">
-            <AddCityDialog title="Xã/phường" handler={handleAddNewWard} />
+            <AddCityDialog title="Xã/phường" handler={handleAddNewWard} listLocal={wards} />
           </div>
         </div>
         <div className="col l-2 m-3 c-12">
@@ -495,7 +531,7 @@ function Manage() {
                       <TableCell>{key + 1}</TableCell>
                       <CustomTableCell
                         source={city}
-                        name="ward_name"
+                        name="name"
                         handleOnChange={onChangewardName}
                       />
                       <CustomTableCell source={city} name="id" handleOnChange={onChangewardCode} />

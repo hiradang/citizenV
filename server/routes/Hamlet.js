@@ -21,19 +21,20 @@ router.get("/:idWard", validateToken, async (req, res) => {
 router.post("/",validateToken, async (req, res) => {
     if (req.user.role !== 'B1') {
       return res.json('Không có quyền truy cập')
-    }
-  
-    try {
-      const { hamletName, hamletCode, idWard } = req.body;
-      Hamlet.create({
-          id_hamlet: hamletCode,
-          hamlet_name: hamletName,
-          hasAccount: false,
-          quantity_hamlet: 0,
-          id_ward: idWard,
-      });
-      res.json("SUCCESS");
-    } catch(err) {
+    } else  {
+      try {
+        const { hamletName, hamletCode, idWard } = req.body;
+        Hamlet.create({
+            id_hamlet: hamletCode,
+            hamlet_name: hamletName,
+            hasAccount: false,
+            quantity_hamlet: 0,
+            id_ward: idWard,
+        });
+        res.json("SUCCESS");
+      } catch(err) {
+        console.log(err)
+      }
     }
   });
 

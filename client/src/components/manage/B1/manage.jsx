@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { useSnackbar } from 'notistack';
 import Cookies from 'js-cookie';
 
 // Components
@@ -29,6 +30,7 @@ import ConfirmDialog from '../ConfirmDeleteOne';
 import ConfirmDeleteSelected from '../ConfirmDeleteSelected';
 import ConfirmResetAccount from '../ConfirmResetAccount';
 import AddCodeExcel from '../AddCodeExcel';
+import { isNumber, isVietnamese } from '../../../constants/utils/CheckText';
 var removeVietnameseTones = require('../../../constants/utils/CheckText').removeVietnameseTones;
 
 function Manage() {
@@ -41,6 +43,7 @@ function Manage() {
 
   // Checkbox - Id của các thành phố khi được checkbox
   const [isAllChecked, setAllChecked] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
@@ -49,7 +52,7 @@ function Manage() {
         response.data.map((element) => {
           return {
             id: element.id_hamlet,
-            hamlet_name: element.hamlet_name,
+            name: element.hamlet_name,
             hasAccount: element.hasAccount,
             isEditMode: false,
             isChecked: false,
@@ -132,7 +135,11 @@ function Manage() {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
         resolve(data);
-        console.log(data.slice(100).map((row) => row.job_name));
+        if (data.length === 0) {
+          enqueueSnackbar('Không có dữ liệu', { variant: 'error' });
+        } else {
+          resolve(data);
+        }
       };
 
       fileReader.onerror = (error) => {
@@ -141,26 +148,31 @@ function Manage() {
     });
 
     promise.then((data) => {
-      const newHamlets = data.map((row) => {
-        return {
-          id: row['Mã thôn/khu phố'],
-          hamlet_name: row['Tên thôn/khu phố'],
-          hasAccount: false,
-          isEditMode: false,
-          isChecked: false,
-        };
-      });
+      deletehamlet();
 
+      let newHamlets = [];
       data.forEach((row) => {
-        axios
-          .post(`http://localhost:3001/hamlet/`, {
-            hamletCode: row['Mã thôn/khu phố'],
+        if (row['Tên thôn/khu phố'] && row['Mã thôn/khu phố'] && isNumber(row['Mã thôn/khu phố'])) {
+          axios.post(`http://localhost:3001/hamlet/`, {
             hamletName: row['Tên thôn/khu phố'],
+            hamletCode: row['Mã thôn/khu phố'],
             idWard: idWard,
-          })
-          .then((res) => {});
+          });
+          newHamlets.push({
+            id: row['Mã thôn/khu phố'],
+            name: row['Tên thôn/khu phố'],
+            hasAccount: false,
+            isEditMode: false,
+            isChecked: false,
+          });
+        }
       });
-      setHamlets(newHamlets);
+      if (newHamlets.length > 0) {
+        setHamlets(newHamlets);
+        enqueueSnackbar('Thêm thành công', { variant: 'Success' });
+      } else {
+        enqueueSnackbar('Thêm không thành công', { variant: 'error' });
+      }
     });
   };
 
@@ -168,15 +180,26 @@ function Manage() {
   const exportExcel = () => {
     var wb = XLSX.utils.book_new();
     wb.SheetNames.push('Sheet 1');
-    var ws = XLSX.utils.json_to_sheet(
-      hamlets.map((hamlet, key) => {
-        return {
-          STT: key + 1,
-          'Tên xã/phường': hamlet.hamlet_name,
-          'Mã xã/phường': hamlet.id,
-        };
-      })
-    );
+
+    if (hamlets.length === 0) {
+      var ws = XLSX.utils.json_to_sheet([
+        {
+          STT: 'Số thứ tự',
+          'Tên thôn/khu phố': 'Nhập tên của thôn/khu phố',
+          'Mã thôn/khu phố': 'Nhập mã của thôn/khu phố, 6 số đầu là mã xã/phường',
+        },
+      ]);
+    } else {
+      ws = XLSX.utils.json_to_sheet(
+        hamlets.map((hamlet, key) => {
+          return {
+            STT: key + 1,
+            'Tên thôn/khu phố': hamlet.name,
+            'Mã thôn/khu phố': hamlet.id,
+          };
+        })
+      );
+    }
     wb.Sheets['Sheet 1'] = ws;
 
     var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -191,6 +214,7 @@ function Manage() {
       new Blob([s2ab(wbout)], { type: 'application/octet-stream' }),
       'Danh sách thôn/khu phố.xlsx'
     );
+    enqueueSnackbar('Lưu file thành công', { variant: 'Success' });
   };
 
   // Supply account
@@ -210,13 +234,14 @@ function Manage() {
     const newhamlets = hamlets.map((hamlet) => {
       return {
         id: hamlet.id,
-        hamlet_name: hamlet.hamlet_name,
+        name: hamlet.name,
         hasAccount: true,
         isEditMode: false,
         isChecked: hamlet.isChecked,
       };
     });
     setHamlets(newhamlets);
+    enqueueSnackbar('Cấp thành công', { variant: 'Success' });
   };
 
   const supplyOneAccount = (cityId, defaultPassword) => {
@@ -234,7 +259,7 @@ function Manage() {
       return city.id === cityId
         ? {
             id: city.id,
-            hamlet_name: city.hamlet_name,
+            name: city.name,
             hasAccount: true,
             isEditMode: false,
             isChecked: city.isChecked,
@@ -242,6 +267,7 @@ function Manage() {
         : city;
     });
     setHamlets(newCities);
+    enqueueSnackbar('Cấp thành công', { variant: 'Success' });
   };
 
   // Reset all account
@@ -259,13 +285,14 @@ function Manage() {
     const newhamlets = hamlets.map((hamlet) => {
       return {
         id: hamlet.id,
-        hamlet_name: hamlet.hamlet_name,
+        name: hamlet.name,
         hasAccount: false,
         isEditMode: false,
         isChecked: hamlet.isChecked,
       };
     });
     setHamlets(newhamlets);
+    enqueueSnackbar('Reset thành công', { variant: 'Success' });
   };
 
   // Reset one account
@@ -281,7 +308,7 @@ function Manage() {
       return city.id === hamletId
         ? {
             id: city.id,
-            hamlet_name: city.hamlet_name,
+            name: city.name,
             hasAccount: false,
             isEditMode: false,
             isChecked: city.isChecked,
@@ -289,6 +316,7 @@ function Manage() {
         : city;
     });
     setHamlets(newCities);
+    enqueueSnackbar('Reset thành công', { variant: 'Success' });
   };
 
   // Add new hamlet
@@ -301,13 +329,14 @@ function Manage() {
 
     const newHamlet = {
       id: hamletCode,
-      hamlet_name: hamletName,
+      name: hamletName,
       hasAccount: false,
       isEditMode: false,
       isChecked: false,
     };
     const newHamlets = [...hamlets, newHamlet];
     setHamlets(newHamlets);
+    enqueueSnackbar('Thêm thành công', { variant: 'Success' });
   };
 
   // Delete hamlet
@@ -323,6 +352,7 @@ function Manage() {
       axios.delete(`http://localhost:3001/hamlet/${id}`),
       axios.delete(`http://localhost:3001/account/${id}`),
     ]);
+    enqueueSnackbar('Xóa thành công', { variant: 'Success' });
   };
 
   // Handle search
@@ -331,7 +361,7 @@ function Manage() {
       const hamlets = response.data.map((element) => {
         return {
           id: element.id_hamlet,
-          hamlet_name: element.hamlet_name,
+          name: element.hamlet_name,
           hasAccount: element.hasAccount,
           isEditMode: false,
           isChecked: element.isChecked,
@@ -343,7 +373,7 @@ function Manage() {
         setHamlets(hamlets);
       } else {
         let newhamlet = hamlets.filter((city, index) => {
-          return removeVietnameseTones(city.hamlet_name).toLowerCase().includes(typed);
+          return removeVietnameseTones(city.name).toLowerCase().includes(typed);
         });
         setHamlets(newhamlet);
       }
@@ -371,6 +401,7 @@ function Manage() {
 
     // Reset lại danh sách các city đã được chọn
     setAllChecked(false);
+    enqueueSnackbar('Xóa thành công', { variant: 'Success' });
 
     // Reset lại các checkbox
     // const listCheckbox = document.querySelectorAll('.checkbox');
@@ -384,7 +415,7 @@ function Manage() {
     const newHamlets = hamlets.map((hamlet) => {
       return {
         id: hamlet.id,
-        hamlet_name: hamlet.hamlet_name,
+        name: hamlet.name,
         hasAccount: hamlet.hasAccount,
         isEditMode: false,
         isChecked: e.target.checked,
@@ -399,7 +430,7 @@ function Manage() {
       return hamlet.id === id
         ? {
             id: hamlet.id,
-            hamlet_name: hamlet.hamlet_name,
+            name: hamlet.name,
             hasAccount: hamlet.hasAccount,
             isEditMode: false,
             isChecked: checked,
@@ -418,7 +449,7 @@ function Manage() {
       <div className="row first">
         <div className="col l-2-4 m-5 c-12">
           <div className="actionButton">
-            <AddCityDialog title="Thôn/khu phố" handler={handleAddNewhamlet} />
+            <AddCityDialog title="Thôn/khu phố" handler={handleAddNewhamlet} listLocal={hamlets} />
           </div>
         </div>
         <div className="col l-2 m-3 c-12">
@@ -495,7 +526,7 @@ function Manage() {
                       <TableCell>{key + 1}</TableCell>
                       <CustomTableCell
                         source={city}
-                        name="hamlet_name"
+                        name="name"
                         handleOnChange={onChangehamletName}
                       />
                       <CustomTableCell

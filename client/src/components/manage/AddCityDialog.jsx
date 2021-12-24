@@ -9,7 +9,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 
 import { makeStyles } from '@mui/styles';
-var isVietnamese = require('../../constants/utils/CheckText').isVietnamese;
+import {
+  isNotDuplicatedCode,
+  isNotDuplicatedName,
+  isNumber,
+} from '../../constants/utils/CheckText';
+import { isVietnamese } from '../../constants/utils/CheckText';
 
 const useStyles = makeStyles({
   textField: {
@@ -28,23 +33,51 @@ export default function FormDialog(props) {
 
   const classes = useStyles();
 
+  // Set length of code and get the list of city name and code to check if
+  // the code and name is duplicated
+  let codeLength = 0;
+  if (props.title === 'Tỉnh/Thành phố') {
+    codeLength = 2;
+  } else if (props.title === 'Quận/huyện') {
+    codeLength = 4;
+  } else if (props.title === 'Xã/phường') {
+    codeLength = 6;
+  } else if (props.title === 'Thôn/khu phố') {
+    codeLength = 8;
+  }
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setNotification('');
   };
 
   const handleSubmit = () => {
     // Kiểm tra hợp thức dữ liệu đầu vào
     if (cityName && cityCode) {
-      if (cityName.length > 1 && cityName.length < 200) {
-        props.handler(cityName, cityCode);
-        // Đóng modal lại
-        setOpen(false);
+      if (cityName.length > 1 && cityName.length < 200 && isVietnamese(cityName)) {
+        if (isNotDuplicatedName(props.listLocal, cityName)) {
+          if (cityCode.length === codeLength && isNumber(cityCode)) {
+            if (isNotDuplicatedCode(props.listLocal, cityCode)) {
+              props.handler(cityName, cityCode);
+              // Đóng modal lại
+              setOpen(false);
+            } else {
+              setNotification(`Mã ${props.title} này đã được sử dụng!`);
+            }
+          } else {
+            setNotification(
+              `Mã ${props.title} của bạn không hợp lệ! Mã ${props.title} phải có ${codeLength} chữ số!`
+            );
+          }
+        } else {
+          setNotification(`Tên ${props.title} này đã được sử dụng!`);
+        }
       } else {
-        setOpen(false);
+        setNotification(`Tên ${props.title} của bạn không hợp lệ!`);
       }
     } else {
       setNotification('Bạn phải nhập đầy đủ thông tin');

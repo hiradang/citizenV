@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-
+import { useSnackbar } from 'notistack';
 // Components
 import Search from '../components/search/Search';
 import CustomTableCell from '../EditableCell';
@@ -28,6 +28,7 @@ import ConfirmDialog from '../ConfirmDeleteOne';
 import ConfirmDeleteSelected from '../ConfirmDeleteSelected';
 import ConfirmResetAccount from '../ConfirmResetAccount';
 import AddCodeExcel from '../AddCodeExcel';
+import { isNumber, isVietnamese } from '../../../constants/utils/CheckText';
 var removeVietnameseTones = require('../../../constants/utils/CheckText').removeVietnameseTones;
 
 function Manage() {
@@ -35,6 +36,8 @@ function Manage() {
   const [previous, setPrevious] = React.useState({});
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   // Checkbox - Id của các thành phố khi được checkbox
   const [isAllChecked, setAllChecked] = useState(false);
@@ -45,7 +48,7 @@ function Manage() {
         response.data.map((element) => {
           return {
             id: element.id_city,
-            city_name: element.city_name,
+            name: element.city_name,
             hasAccount: element.hasAccount,
             isEditMode: false,
             isChecked: false,
@@ -102,6 +105,7 @@ function Manage() {
     }
     const value = e.target.value;
     const name = e.target.name;
+
     const { id } = city;
     const newCities = cities.map((city) => {
       if (city.id === id) {
@@ -110,8 +114,6 @@ function Manage() {
       return city;
     });
     setCities(newCities);
-
-    // Update city code
     axios.post(`http://localhost:3001/city/${id}`, { newName: value }).then((res) => {});
   };
 
@@ -127,8 +129,12 @@ function Manage() {
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
-        resolve(data);
-        console.log(data.slice(100).map((row) => row.job_name));
+
+        if (data.length === 0) {
+          enqueueSnackbar('Không có dữ liệu', { variant: 'error' });
+        } else {
+          resolve(data);
+        }
       };
 
       fileReader.onerror = (error) => {
@@ -137,22 +143,35 @@ function Manage() {
     });
 
     promise.then((data) => {
-      const newCities = data.map((row) => {
-        axios
-          .post(`http://localhost:3001/city/`, {
-            cityCode: row['Mã tỉnh/thành'],
+      deleteCity();
+
+      let newCities = [];
+      data.forEach((row) => {
+        if (
+          row['Tên tỉnh/thành'] &&
+          row['Mã tỉnh/thành'] &&
+          isVietnamese(row['Tên tỉnh/thành']) &&
+          isNumber(row['Mã tỉnh/thành'])
+        ) {
+          axios.post(`http://localhost:3001/city/`, {
             cityName: row['Tên tỉnh/thành'],
-          })
-          .then((res) => {});
-        return {
-          id: row['Mã tỉnh/thành'],
-          city_name: row['Tên tỉnh/thành'],
-          hasAccount: false,
-          isEditMode: false,
-          isChecked: false,
-        };
+            cityCode: row['Mã tỉnh/thành'],
+          });
+          newCities.push({
+            id: row['Mã tỉnh/thành'],
+            name: row['Tên tỉnh/thành'],
+            hasAccount: false,
+            isEditMode: false,
+            isChecked: false,
+          });
+        }
       });
-      setCities(newCities);
+      if (newCities.length > 0) {
+        setCities(newCities);
+        enqueueSnackbar('Thêm thành công', { variant: 'Success' });
+      } else {
+        enqueueSnackbar('Thêm không thành công', { variant: 'error' });
+      }
     });
   };
 
@@ -160,15 +179,25 @@ function Manage() {
   const exportExcel = () => {
     var wb = XLSX.utils.book_new();
     wb.SheetNames.push('Sheet 1');
-    var ws = XLSX.utils.json_to_sheet(
-      cities.map((city, key) => {
-        return {
-          STT: key + 1,
-          'Tên tỉnh/thành': city.city_name,
-          'Mã tỉnh/thành': city.id,
-        };
-      })
-    );
+    if (cities.length === 0) {
+      var ws = XLSX.utils.json_to_sheet([
+        {
+          STT: 'Số thứ tự',
+          'Tên tỉnh/thành': 'Nhập tên của tỉnh/thành phố',
+          'Mã tỉnh/thành': 'Nhập mã của tỉnh/thành phố gồm 2 chữ số',
+        },
+      ]);
+    } else {
+      ws = XLSX.utils.json_to_sheet(
+        cities.map((city, key) => {
+          return {
+            STT: key + 1,
+            'Tên tỉnh/thành': city.name,
+            'Mã tỉnh/thành': city.id,
+          };
+        })
+      );
+    }
     wb.Sheets['Sheet 1'] = ws;
 
     var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -179,7 +208,11 @@ function Manage() {
       return buf;
     }
 
-    saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), 'test.xlsx');
+    saveAs(
+      new Blob([s2ab(wbout)], { type: 'application/octet-stream' }),
+      'Danh sách tỉnh/thành phố.xlsx'
+    );
+    enqueueSnackbar('Lưu file thành công', { variant: 'Success' });
   };
 
   // Supply account
@@ -199,13 +232,14 @@ function Manage() {
     const newCities = cities.map((city) => {
       return {
         id: city.id,
-        city_name: city.city_name,
+        name: city.name,
         hasAccount: true,
         isEditMode: false,
         isChecked: city.isChecked,
       };
     });
     setCities(newCities);
+    enqueueSnackbar('Cấp thành công', { variant: 'Success' });
   };
 
   const supplyOneAccount = (cityId, defaultPassword) => {
@@ -223,7 +257,7 @@ function Manage() {
       return city.id === cityId
         ? {
             id: city.id,
-            city_name: city.city_name,
+            name: city.name,
             hasAccount: true,
             isEditMode: false,
             isChecked: city.isChecked,
@@ -231,6 +265,7 @@ function Manage() {
         : city;
     });
     setCities(newCities);
+    enqueueSnackbar('Cấp mã thành công', { variant: 'Success' });
   };
 
   // Reset all account
@@ -248,13 +283,14 @@ function Manage() {
     const newCities = cities.map((city) => {
       return {
         id: city.id,
-        city_name: city.city_name,
+        name: city.name,
         hasAccount: false,
         isEditMode: false,
         isChecked: city.isChecked,
       };
     });
     setCities(newCities);
+    enqueueSnackbar('Reset thành công', { variant: 'Success' });
   };
 
   // Reset one account
@@ -270,7 +306,7 @@ function Manage() {
       return city.id === cityId
         ? {
             id: city.id,
-            city_name: city.city_name,
+            name: city.name,
             hasAccount: false,
             isEditMode: false,
             isChecked: city.isChecked,
@@ -278,6 +314,7 @@ function Manage() {
         : city;
     });
     setCities(newCities);
+    enqueueSnackbar('Reset thành công', { variant: 'Success' });
   };
 
   // Add new city
@@ -288,13 +325,14 @@ function Manage() {
       .then((res) => {});
     const newCity = {
       id: cityCode,
-      city_name: cityName,
+      name: cityName,
       hasAccount: false,
       isEditMode: false,
       isChecked: false,
     };
     const newCities = [...cities, newCity];
     setCities(newCities);
+    enqueueSnackbar('Thêm thành công', { variant: 'Success' });
   };
 
   // Delete city
@@ -310,6 +348,7 @@ function Manage() {
       axios.delete(`http://localhost:3001/city/${id}`),
       axios.delete(`http://localhost:3001/account/${id}`),
     ]);
+    enqueueSnackbar('Xóa thành công', { variant: 'Success' });
   };
 
   // Handle search
@@ -318,7 +357,7 @@ function Manage() {
       const listCities = response.data.map((element) => {
         return {
           id: element.id_city,
-          city_name: element.city_name,
+          name: element.city_name,
           hasAccount: element.hasAccount,
           isEditMode: false,
           isChecked: element.isChecked,
@@ -330,7 +369,7 @@ function Manage() {
         setCities(listCities);
       } else {
         let newCities = listCities.filter((city, index) => {
-          return removeVietnameseTones(city.city_name).toLowerCase().includes(typed);
+          return removeVietnameseTones(city.name).toLowerCase().includes(typed);
         });
         setCities(newCities);
       }
@@ -358,6 +397,7 @@ function Manage() {
 
     // Reset lại danh sách các city đã được chọn
     setAllChecked(false);
+    enqueueSnackbar('Xóa thành công', { variant: 'Success' });
 
     // Reset lại các checkbox
     // const listCheckbox = document.querySelectorAll('.checkbox');
@@ -371,7 +411,7 @@ function Manage() {
     const newCities = cities.map((city) => {
       return {
         id: city.id,
-        city_name: city.city_name,
+        name: city.name,
         hasAccount: city.hasAccount,
         isEditMode: false,
         isChecked: e.target.checked,
@@ -386,7 +426,7 @@ function Manage() {
       return city.id === id
         ? {
             id: city.id,
-            city_name: city.city_name,
+            name: city.name,
             hasAccount: city.hasAccount,
             isEditMode: false,
             isChecked: checked,
@@ -405,7 +445,7 @@ function Manage() {
       <div className="row first">
         <div className="col l-2-4 m-5 c-12">
           <div className="actionButton">
-            <AddCityDialog title="Tỉnh/Thành phố" handler={handleAddNewCity} />
+            <AddCityDialog title="Tỉnh/Thành phố" handler={handleAddNewCity} listLocal={cities} />
           </div>
         </div>
         <div className="col l-2 m-3 c-12">
@@ -482,7 +522,7 @@ function Manage() {
                       <TableCell>{key + 1}</TableCell>
                       <CustomTableCell
                         source={city}
-                        name="city_name"
+                        name="name"
                         handleOnChange={onChangeCityName}
                       />
                       <CustomTableCell source={city} name="id" handleOnChange={onChangeCityCode} />
