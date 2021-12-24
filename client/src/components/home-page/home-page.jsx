@@ -27,7 +27,7 @@ import Citizen from '../all-citizen/Citizen';
 import Manage from '../manage/main/manage';
 import { useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
-import Tasks from '../tasks/tasks';
+import Tasks from '../tasks/main/TaskHome';
 import Statistics from '../statistics/main/statistics';
 import CensusForm from '../census/census'
 import Cookies from 'js-cookie';

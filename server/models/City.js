@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    canDeclare: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   });
   City.associate = (models) => {
     City.hasMany(models.District, {

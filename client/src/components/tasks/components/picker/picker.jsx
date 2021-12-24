@@ -3,13 +3,16 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DayPicker from './dayPicker';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import { makeStyles } from '@mui/styles';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -76,18 +79,19 @@ const MenuProps = {
 Picker.propTypes = {
   listCity: PropTypes.array,
   toggleApplyButton: PropTypes.func.isRequired,
+  toggleCompleteButton: PropTypes.func,
 };
 
 Picker.defaultProps = {
   listCity: [],
 };
 
-function Picker({ listCity, nameTitle, toggleApplyButton }) {
+function Picker({ listCity, nameTitle, toggleApplyButton, toggleCompleteButton, initEnd }) {
   const classes = useStyles();
-
   const [selected, setSelected] = useState([]);
   const isAllSelected = listCity.length > 0 && selected.length === listCity.length;
-
+  const role = Cookies.get('role');
+  const id = Cookies.get('user');
   const select = (event) => {
     if (listCity.length < 1) return;
     const value = event.target.value;
@@ -99,13 +103,38 @@ function Picker({ listCity, nameTitle, toggleApplyButton }) {
   };
 
   const [start, setStart] = useState(new Date(Date.now()));
-  const [end, setEnd] = useState(new Date(Date.now()));
-
+  const [complete, setComplete] = useState('');
+  const [end, setEnd] = useState(new Date(Date.now() + 60 * 60 * 24 * 31 * 1000));
+  // const [initEnd, setInitEnd] = useState(new Date(Date.now() +  60*60*24*31*1000));
   const handleStartDate = (newDate) => setStart(newDate);
   const handleEndDate = (newDate) => setEnd(newDate);
 
   const handleApplyButton = () => toggleApplyButton(selected, start, end);
+  const handleCompleteButton = () => {
+    Swal.fire({
+        title: (complete ? 'Chưa hoàn thành?' : 'Hoàn thành?'),
+        icon: 'question',
+        confirmButtonText: 'OK',
+        showCancelButton: true,
+        cancelButtonText: 'Hủy',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          setComplete(!complete)
+          toggleCompleteButton();
+        }
+      });
+  };
 
+  useEffect(() => {
+    if (role === 'B1') {
+      axios.get(`http://localhost:3001/task/${id}`).then((response) => {
+        setComplete(response.data.is_finished);
+      });
+    }
+  }, []);
   return (
     <div
       style={{
@@ -150,12 +179,29 @@ function Picker({ listCity, nameTitle, toggleApplyButton }) {
           ))}
         </Select>
       </FormControl>
-      <DayPicker label="Chọn ngày bắt đầu" getData={handleStartDate} initialValue={start} />
-      <DayPicker label="Chọn ngày kết thúc" getData={handleEndDate} initialValue={end} />
+      <DayPicker
+        label="Chọn ngày bắt đầu"
+        getData={handleStartDate}
+        initialValue={start}
+        initEnd={initEnd}
+      />
+      <DayPicker
+        label="Chọn ngày kết thúc"
+        getData={handleEndDate}
+        initialValue={start}
+        initEnd={initEnd}
+      />
 
       <div className={classes.button} onClick={handleApplyButton}>
         <p>SAVE CHANGES</p>
       </div>
+      {role === 'B1' ? (
+        <div className={classes.button} onClick={handleCompleteButton}>
+          {complete === false ? <p>CHƯA HOÀN THÀNH</p> : <p>ĐÃ HOÀN THÀNH</p>}
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 }
