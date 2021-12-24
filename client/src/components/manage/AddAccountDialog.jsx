@@ -32,20 +32,31 @@ export default function FormDialog(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setNotification('');
+    setDefaultPassword('password');
   };
 
   const handleSubmit = () => {
-    setOpen(false);
-
     // Gọi hàm xử lý của cha (thêm MK vào db)
     if (props.cityId) {
       if (props.title === 'Chưa cấp') {
-        props.handler(props.cityId, defaultPassword);
+        if (defaultPassword === '') {
+          setNotification('Mật khẩu không được bỏ trống');
+        } else {
+          props.handler(props.cityId, defaultPassword);
+          setOpen(false);
+        }
       } else {
         props.handler(props.cityId);
+        setOpen(false);
       }
     } else {
-      props.handler(defaultPassword);
+      if (defaultPassword === '') {
+        setNotification('Mật khẩu không được bỏ trống');
+      } else {
+        props.handler(defaultPassword);
+        setOpen(false);
+      }
     }
   };
 
@@ -76,7 +87,7 @@ export default function FormDialog(props) {
           <>
             <DialogContent>
               <DialogContentText>
-                Tên đăng nhập sẽ được cấp giống với mã tỉnh/thành phố. <br />
+                Tên đăng nhập sẽ được cấp giống với <b>mã {props.name}. </b> <br />
                 Hãy cấp một mật khẩu mặc định.
               </DialogContentText>
               <DialogContentText className={classes.warning}>{notification}</DialogContentText>

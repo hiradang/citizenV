@@ -95,7 +95,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align="left"
+            align="center"
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -148,9 +148,9 @@ export default function TableCitizen(props) {
             .map((row, index) => {
               return (
                 <TableRow hover key={row.id_citizen}>
-                  <TableCell align="left">{index + 1}</TableCell>
-                  <TableCell align="left">{row.name}</TableCell>
-                  <TableCell align="left">{row.quantity}</TableCell>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell align="center">{row.name}</TableCell>
+                  <TableCell align="center">{row.quantity}</TableCell>
                 </TableRow>
               );
             })}

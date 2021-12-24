@@ -380,7 +380,7 @@ function CensusForm({ onSubmit }) {
     }
   };
   return (
-    <div className="wrapper">
+    <div className="wrapper-census">
       <div style={{ height: '82%', width: '100%', backgroundColor: 'white' }}>
         <div style={{ flexGrow: 1, padding: '40px' }}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>

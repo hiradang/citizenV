@@ -1,11 +1,11 @@
 // Kiểm tra xem có phải Tiếng Việt hợp lệ hay không
-var isVietnamese = function (str) {
+export function isVietnamese(str) {
   var re = /^[a-zA-Z!@#$%^&*)( +=._-]{2,}$/g; // regex here
   return re.test(removeVietnameseTones(str));
-};
+}
 
 // Loại bỏ các từ tiếng Việt -> thay bằng ký tự tiếng Anh
-function removeVietnameseTones(str) {
+export function removeVietnameseTones(str) {
   if (str === null || str === undefined) return str;
   str = str.toLowerCase();
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
@@ -18,5 +18,21 @@ function removeVietnameseTones(str) {
   return str;
 }
 
-exports.removeVietnameseTones = removeVietnameseTones;
-exports.isVietnamese = isVietnamese;
+export function isNumber(str) {
+  var reg = /^\d+$/;
+  return reg.test(str);
+}
+
+export function isNotDuplicatedName(listLocal, newName) {
+  console.log(listLocal);
+  return listLocal.every((local) => {
+    return local.name !== newName;
+  });
+}
+
+export function isNotDuplicatedCode(listLocal, newCode) {
+  console.log('running code');
+  return listLocal.every((local) => {
+    return local.id !== newCode;
+  });
+}

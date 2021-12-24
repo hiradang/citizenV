@@ -1,37 +1,49 @@
+@import '../../grid.scss';
+@import '../../app.scss';
+
 .center {
   margin: 0 auto;
 }
 
-.container {
-  padding-bottom: 40px;
-  margin-top: 50px;
+.container-statistic {
+  padding: 0 40px 40px 40px;
   display: flex;
   align-items: center;
   flex-direction: column;
-}
 
-.graph-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  margin: 40px 0;
-}
+  .col > .MuiFormControl-root {
+    margin: 0;
+    width: 100%;
 
-.graph.pieChart {
-  width: 30%;
-}
+    .MuiListItemText-root {
+      margin: 0;
+    }
+  }
 
-.graph.verticalBar {
-  width: 50%;
-}
+  .row.first {
+    padding: 16px;
+    justify-content: space-between;
+    row-gap: 16px;
+  }
 
-.graph.lineChart {
-  width: 50%;
-  margin: 40px auto;
+  .graph-container,
+  .container-age-chart {
+    padding: 24px 0;
+  }
+
+  .age-chart {
+    row-gap: 24px;
+  }
+
+  .col {
+    .MuiTableContainer-root .MuiTable-root {
+      border-top: 1px solid #e0e0e0;
+    }
+  }
 }
 
 .statistic-img {
-  margin: 50px auto;
+  margin: 40px 0;
   display: flex;
   justify-content: center;
 
@@ -41,12 +53,16 @@
 }
 
 // General page
-
 .general-container {
   .header {
     font-size: 2.4rem;
     margin: 20px auto;
     text-align: center;
+
+    p {
+      font-size: 1.6rem;
+      color: #999;
+    }
   }
 
   h3 {
@@ -78,6 +94,25 @@
     .gender-icon {
       width: 50%;
     }
+
+    .population-img {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .boygirl-img {
+    display: flex;
+    justify-content: center;
+
+    img {
+      width: 60%;
+    }
+  }
+
+  // laborCount
+  .laborCount {
+    text-align: center;
   }
 
   // Religion
@@ -103,4 +138,38 @@
       width: 60%;
     }
   }
+
+  .printButton {
+    margin-left: 20px;
+    margin-top: 50px;
+  }
+}
+
+// responsive tablet
+@media (min-width: 740px) and (max-width: 1023px) {
+  .container-statistic {
+    height: 100vh;
+  }
+}
+
+// >= tablet <= pc low resolution
+@media (min-width: 1024px) and (max-width: 1239px) {
+  .container-statistic {
+    height: 100vh;
+  }
+}
+
+// responsive mobile
+@media (max-width: 739px) {
+  .container-statistic {
+    padding: 0 20px 30px 20px;
+
+    h2 {
+      padding: 20px 0;
+    }
+  }
+}
+
+/* > PC medium resolution  */
+@media (min-width: 1113px) {
 }

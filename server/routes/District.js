@@ -7,7 +7,7 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 router.get("/:idCity",validateToken, async (req, res) => {
     if (!req.query.id) {
         const id_city = req.params.idCity
-        if (req.user.role !== 'A1' && req.user.id.indexOf(id_city) !== 0) {
+        if ( req.user.role !== 'A1' && req.user.id.indexOf(id_city) !== 0) {
             return res.json('Không có quyền truy cập')
         }
         const listDistrict = await District.findAll({
@@ -35,9 +35,29 @@ router.get("/id/:id",validateToken, async (req, res) => {
     // res.json(listDistrict);
 })
 
+
+// Them mot quan huyen moi
+router.post("/",validateToken, async (req, res) => {
+  if (req.user.role !== 'A2') {
+    return res.json('Không có quyền truy cập')
+  }
+  try {
+      const { districtName, districtCode, idCity } = req.body;
+      District.create({
+          id_district: districtCode,
+          district_name: districtName,
+          hasAccount: false,
+          quantity_district: 0,
+          id_city: idCity,
+      });
+      res.json("SUCCESS");
+  } catch(err) {
+  }
+});
+
 // Khi thay đổi thì sẽ tạo newCode: "value"
 // Hàm này có thể update districtCode, districtName, hasAccount, quantity khi có dữ gửi đến (1, 2, hoặc cả 3)
-router.post("/:districtId", async (req, res) => {
+    router.post("/:districtId", async (req, res) => {
     const districtId = req.params.districtId; 
     // Kiểm tra và sửa đổi id_district
     if (req.body.newName !== null) {
@@ -69,6 +89,20 @@ router.post("/:districtId", async (req, res) => {
       {where: {id_district: districtId}});
     }
     res.json("Update successfully");
+  });
+
+  //Xóa một quận/huyện
+  router.delete("/:id",validateToken, async (req, res) => {
+    if (req.user.role !== 'A2') {
+      return res.json('Không có quyền truy cập')
+    }
+    const id = req.params.id;
+    District.destroy({
+      where: {
+        id_district: id
+      } 
+    })
+    res.send("SUCCESS")
   });
 
 module.exports = router;

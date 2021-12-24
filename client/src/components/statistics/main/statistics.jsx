@@ -23,6 +23,10 @@ import Statistic from '../../../constants/images/statistics/statistic.svg';
 var convertToCountArray = require('../utils').convertToCountArray;
 var convertAgeToArray = require('../utils').convertAgeToArray;
 var convertAgeJump10 = require('../utils').convertAgeJump10;
+var convertToPercent = require('../utils').convertToPercent;
+var getTopN = require('../utils').getTopN;
+var countNumberOverAge = require('../utils').countNumberOverAge;
+var calculateBoyGirlRatio = require('../utils').calculateBoyGirlRatio;
 
 function Statistics() {
   const [page, setPage] = React.useState(1);
@@ -36,6 +40,10 @@ function Statistics() {
   const [dataTable, setDataTable] = useState([]);
   // Xet tieu chi lua chon khi thong ke
   const [criteria, setCriteria] = useState('');
+  // Data general statistic
+  const [generalStatistic, setGeneralStatistic] = useState({});
+  const [listLocal, setListLocal] = useState([]);
+  // Các tiêu chí khi thống kê
   const selectOptionNames = [
     'Chung',
     'Độ tuổi',
@@ -57,6 +65,7 @@ function Statistics() {
     ward_name: 'addWard_name',
     hamlet_name: 'addHamlet_name',
   };
+
   const [idCity, setIdCity] = useState('');
   const [idDistrict, setIdDistrict] = useState('');
   const [idWard, setIdWard] = useState('');
@@ -68,60 +77,110 @@ function Statistics() {
   var tempListDistrictName = [];
   var tempListWardName = [];
   var tempListHamletName = [];
-  useEffect(() => {
-    axios.get('http://localhost:3001/city').then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        tempListCityName[i] = response.data[i].city_name;
-      }
-      setListCityName(tempListCityName);
-      setListCity(response.data);
-    });
-    axios.get('http://localhost:3001/citizen').then((response) => {
-      setRows(response.data);
-      setListCitizen(response.data);
-    });
-  }, []);
-  useEffect(() => {
-    if (idCity !== '') {
-      axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
-            tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
-          }
-        }
-        setListDistrictName(tempListDistrictName);
-        setListDistrict(response.data);
-      });
-    }
-  }, [idCity]);
-  useEffect(() => {
-    if (idDistrict !== '') {
-      axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
-            tempListWardName[tempListWardName.length] = response.data[i].ward_name;
-          }
-        }
-        setListWardName(tempListWardName);
-        setListWard(response.data);
-      });
-    }
-  }, [idDistrict]);
-  useEffect(() => {
-    if (idWard !== '') {
-      axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
-            tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
-          }
-        }
-        setListHamletName(tempListHamletName);
-        setListHamlet(response.data);
-      });
-    }
-  }, [idWard]);
+  // useEffect(() => {
+  //   axios.get('http://localhost:3001/city').then((response) => {
+  //     for (let i = 0; i < response.data.length; i++) {
+  //       tempListCityName[i] = response.data[i].city_name;
+  //     }
+  //     setListCityName(tempListCityName);
+  //     setListCity(response.data);
+  //   });
+  //   axios.get('http://localhost:3001/citizen').then((response) => {
+  //     setRows(response.data);
+  //     setListCitizen(response.data);
+  //   });
+  // }, []);
+  // useEffect(() => {
+  //   if (idCity !== '') {
+  //     axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
+  //       for (let i = 0; i < response.data.length; i++) {
+  //         if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
+  //           tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
+  //         }
+  //       }
+  //       setListDistrictName(tempListDistrictName);
+  //       setListDistrict(response.data);
+  //     });
+  //   }
+  // }, [idCity]);
+  // useEffect(() => {
+  //   if (idDistrict !== '') {
+  //     axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
+  //       for (let i = 0; i < response.data.length; i++) {
+  //         if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
+  //           tempListWardName[tempListWardName.length] = response.data[i].ward_name;
+  //         }
+  //       }
+  //       setListWardName(tempListWardName);
+  //       setListWard(response.data);
+  //     });
+  //   }
+  // }, [idDistrict]);
+  // useEffect(() => {
+  //   if (idWard !== '') {
+  //     axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
+  //       for (let i = 0; i < response.data.length; i++) {
+  //         if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
+  //           tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
+  //         }
+  //       }
+  //       setListHamletName(tempListHamletName);
+  //       setListHamlet(response.data);
+  //     });
+  //   }
+  // }, [idWard]);
 
   function changeRows(item, name) {
+    // Send list selected id to general statistic
+    if (name === 'id_city') {
+      if (item.length === 0) {
+        let listLocal = listCity.map((city) => {
+          return {
+            name: city.city_name,
+            quantity: city.quantity_city,
+          };
+        });
+        setListLocal(listLocal);
+      } else {
+        let listLocal = item.map((local) => {
+          let index = listCity.findIndex((x) => x.city_name === local);
+          return {
+            name: listCity[index].city_name,
+            quantity: listCity[index].quantity_city,
+          };
+        });
+        setListLocal(listLocal);
+      }
+    } else if (name === 'id_district') {
+      let listLocal = item.map((local) => {
+        let index = listDistrict.findIndex((x) => x.district_name === local);
+        return {
+          name: listDistrict[index].district_name,
+          quantity: listDistrict[index].quantity_district,
+        };
+      });
+      setListLocal(listLocal);
+    } else if (name === 'id_ward') {
+      let listLocal = item.map((local) => {
+        let index = listWard.findIndex((x) => x.ward_name === local);
+        return {
+          name: listWard[index].ward_name,
+          quantity: listWard[index].quantity_ward,
+        };
+      });
+      setListLocal(listLocal);
+    } else if (name === 'id_hamlet') {
+      let listLocal = item.map((local) => {
+        let index = listHamlet.findIndex((x) => x.hamlet_name === local);
+        return {
+          name: listHamlet[index].hamlet_name,
+          quantity: listHamlet[index].quantity_hamlet,
+        };
+      });
+      setListLocal(listLocal);
+    }
+
+    // Set filter
     filter[name] = item;
 
     if (name === 'id_city') {
@@ -164,6 +223,24 @@ function Statistics() {
       }
     }
 
+    // Xét thông tin cho thống kê chung
+    var tempGenderArray = convertToCountArray(tempCitizens, 'gender');
+    tempGenderArray = convertToPercent(tempGenderArray);
+    let tempReligionArray = convertToCountArray(tempCitizens, 'religion');
+    let tempEthnicArray = convertToCountArray(tempCitizens, 'ethnic');
+    // age >= 15, trong độ tuổi lao động
+    let over15 = countNumberOverAge(tempCitizens, 15);
+    let countBoyGirl = calculateBoyGirlRatio(tempCitizens);
+
+    setGeneralStatistic({
+      totalPopulation: tempCitizens.length,
+      genderArray: tempGenderArray,
+      mostPopularEthnic: getTopN(tempEthnicArray, 1),
+      mostPopularReligion: getTopN(tempReligionArray, 2),
+      laborCount: over15,
+      countBoyGirl: countBoyGirl,
+    });
+
     if (name === 'id_criteria') {
       var tempCriteria = '';
       if (item === 'Tôn giáo') {
@@ -189,7 +266,6 @@ function Statistics() {
       } else if (item === 'Chung') {
         setCriteria('general');
         tempCriteria = 'general';
-        setDataTable(tempCitizens);
       } else if (item === 'Độ tuổi') {
         setCriteria('age');
         tempCriteria = 'age';
@@ -207,7 +283,7 @@ function Statistics() {
   // Chèn loại biểu đồ tùy thuộc vào từng loại tiêu chí
   const chooseDisplayInfo = function () {
     if (criteria === 'general') {
-      return <General citizens={dataTable} />;
+      return <General statisticData={generalStatistic} listLocal={listLocal} />;
       // return 'running';
     } else if (criteria === '') {
       return (
@@ -217,83 +293,128 @@ function Statistics() {
       );
     } else if (criteria === 'age') {
       return (
-        <div>
-          <div className="graph verticalBar center">
-            <VerticalBar input={dataTable} criteria={criteria} />
-          </div>
+        <div className="grid container-age-chart">
+          <div className="row age-chart">
+            <div className="col l-8 l-o-2 m-8 m-o-2 c-11 c-o-0-5 ">
+              <VerticalBar input={dataTable} criteria={criteria} />
+            </div>
 
-          <div className="graph lineChart center">
-            <LineChart input={dataTable} criteria={criteria} />
+            <div className="col l-8 l-o-2 m-8 m-o-2 c-11 c-o-0-5">
+              <LineChart input={dataTable} criteria={criteria} />
+            </div>
           </div>
         </div>
       );
     } else {
       return (
         <div>
-          <div className="graph-container">
-            <div className="graph pieChart">
-              <PieChart input={dataTable} criteria={criteria} />
-            </div>
-            <div className="graph verticalBar">
-              <VerticalBar input={dataTable} criteria={criteria} width={500} />
+          <div className="grid graph-container">
+            <div className="row">
+              <div className="col l-5 l-o-1 m-5 m-o-1 c-11 c-o-0-5">
+                <PieChart input={dataTable} criteria={criteria} />
+              </div>
+
+              <div className="col l-5 l-o-0 m-5 m-o-0 c-11 c-o-0-5">
+                <VerticalBar input={dataTable} criteria={criteria} width={500} />
+              </div>
             </div>
           </div>
 
-          <div>
-            <Pagination
-              page={page}
-              rowsPerPage={rowsPerPage}
-              totalRecords={dataTable.length}
-              changePage={(page) => setPage(page)}
-              changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
-            />
-            <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+          <div className="row">
+            <div className="col l-12 m-12 c-12">
+              <Pagination
+                page={page}
+                rowsPerPage={rowsPerPage}
+                totalRecords={dataTable.length}
+                changePage={(page) => setPage(page)}
+                changeRowsPerPage={(rowsPerPage) => setRowsPerPage(rowsPerPage)}
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col l-12 m-12 c-12">
+              <TableTemplate rows={dataTable} page={page} rowsPerPage={rowsPerPage} />
+            </div>
           </div>
         </div>
       );
     }
   };
 
+  // Ở A1 sẽ có 5 select nhưng từ A2 trở xuống số select sẽ giảm
+
+  // A2: Có 4 select Quận/Huyện, Phường/Xã, Thôn/Xóm và Tiêu chí
+  // Chia theo grid sẽ được bọc trong các cột theo thứ tự lần lượt từ Huyện -> Tiêu chí:
+  // col l-2-4 m-5 c-12 / col l-2-4 m-5 c-12 / col l-2-4 m-5 c-12 / col l-2 m-5 c-12
+
+  // A3: Chỉ còn 3 select Phường/Xã, Thôn/Xóm và Tiêu chí
+  // col l-3 m-5 c-12 / col l-3 m-5 c-12 / col l-3 m-5 c-12
+
+  // B1: Chỉ còn 2 select Thôn/Xóm và Tiêu chí
+  // col l-5 m-5 c-12 / col l-5 m-5 c-12
+
+  // Bình làm role tự bọc mấy cái select theo t viết trên đây cho từng role nhé <3
+
   return (
-    <div className="container">
-      <h2>Kết quả điều tra dân số </h2>
-      <Box sx={{ maxWidth: 1200, flexGrow: 1 }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <Select
-            names={listCityName}
-            label="Tỉnh/Thành phố"
-            item="id_city"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listDistrictName}
-            label="Quận/Huyện"
-            item="id_district"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listWardName}
-            label="Phường/Xã"
-            item="id_ward"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
-          <Select
-            names={listHamletName}
-            label="Thôn/Xóm"
-            item="id_hamlet"
-            changeItem={(item, name) => changeRows(item, name)}
-          />
+    <div className="grid container-statistic">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <h2>Kết quả điều tra dân số </h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <Paper>
+            <div className="row first">
+              <div className="col l-2-52 m-5 c-12">
+                <Select
+                  names={listCityName}
+                  label="Tỉnh/Thành phố"
+                  item="id_city"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-2 m-5 c-12">
+                <Select
+                  names={listDistrictName}
+                  label="Quận/Huyện"
+                  item="id_district"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2-1 m-5 c-12">
+                <Select
+                  names={listWardName}
+                  label="Phường/Xã"
+                  item="id_ward"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-2 m-5 c-12">
+                <Select
+                  names={listHamletName}
+                  label="Thôn/Xóm"
+                  item="id_hamlet"
+                  changeItem={(item, name) => changeRows(item, name)}
+                />
+              </div>
+              <div className="col l-1-8 m-5 c-12">
+                <SelectOption
+                  label="Tiêu chí"
+                  item="id_criteria"
+                  changeItem={(item, name) => changeRows(item, name)}
+                  names={selectOptionNames}
+                ></SelectOption>
+              </div>
+            </div>
 
-          <SelectOption
-            label="Tiêu chí"
-            item="id_criteria"
-            changeItem={(item, name) => changeRows(item, name)}
-            names={selectOptionNames}
-          ></SelectOption>
-
-          {chooseDisplayInfo()}
-        </Paper>
-      </Box>
+            <div className="row container-chart">
+              <div className="col l-12 m-12 c-12">{chooseDisplayInfo()}</div>
+            </div>
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }

@@ -43,7 +43,7 @@ router.post("/", validateToken,async (req, res) => {
         password: hash,
         role: role
       });
-      res.json("SUCCESS");
+      // res.json("SUCCESS");
     });
     res.json('SUCCESS');
   });
