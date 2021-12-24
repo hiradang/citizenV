@@ -5,20 +5,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
-// router.get('/' ,async (req, res) => {
-//   bcrypt.hash('password', 10).then((hash) => {
-//     Account.create({
-//       username: '01010101',
-//       password: hash,
-//       role: 'B2'
-//     });
-//     res.json('SUCCESS');
-//   });
-// });
 
-router.get('/update/:id', validateToken ,async (req, res) => {
+router.post('/update/:id', validateToken ,async (req, res) => {
   const id = req.params.id;
-  bcrypt.hash(id, 10).then((hash) => {
+  const {password} = req.body
+  if (req.user.id !== id) {
+    return res.json("Không có quyền truy cập")
+  }
+  bcrypt.hash(password, 10).then((hash) => {
     Account.update(
       {
         password: hash,
