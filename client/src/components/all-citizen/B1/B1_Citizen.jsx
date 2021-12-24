@@ -38,8 +38,6 @@ export default function Citizen() {
   const [listHamletName, setListHamletName] = useState([]);
   const [listHamlet, setListHamlet] = useState([]);
 
-  var tempListWardName = [];
-  var tempListHamletName = [];
 
   useEffect(() => {
     axios.get(`http://localhost:3001/ward/id?id=${idWard}`).then((response) => {

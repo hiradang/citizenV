@@ -5,18 +5,21 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import * as yup from 'yup';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import PasswordField from '../form-control/passwordField/passwordField';
 
 function UpdatePass(props) {
-  // Lấy một khẩu hiện tại rồi cho vào biến crPass nhé Loan:
-  const crPass = '';
-
+ 
+  const id = Cookies.get('user')
   const schema = yup.object().shape({
     current: yup
       .string()
       .required('Chưa nhập mật khẩu hiện tại')
-      .test('check cũ mới', 'Mật khẩu không chính xác', (value) => {
-        return value === crPass;
+      .test('check cũ mới', 'Mật khẩu không chính xác', async (value) => {
+        const res = await axios.post(`http://localhost:3001/account/login`, {username: id, password: value})
+        if (res.data.error) return 0
+        else return 1
       }),
     new: yup
       .string()
@@ -38,25 +41,10 @@ function UpdatePass(props) {
     resolver: yupResolver(schema),
   });
 
-  let { id } = useParams();
-  let history = useHistory();
-
-  // const submit = (e) => {
-  //   e.preventDefault();
-  //   if (newPassword !== cfPassword) {
-  //     Swal.fire({
-  //       title: 'Oops...',
-  //       text: 'Wrong New Password And Confirm Password Combination',
-  //       icon: 'question',
-  //       button: 'Done',
-  //     });
-  //   } else {
-  //     props.handleClose();
-  //   }
-  // };
-
   const handleSubmit = (values) => {
-    console.log(values);
+    axios.post(`http://localhost:3001/account/update/${id}`, {password: values.new}).then(
+      props.handleClose()
+    )
   };
 
   return (
