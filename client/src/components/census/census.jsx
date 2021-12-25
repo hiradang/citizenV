@@ -13,8 +13,11 @@ function Census() {
     enqueueSnackbar('Thêm dữ liệu thành công', { variant: 'success' });
   };
 
+  const showNotiError = () => {
+    enqueueSnackbar('Dữ liệu đã tồn tại', { variant: 'error' });
+  };
+
   const handleSubmit = (values, information, address, address1, address2) => {
-    // Dữ liệu ném lên đây là đã oke rồi, thêm vào db thôiiii
 
    const date =
       information.dateOfBirth.getFullYear().toString() +
@@ -36,7 +39,9 @@ function Census() {
       job: information.career,
     };
     axios.post(`http://localhost:3001/citizen`, data).then((response) => {
-      showNoti();
+      console.log(response.data)
+      if (response.data.error) showNotiError()
+      else showNoti();
     });
   };
 

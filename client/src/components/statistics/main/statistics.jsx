@@ -70,6 +70,7 @@ function Statistics() {
   var tempListDistrictName = [];
   var tempListWardName = [];
   var tempListHamletName = [];
+
   useEffect(() => {
     axios.get('http://localhost:3001/city').then((response) => {
       for (let i = 0; i < response.data.length; i++) {

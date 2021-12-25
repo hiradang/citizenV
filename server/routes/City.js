@@ -6,7 +6,7 @@ const db = require("../models");
 
 // Lấy thông tin tất cả thành phố 
 router.get("/",validateToken, async (req, res) => {
-  if (req.user.role !== 'A1') {
+  if (req.user.role !== 'A1' && req.user.role.indexOf('B') !== 0) {
     return res.json('Không có quyền truy cập')
   }
     const listCity = await City.findAll();

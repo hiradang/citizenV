@@ -38,8 +38,6 @@ export default function Citizen() {
   const [listHamletName, setListHamletName] = useState([]);
   const [listHamlet, setListHamlet] = useState([]);
 
-  var tempListWardName = [];
-  var tempListHamletName = [];
 
   useEffect(() => {
     axios.get(`http://localhost:3001/ward/id?id=${idWard}`).then((response) => {
@@ -69,7 +67,7 @@ export default function Citizen() {
   }, []);
 
   useEffect(() => {
-    if (searchId != '') {
+    if (searchId.length === 9 || searchId.length === 12) {
       axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
         setListCitizen(response.data);
       });
