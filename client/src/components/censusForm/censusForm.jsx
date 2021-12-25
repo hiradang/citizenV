@@ -8,15 +8,15 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { useSnackbar } from 'notistack';
 import { listCareer, listEthnic, listLevel, listReligion } from '../../constants/listAboutPeople';
 import InputField from '../form-control/inputField/inputField';
 import './styles.scss';
-import axios from 'axios';
 
 CensusForm.propTypes = {
   onSubmit: PropTypes.func,

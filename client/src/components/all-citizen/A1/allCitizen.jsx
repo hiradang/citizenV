@@ -1,4 +1,3 @@
-// import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
 import axios from 'axios';
 import Paper from '@mui/material/Paper';
@@ -143,8 +142,6 @@ export default function Citizen() {
     });
   }, []);
   useEffect(() => {
-    // if (searchId !== '') {
-    // console.log(searchId);
     axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
       setListCitizen(response.data);
     });

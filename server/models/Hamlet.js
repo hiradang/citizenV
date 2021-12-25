@@ -20,11 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     id_ward: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    canDeclare: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
+    }
   });
   Hamlet.associate = (models) => {
     Hamlet.belongsTo(models.Ward, {

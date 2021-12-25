@@ -8,8 +8,6 @@ import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import ImageNotDeclare from '../../constants/images/work/canNotDeclare.svg';
 import Picker from './components/picker/picker';
-import Footer from '../footer/footer';
-
 import './styles.scss';
 
 const role = Cookies.get('role');
@@ -324,11 +322,6 @@ function Tasks() {
               </>
             )}
           </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col l-12 m-12 c-12">
-          <Footer />
         </div>
       </div>
     </div>

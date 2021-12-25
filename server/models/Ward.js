@@ -20,11 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     id_district: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    canDeclare: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
+    }
   });
   Ward.associate = (models) => {
     Ward.belongsTo(models.District, {
