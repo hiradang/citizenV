@@ -1,7 +1,11 @@
 {
   "development": {
     "username": "root",
+<<<<<<< HEAD
     "password": "maihuy",
+=======
+    "password": "",
+>>>>>>> binhdang
     "database": "population",
     "host": "localhost",
     "dialect": "mysql"

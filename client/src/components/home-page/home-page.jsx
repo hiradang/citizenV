@@ -29,11 +29,12 @@ import CensusForm from '../census/census';
 import Manage from '../manage/main/manage';
 import Slide from '../slide/slide';
 import Statistics from '../statistics/main/statistics';
-import Tasks from '../tasks/main/TaskHome';
-import './styles.scss';
+import PrintForm from '../PrintForm/PrintForm';
 import UpdatePass from './updatePass';
+import Tasks from '../tasks/main/TaskHome';
 
 const drawerWidth = '20vw';
+const idUser = Cookies.get('user');
 
 HomePage.propTypes = {
   HomePage: PropTypes.array.isRequired,
@@ -142,6 +143,7 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/quanly') return <Manage />;
     if (location.pathname === '/thongke') return <Statistics />;
     if (location.pathname === '/nhaplieu') return <CensusForm />;
+    if (location.pathname === '/in') return <PrintForm />;
   };
 
   return (
@@ -174,6 +176,19 @@ export default function HomePage({ listItems }) {
               <i>CitizenV</i>
             </Typography>
           </div>
+
+          <div className="username">
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1 }}
+              fontWeight={400}
+              fontSize="14px"
+            >
+              <i>User: {idUser}</i>
+            </Typography>
+          </div>
+
           <IconButton
             size="large"
             color="inherit"
