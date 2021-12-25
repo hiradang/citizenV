@@ -10,16 +10,21 @@ import Cookies from 'js-cookie';
 import PasswordField from '../form-control/passwordField/passwordField';
 
 function UpdatePass(props) {
- 
-  const id = Cookies.get('user')
+  const id = Cookies.get('user');
+  // Lấy một khẩu hiện tại rồi cho vào biến crPass nhé Loan:
+  const crPass = 'password';
+
   const schema = yup.object().shape({
     current: yup
       .string()
       .required('Chưa nhập mật khẩu hiện tại')
       .test('check cũ mới', 'Mật khẩu không chính xác', async (value) => {
-        const res = await axios.post(`http://localhost:3001/account/login`, {username: id, password: value})
-        if (res.data.error) return 0
-        else return 1
+        const res = await axios.post(`http://localhost:3001/account/login`, {
+          username: id,
+          password: value,
+        });
+        if (res.data.error) return 0;
+        else return 1;
       }),
     new: yup
       .string()
@@ -42,9 +47,9 @@ function UpdatePass(props) {
   });
 
   const handleSubmit = (values) => {
-    axios.post(`http://localhost:3001/account/update/${id}`, {password: values.new}).then(
-      props.handleClose()
-    )
+    axios
+      .post(`http://localhost:3001/account/update/${id}`, { password: values.new })
+      .then(props.handleClose());
   };
 
   return (

@@ -1,9 +1,9 @@
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DatePicker from '@mui/lab/DatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import TextField from '@mui/material/TextField';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
 
 DayPicker.propTypes = {
   label: PropTypes.string.isRequired,
@@ -20,7 +20,7 @@ function DayPicker({ label, getData, initialValue, initEnd }) {
   };
 
   return (
-    <div style={{ marginLeft: '10px' }}>
+    <div className="day-picker-form">
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label={label}

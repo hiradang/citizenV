@@ -1,12 +1,34 @@
 @import '../../app.scss';
 @import '../../grid.scss';
 
-.wrapper {
+.container-task {
+  padding: 0 40px;
   height: 100vh;
-  width: 100%;
-  padding: 0 20px;
 
-  margin-top: 30px;
+  .col > .MuiFormControl-root {
+    margin: 0;
+    width: 100%;
+
+    .MuiListItemText-root {
+      margin: 0;
+    }
+  }
+
+  .row.first {
+    padding: 20px 16px 16px 16px;
+    justify-content: space-between;
+    row-gap: 16px;
+    margin-bottom: 24px;
+
+    .task-button {
+      width: 100%;
+      height: 56px;
+    }
+
+    .day-picker-form > .MuiFormControl-root {
+      width: 100%;
+    }
+  }
 }
 
 .MuiDataGrid-columnHeaderTitleContainer {
@@ -21,13 +43,18 @@
   grid-gap: 0px !important;
 }
 
-.status.negative {
+.status.lock {
   background-color: #d47483;
   font-weight: 600;
 }
 
-.status.positive {
+.status.finished {
   background-color: rgba(157, 255, 118, 0.49);
+  font-weight: 600;
+}
+
+.status.unfinished {
+  background-color: rgba(224, 183, 60, 0.55);
   font-weight: 600;
 }
 
@@ -58,27 +85,28 @@ ul.MuiDataGrid-menuList > li.MuiMenuItem-root.MuiButtonBase-root:nth-child(3) {
 
 // responsive tablet
 @media (min-width: 740px) and (max-width: 1023px) {
-  .container-manage {
-    padding: 30px 19px;
-    min-width: 768px;
-    // height: 100vh;
-
-    & > .first {
-      row-gap: 16px;
-    }
-
-    .second {
-      padding: 16px 0;
-    }
+  .container-task {
+    // height: 81vh;
   }
 }
 
 // >= tablet <= pc low resolution
 @media (min-width: 1024px) and (max-width: 1239px) {
+  .container-task {
+    // height: 86vh;
+  }
 }
 
 // responsive mobile
 @media (max-width: 739px) {
+  .container-task {
+    padding: 0 20px;
+    // height: 77vh;
+
+    h2 {
+      padding: 20px 0;
+    }
+  }
 }
 
 /* > PC medium resolution  */

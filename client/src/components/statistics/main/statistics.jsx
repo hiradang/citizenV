@@ -1,24 +1,18 @@
-import '../style.scss';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import Statistic from '../../../constants/images/statistics/statistic.svg';
 import Pagination from '../../all-citizen/Pagination';
 import Select from '../../all-citizen/select';
-import TableTemplate from '../TableTemplate';
 import SelectOption from '../../all-citizen/selectOption';
-
+import LineChart from '../charts/LineChart';
 // Charts
 import PieChart from '../charts/PieChart';
 import VerticalBar from '../charts/VerticalBar';
-import HorizontalBar from '../charts/HorizontalBar';
-import LineChart from '../charts/LineChart';
-
 import General from '../general-page/General';
-import Statistic from '../../../constants/images/statistics/statistic.svg';
+import '../style.scss';
+import TableTemplate from '../TableTemplate';
 
 var convertToCountArray = require('../utils').convertToCountArray;
 var convertAgeToArray = require('../utils').convertAgeToArray;
