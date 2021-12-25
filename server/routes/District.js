@@ -7,7 +7,7 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 router.get("/:idCity",validateToken, async (req, res) => {
     if (!req.query.id) {
         const id_city = req.params.idCity
-        if ( req.user.role !== 'A1' && req.user.id.indexOf(id_city) !== 0) {
+        if ( req.user.role !== 'A1' && req.user.id.indexOf(id_city) !== 0 && req.user.role.indexOf('B') !== 0) {
             return res.json('Không có quyền truy cập')
         }
         const listDistrict = await District.findAll({
@@ -21,19 +21,7 @@ router.get("/:idCity",validateToken, async (req, res) => {
     }
 })
 
-//Lấy thông tin 1 quận, huyện
-router.get("/id/:id",validateToken, async (req, res) => {
-    const id_city = req.query.idDistrict
-    console.log(1)
-    // if (req.user.role !== 'A1' && req.user.id !== id_city) {
-    //     return res.json('Không có quyền truy cập')
-    // }
-    // const listDistrict = await District.findAll({
-    //     where: {id_district : id_district},
-    //     attributes: ['id_district', 'district_name', 'quantity_district', 'hasAccount']
-    // });
-    // res.json(listDistrict);
-})
+
 
 
 // Them mot quan huyen moi

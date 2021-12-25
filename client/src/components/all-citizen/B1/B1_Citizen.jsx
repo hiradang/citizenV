@@ -67,7 +67,7 @@ export default function Citizen() {
   }, []);
 
   useEffect(() => {
-    if (searchId != '') {
+    if (searchId.length === 9 || searchId.length === 12) {
       axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
         setListCitizen(response.data);
       });

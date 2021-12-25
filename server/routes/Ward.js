@@ -7,7 +7,7 @@ const { validateToken } = require('../middlewares/AuthMiddleware');
 router.get('/:idDistrict', validateToken, async (req, res) => {
   if (!req.query.id) {
     const id_district = req.params.idDistrict;
-    if (req.user.role !== 'A1' && id_district.indexOf(req.user.id) !== 0) {
+    if (req.user.role !== 'A1' && id_district.indexOf(req.user.id) !== 0 && req.user.role.indexOf('B') !== 0) {
       return res.json('Không có quyền truy cập');
     }
     const listWard = await Ward.findAll({
