@@ -45,6 +45,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         }
-    });
+    }, 
+    {
+        indexes:[
+            {
+              unique: true,
+              fields:['id_citizen']
+            }
+           ]
+    }
+    );
     return Citizen;
 };

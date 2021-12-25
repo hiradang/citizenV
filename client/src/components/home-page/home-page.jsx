@@ -30,6 +30,7 @@ import logoUrl from '../../constants/images/logo.png';
 import Tasks from '../tasks/main/TaskHome';
 import Statistics from '../statistics/main/statistics';
 import CensusForm from '../census/census';
+import PrintForm from '../PrintForm/PrintForm';
 import Cookies from 'js-cookie';
 import UpdatePass from './updatePass';
 import Dialog from '@mui/material/Dialog';
@@ -144,6 +145,7 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/quanly') return <Manage />;
     if (location.pathname === '/thongke') return <Statistics />;
     if (location.pathname === '/nhaplieu') return <CensusForm />;
+    if (location.pathname === '/in') return <PrintForm />;
   };
 
   return (

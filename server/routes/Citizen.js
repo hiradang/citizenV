@@ -16,6 +16,7 @@ router.get('/:id', validateToken, async (req, res) => {
     });
 });
 
+
 //Lấy thông tin người dân 
 router.get('/', validateToken, async (req, res) => {
   if (req.user.role === 'A1') {

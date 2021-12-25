@@ -84,7 +84,6 @@ function Statistics() {
       setListCity(response.data);
     });
     axios.get('http://localhost:3001/citizen/').then((response) => {
-      console.log(response.data);
       setRows(response.data);
       setListCitizen(response.data);
     });

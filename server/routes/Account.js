@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
-
 router.post('/update/:id', validateToken ,async (req, res) => {
   const id = req.params.id;
   const {password} = req.body
@@ -22,6 +21,12 @@ router.post('/update/:id', validateToken ,async (req, res) => {
   });
 });
 
+
+router.get('/' ,async (req, res) => {
+  bcrypt.hash("password", 10).then((hash) => {
+    res.send(hash);
+  });
+});
 // Cấp tài khoản 
 router.post("/", validateToken,async (req, res) => {
     const { username, password } = req.body;
