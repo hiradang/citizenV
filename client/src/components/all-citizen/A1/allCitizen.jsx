@@ -10,89 +10,89 @@ import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
 import '../styleCitizen.scss';
 
-const citizenFix = [
-  {
-    id_citizen: '010047276406',
-    citizen_name: 'Dương Viễn Cảnh',
-    date_of_birth: '1923-01-31',
-    gender: 'Nam',
-    hometown: '01260303',
-    tempAddress: '17090503',
-    address: '24170705',
-    ethnic: 'Chu-ru',
-    religion: 'Cơ đốc Phục lâm',
-    level: 'Trung học cơ sở',
-    job: 'Ca sĩ',
-    createdAt: null,
-    updatedAt: null,
-    addHamlet_name: 'Thôn 5',
-    addWard_name: 'Xã Ia Phang',
-    addDistrict_name: 'Huyện Chư Pưh',
-    addCity_name: 'Tỉnh Gia Lai',
-    tempHamlet_name: 'Khu phố 3',
-    tempWard_name: 'Thị trấn Rạch Gốc',
-    tempDistrict_name: 'Huyện Ngọc Hiển',
-    tempCity_name: 'Tỉnh Cà Mau',
-    homeHamlet_name: 'Thôn 3',
-    homeWard_name: 'Xã Bích Hòa',
-    homeDistrict_name: 'Huyện Thanh Oai',
-    homeCity_name: 'Thành phố Hà Nội',
-  },
-  {
-    id_citizen: '010050431794',
-    citizen_name: 'Lý Hữu Minh',
-    date_of_birth: '1923-11-07',
-    gender: 'Nam',
-    hometown: '01271703',
-    tempAddress: '27102502',
-    address: '15030603',
-    ethnic: 'Mường',
-    religion: "Tôn giáo Baha'l",
-    level: 'Trung học cơ sở',
-    job: 'Streamer',
-    createdAt: null,
-    updatedAt: null,
-    addHamlet_name: 'Thôn 3',
-    addWard_name: 'Xã Thanh Phú',
-    addDistrict_name: 'Thị xã Bình Long',
-    addCity_name: 'Tỉnh Bình Phước',
-    tempHamlet_name: 'Thôn 2',
-    tempWard_name: 'Xã Cẩm Sơn',
-    tempDistrict_name: 'Huyện Cẩm Xuyên',
-    tempCity_name: 'Tỉnh Hà Tĩnh',
-    homeHamlet_name: 'Thôn 3',
-    homeWard_name: 'Xã Nguyễn Trãi',
-    homeDistrict_name: 'Huyện Thường Tín',
-    homeCity_name: 'Thành phố Hà Nội',
-  },
-  {
-    id_citizen: '010085013557',
-    citizen_name: 'Hoàng Trung Thành',
-    date_of_birth: '1987-10-03',
-    gender: 'Nam',
-    hometown: '07020301',
-    tempAddress: '01140503',
-    address: '13070903',
-    ethnic: 'Khơ mú',
-    religion: 'Hồi giáo',
-    level: 'Trung học cơ sở',
-    job: 'Nhà khảo sát',
-    createdAt: null,
-    updatedAt: null,
-    addHamlet_name: 'Thôn 3',
-    addWard_name: 'Xã Tây Bình',
-    addDistrict_name: 'Huyện Tây Sơn',
-    addCity_name: 'Tỉnh Bình Định',
-    tempHamlet_name: 'Thôn 3',
-    tempWard_name: 'Xã Hữu Hoà',
-    tempDistrict_name: 'Huyện Thanh Trì',
-    tempCity_name: 'Thành phố Hà Nội',
-    homeHamlet_name: 'Khu phố 1',
-    homeWard_name: 'Phường Phước Nguyên',
-    homeDistrict_name: 'Thành phố Bà Rịa',
-    homeCity_name: 'Tỉnh Bà Rịa - Vũng Tàu',
-  },
-];
+// const citizenFix = [
+//   {
+//     id_citizen: '010047276406',
+//     citizen_name: 'Dương Viễn Cảnh',
+//     date_of_birth: '1923-01-31',
+//     gender: 'Nam',
+//     hometown: '01260303',
+//     tempAddress: '17090503',
+//     address: '24170705',
+//     ethnic: 'Chu-ru',
+//     religion: 'Cơ đốc Phục lâm',
+//     level: 'Trung học cơ sở',
+//     job: 'Ca sĩ',
+//     createdAt: null,
+//     updatedAt: null,
+//     addHamlet_name: 'Thôn 5',
+//     addWard_name: 'Xã Ia Phang',
+//     addDistrict_name: 'Huyện Chư Pưh',
+//     addCity_name: 'Tỉnh Gia Lai',
+//     tempHamlet_name: 'Khu phố 3',
+//     tempWard_name: 'Thị trấn Rạch Gốc',
+//     tempDistrict_name: 'Huyện Ngọc Hiển',
+//     tempCity_name: 'Tỉnh Cà Mau',
+//     homeHamlet_name: 'Thôn 3',
+//     homeWard_name: 'Xã Bích Hòa',
+//     homeDistrict_name: 'Huyện Thanh Oai',
+//     homeCity_name: 'Thành phố Hà Nội',
+//   },
+//   {
+//     id_citizen: '010050431794',
+//     citizen_name: 'Lý Hữu Minh',
+//     date_of_birth: '1923-11-07',
+//     gender: 'Nam',
+//     hometown: '01271703',
+//     tempAddress: '27102502',
+//     address: '15030603',
+//     ethnic: 'Mường',
+//     religion: "Tôn giáo Baha'l",
+//     level: 'Trung học cơ sở',
+//     job: 'Streamer',
+//     createdAt: null,
+//     updatedAt: null,
+//     addHamlet_name: 'Thôn 3',
+//     addWard_name: 'Xã Thanh Phú',
+//     addDistrict_name: 'Thị xã Bình Long',
+//     addCity_name: 'Tỉnh Bình Phước',
+//     tempHamlet_name: 'Thôn 2',
+//     tempWard_name: 'Xã Cẩm Sơn',
+//     tempDistrict_name: 'Huyện Cẩm Xuyên',
+//     tempCity_name: 'Tỉnh Hà Tĩnh',
+//     homeHamlet_name: 'Thôn 3',
+//     homeWard_name: 'Xã Nguyễn Trãi',
+//     homeDistrict_name: 'Huyện Thường Tín',
+//     homeCity_name: 'Thành phố Hà Nội',
+//   },
+//   {
+//     id_citizen: '010085013557',
+//     citizen_name: 'Hoàng Trung Thành',
+//     date_of_birth: '1987-10-03',
+//     gender: 'Nam',
+//     hometown: '07020301',
+//     tempAddress: '01140503',
+//     address: '13070903',
+//     ethnic: 'Khơ mú',
+//     religion: 'Hồi giáo',
+//     level: 'Trung học cơ sở',
+//     job: 'Nhà khảo sát',
+//     createdAt: null,
+//     updatedAt: null,
+//     addHamlet_name: 'Thôn 3',
+//     addWard_name: 'Xã Tây Bình',
+//     addDistrict_name: 'Huyện Tây Sơn',
+//     addCity_name: 'Tỉnh Bình Định',
+//     tempHamlet_name: 'Thôn 3',
+//     tempWard_name: 'Xã Hữu Hoà',
+//     tempDistrict_name: 'Huyện Thanh Trì',
+//     tempCity_name: 'Thành phố Hà Nội',
+//     homeHamlet_name: 'Khu phố 1',
+//     homeWard_name: 'Phường Phước Nguyên',
+//     homeDistrict_name: 'Thành phố Bà Rịa',
+//     homeCity_name: 'Tỉnh Bà Rịa - Vũng Tàu',
+//   },
+// ];
 
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
@@ -137,57 +137,57 @@ export default function Citizen() {
       setListCityName(tempListCityName);
       setListCity(response.data);
     });
-    // axios.get('http://localhost:3001/citizen').then((response) => {
-    setRows(citizenFix);
-    setListCitizen(citizenFix);
-    // });
+    axios.get('http://localhost:3001/citizen').then((response) => {
+      setRows(response.data);
+      setListCitizen(response.data);
+    });
   }, []);
-  // useEffect(() => {
-  //   // if (searchId !== '') {
-  //   // console.log(searchId);
-  //   axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
-  //     setListCitizen(response.data);
-  //   });
-  // }, [searchId]);
-  // useEffect(() => {
-  //   if (idCity !== '') {
-  //     axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
-  //           tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
-  //         }
-  //       }
-  //       setListDistrictName(tempListDistrictName);
-  //       setListDistrict(response.data);
-  //     });
-  //   }
-  // }, [idCity]);
-  // useEffect(() => {
-  //   if (idDistrict !== '') {
-  //     axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
-  //           tempListWardName[tempListWardName.length] = response.data[i].ward_name;
-  //         }
-  //       }
-  //       setListWardName(tempListWardName);
-  //       setListWard(response.data);
-  //     });
-  //   }
-  // }, [idDistrict]);
-  // useEffect(() => {
-  //   if (idWard !== '') {
-  //     axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
-  //           tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
-  //         }
-  //       }
-  //       setListHamletName(tempListHamletName);
-  //       setListHamlet(response.data);
-  //     });
-  //   }
-  // }, [idWard]);
+  useEffect(() => {
+    // if (searchId !== '') {
+    // console.log(searchId);
+    axios.get(`http://localhost:3001/citizen/${searchId}`).then((response) => {
+      setListCitizen(response.data);
+    });
+  }, [searchId]);
+  useEffect(() => {
+    if (idCity !== '') {
+      axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
+            tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
+          }
+        }
+        setListDistrictName(tempListDistrictName);
+        setListDistrict(response.data);
+      });
+    }
+  }, [idCity]);
+  useEffect(() => {
+    if (idDistrict !== '') {
+      axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
+            tempListWardName[tempListWardName.length] = response.data[i].ward_name;
+          }
+        }
+        setListWardName(tempListWardName);
+        setListWard(response.data);
+      });
+    }
+  }, [idDistrict]);
+  useEffect(() => {
+    if (idWard !== '') {
+      axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
+            tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
+          }
+        }
+        setListHamletName(tempListHamletName);
+        setListHamlet(response.data);
+      });
+    }
+  }, [idWard]);
   function changeRows(item, name) {
     if (name === 'id_add') {
       if (item === 'Địa chỉ tạm trú') {

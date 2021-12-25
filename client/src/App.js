@@ -20,7 +20,6 @@ function App() {
     return config;
   });
 
-  
   //const [id, setId] = useState(localStorage.getItem("id"))
   return (
     <div className="App">

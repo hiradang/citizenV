@@ -26,22 +26,22 @@ h2 {
 // responsive tablet
 @media (min-width: 740px) and (max-width: 1023px) {
   .container-slide {
-    height: 93.5vh;
-    padding: 0 50px 50px 50px;
+    height: 80.5vh;
+    padding: 0 50px 0px 50px;
   }
 }
 
 // >= tablet <= pc low resolution
 @media (min-width: 1024px) and (max-width: 1239px) {
   .container-slide {
-    height: 95vh;
+    height: 85vh;
   }
 }
 
 // responsive mobile
 @media (max-width: 739px) {
   .container-slide {
-    height: 92vh;
+    height: 77vh;
     padding: 0 10px;
   }
 

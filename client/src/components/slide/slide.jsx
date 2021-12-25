@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
+import Footer from '../footer/footer';
 // import img1 from '../../constants/images/1.jpg'
 import './styles.scss';
 
@@ -57,70 +58,86 @@ function Slide() {
   };
 
   return (
-    <div className="grid container-slide">
+    <div className="grid">
       <div className="row">
-        <div className="col l-12 m-12 c-12">
-          <h2>Hệ thống điều tra dân số CitizenV</h2>
+        <div className="col l-12 c-12 m-12">
+          <div className="container-slide">
+            <div className="row">
+              <div className="col l-12 m-12 c-12">
+                <h2>Hệ thống điều tra dân số CitizenV</h2>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col l-10 l-o-1 m-10 m-o-1 c-12">
+                <Paper
+                  className="title-slide"
+                  square
+                  elevation={0}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 50,
+                    pl: 2,
+                    bgcolor: 'background.default',
+                  }}
+                >
+                  <h3 className="content-slide">{images[activeStep].label}</h3>
+                </Paper>
+                <AutoPlaySwipeableViews
+                  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                  index={activeStep}
+                  onChangeIndex={handleStepChange}
+                  enableMouseEvents
+                >
+                  {images.map((step, index) => (
+                    <div key={step.label}>
+                      {Math.abs(activeStep - index) <= 2 ? (
+                        <Box
+                          component="img"
+                          sx={{
+                            display: 'block',
+                            overflow: 'hidden',
+                            width: '100%',
+                          }}
+                          src={step.imgPath}
+                          alt={step.label}
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+                </AutoPlaySwipeableViews>
+                <MobileStepper
+                  className="footer-slide"
+                  steps={maxSteps}
+                  position="static"
+                  activeStep={activeStep}
+                  nextButton={
+                    <Button
+                      size="small"
+                      onClick={handleNext}
+                      disabled={activeStep === maxSteps - 1}
+                    >
+                      Next
+                      {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                    </Button>
+                  }
+                  backButton={
+                    <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                      {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                      Back
+                    </Button>
+                  }
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
       <div className="row">
-        <div className="col l-10 l-o-1 m-10 m-o-1 c-12">
-          <Paper
-            className="title-slide"
-            square
-            elevation={0}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: 50,
-              pl: 2,
-              bgcolor: 'background.default',
-            }}
-          >
-            <h3 className="content-slide">{images[activeStep].label}</h3>
-          </Paper>
-          <AutoPlaySwipeableViews
-            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-            index={activeStep}
-            onChangeIndex={handleStepChange}
-            enableMouseEvents
-          >
-            {images.map((step, index) => (
-              <div key={step.label}>
-                {Math.abs(activeStep - index) <= 2 ? (
-                  <Box
-                    component="img"
-                    sx={{
-                      display: 'block',
-                      overflow: 'hidden',
-                      width: '100%',
-                    }}
-                    src={step.imgPath}
-                    alt={step.label}
-                  />
-                ) : null}
-              </div>
-            ))}
-          </AutoPlaySwipeableViews>
-          <MobileStepper
-            className="footer-slide"
-            steps={maxSteps}
-            position="static"
-            activeStep={activeStep}
-            nextButton={
-              <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
-                Next
-                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-              </Button>
-            }
-            backButton={
-              <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                Back
-              </Button>
-            }
-          />
+        <div className="col l-12 m-12 c-12">
+          <Footer />
         </div>
       </div>
     </div>

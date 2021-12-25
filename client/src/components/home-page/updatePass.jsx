@@ -9,7 +9,7 @@ import PasswordField from '../form-control/passwordField/passwordField';
 
 function UpdatePass(props) {
   // Lấy một khẩu hiện tại rồi cho vào biến crPass nhé Loan:
-  const crPass = '';
+  const crPass = 'password';
 
   const schema = yup.object().shape({
     current: yup

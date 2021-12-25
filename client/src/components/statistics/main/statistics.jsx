@@ -1,24 +1,17 @@
-import '../style.scss';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import * as React from 'react';
+import { useState } from 'react';
+import Statistic from '../../../constants/images/statistics/statistic.svg';
 import Pagination from '../../all-citizen/Pagination';
 import Select from '../../all-citizen/select';
-import TableTemplate from '../TableTemplate';
 import SelectOption from '../../all-citizen/selectOption';
-
+import LineChart from '../charts/LineChart';
 // Charts
 import PieChart from '../charts/PieChart';
 import VerticalBar from '../charts/VerticalBar';
-import HorizontalBar from '../charts/HorizontalBar';
-import LineChart from '../charts/LineChart';
-
 import General from '../general-page/General';
-import Statistic from '../../../constants/images/statistics/statistic.svg';
+import '../style.scss';
+import TableTemplate from '../TableTemplate';
 
 var convertToCountArray = require('../utils').convertToCountArray;
 var convertAgeToArray = require('../utils').convertAgeToArray;
@@ -77,58 +70,58 @@ function Statistics() {
   var tempListDistrictName = [];
   var tempListWardName = [];
   var tempListHamletName = [];
-  // useEffect(() => {
-  //   axios.get('http://localhost:3001/city').then((response) => {
-  //     for (let i = 0; i < response.data.length; i++) {
-  //       tempListCityName[i] = response.data[i].city_name;
-  //     }
-  //     setListCityName(tempListCityName);
-  //     setListCity(response.data);
-  //   });
-  //   axios.get('http://localhost:3001/citizen').then((response) => {
-  //     setRows(response.data);
-  //     setListCitizen(response.data);
-  //   });
-  // }, []);
-  // useEffect(() => {
-  //   if (idCity !== '') {
-  //     axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
-  //           tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
-  //         }
-  //       }
-  //       setListDistrictName(tempListDistrictName);
-  //       setListDistrict(response.data);
-  //     });
-  //   }
-  // }, [idCity]);
-  // useEffect(() => {
-  //   if (idDistrict !== '') {
-  //     axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
-  //           tempListWardName[tempListWardName.length] = response.data[i].ward_name;
-  //         }
-  //       }
-  //       setListWardName(tempListWardName);
-  //       setListWard(response.data);
-  //     });
-  //   }
-  // }, [idDistrict]);
-  // useEffect(() => {
-  //   if (idWard !== '') {
-  //     axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
-  //       for (let i = 0; i < response.data.length; i++) {
-  //         if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
-  //           tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
-  //         }
-  //       }
-  //       setListHamletName(tempListHamletName);
-  //       setListHamlet(response.data);
-  //     });
-  //   }
-  // }, [idWard]);
+  useEffect(() => {
+    axios.get('http://localhost:3001/city').then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        tempListCityName[i] = response.data[i].city_name;
+      }
+      setListCityName(tempListCityName);
+      setListCity(response.data);
+    });
+    axios.get('http://localhost:3001/citizen').then((response) => {
+      setRows(response.data);
+      setListCitizen(response.data);
+    });
+  }, []);
+  useEffect(() => {
+    if (idCity !== '') {
+      axios.get(`http://localhost:3001/district/${idCity}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListDistrictName.indexOf(response.data[i].district_name) === -1) {
+            tempListDistrictName[tempListDistrictName.length] = response.data[i].district_name;
+          }
+        }
+        setListDistrictName(tempListDistrictName);
+        setListDistrict(response.data);
+      });
+    }
+  }, [idCity]);
+  useEffect(() => {
+    if (idDistrict !== '') {
+      axios.get(`http://localhost:3001/ward/${idDistrict}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListWardName.indexOf(response.data[i].ward_name) === -1) {
+            tempListWardName[tempListWardName.length] = response.data[i].ward_name;
+          }
+        }
+        setListWardName(tempListWardName);
+        setListWard(response.data);
+      });
+    }
+  }, [idDistrict]);
+  useEffect(() => {
+    if (idWard !== '') {
+      axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (tempListHamletName.indexOf(response.data[i].hamlet_name) === -1) {
+            tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
+          }
+        }
+        setListHamletName(tempListHamletName);
+        setListHamlet(response.data);
+      });
+    }
+  }, [idWard]);
 
   function changeRows(item, name) {
     // Send list selected id to general statistic

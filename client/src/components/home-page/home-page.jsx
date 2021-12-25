@@ -2,10 +2,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import PropTypes from 'prop-types';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
+import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -18,21 +18,20 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Cookies from 'js-cookie';
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import './styles.scss';
-import Slide from '../slide/slide';
-import Citizen from '../all-citizen/Citizen';
-import Manage from '../manage/main/manage';
-import { useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
-import Tasks from '../tasks/main/TaskHome';
+import Citizen from '../all-citizen/Citizen';
+import CensusForm from '../census/census';
+import Manage from '../manage/main/manage';
+import Slide from '../slide/slide';
 import Statistics from '../statistics/main/statistics';
-import CensusForm from '../census/census'
-import Cookies from 'js-cookie';
-import UpdatePass from './updatePass'
-import Dialog from '@mui/material/Dialog';
+import Tasks from '../tasks/main/TaskHome';
+import './styles.scss';
+import UpdatePass from './updatePass';
 
 const drawerWidth = '20vw';
 
@@ -114,12 +113,11 @@ export default function HomePage({ listItems }) {
     setOpenD(false);
   };
   const Logout = () => {
-      Cookies.remove('user');
-      Cookies.remove('role');
-      Cookies.remove('token')
-      window.location.reload()
-  }
-
+    Cookies.remove('user');
+    Cookies.remove('role');
+    Cookies.remove('token');
+    window.location.reload();
+  };
 
   const sideList = () => (
     <Box className="menu-container" component="div">
@@ -143,13 +141,13 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/congviec') return <Tasks />;
     if (location.pathname === '/quanly') return <Manage />;
     if (location.pathname === '/thongke') return <Statistics />;
-    if (location.pathname === '/nhaplieu') return <CensusForm/>
+    if (location.pathname === '/nhaplieu') return <CensusForm />;
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }} className="container-home-page">
       <Dialog open={openD} onClose={handleClose} fullWidth>
-        <UpdatePass handleClose = {handleClose}/>
+        <UpdatePass handleClose={handleClose} />
       </Dialog>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -209,10 +207,11 @@ export default function HomePage({ listItems }) {
         {sideList()}
       </Drawer>
 
-      <Main open={open} className="">
+      <Main open={open}>
         <DrawerHeader />
         {render()}
       </Main>
+
       <Menu
         anchorEl={anchorEl}
         open={openMenu}

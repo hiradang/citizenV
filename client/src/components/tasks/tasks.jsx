@@ -1,49 +1,37 @@
-import React from 'react';
-// import PropTypes from 'prop-types';
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import SaveIcon from '@mui/icons-material/Save';
-import { useSnackbar } from 'notistack';
-import './styles.scss';
-import Picker from './components/picker/picker';
-import clsx from 'clsx';
-// Tasks.propTypes = {};
-import { useEffect, useState } from 'react';
+import Paper from '@mui/material/Paper';
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import axios from 'axios';
+import clsx from 'clsx';
 import Cookies from 'js-cookie';
-import ImageNotDeclare from '../../constants/images/work/canNotDeclare.svg'
-const initialRows = [
-  {
-    id: 1,
-    cityName: 'Hà Nội',
-    startDate: '2020-11-15', // year / month 0 - 11 / day 1 - 31
-    endDate: '2020-11-16',
-    progress: 5000,
-    status: 'Chưa hoàn thành',
-  },
-  // {
-  //   id: 2,
-  //   cityName: 'Thanh Hóa',
-  //   startDate: new Date(2021, 0, 1), // year / month 0 - 11 / day 1 - 31
-  //   endDate: new Date(2021, 1, 1),
-  //   progress: 3000,
-  //   status: 'Chưa hoàn thành',
-  // },
-];
+import { useSnackbar } from 'notistack';
+import React, { useEffect, useState } from 'react';
+import ImageNotDeclare from '../../constants/images/work/canNotDeclare.svg';
+import Picker from './components/picker/picker';
+import Footer from '../footer/footer';
 
-const role = Cookies.get('role')
-const id = Cookies.get('user')
-const nameTitle = (role === 'A1' ? 'Tỉnh / Thành phố' : (role === 'A2' ? 'Quận / Huyện' : 
-                  (role === 'A3' ? 'Xã / Phường' : 'Thôn / Xóm')))
-const nameData = (role === 'A1' ? 'city' : (role === 'A2' ? 'district' : 
-                  (role === 'A3' ? 'ward' : 'hamlet')))                              
+import './styles.scss';
+
+const role = Cookies.get('role');
+const id = Cookies.get('user');
+const nameTitle =
+  role === 'A1'
+    ? 'Tỉnh / Thành phố'
+    : role === 'A2'
+    ? 'Quận / Huyện'
+    : role === 'A3'
+    ? 'Xã / Phường'
+    : 'Thôn / Xóm';
+const nameData =
+  role === 'A1' ? 'city' : role === 'A2' ? 'district' : role === 'A3' ? 'ward' : 'hamlet';
 function Tasks() {
-  const [declare, setDeclare] = useState(null)  
+  const [declare, setDeclare] = useState(null);
   const [rows, setRows] = React.useState([]);
-  const [initEnd, setInitEnd] = useState(new Date(Date.now() +  60*60*24*31*1000));
+  const [initEnd, setInitEnd] = useState(new Date(Date.now() + 60 * 60 * 24 * 31 * 1000));
   const [listCityName, setListCityName] = useState([]);
   var tempListCityName = [];
   useEffect(() => {
-    if (role === 'A1') setDeclare(true)
+    if (role === 'A1') setDeclare(true);
     if (nameData === 'city') {
       axios.get(`http://localhost:3001/${nameData}`).then((response) => {
         for (let i = 0; i < response.data.length; i++) {
@@ -54,16 +42,16 @@ function Tasks() {
     } else {
       axios.get(`http://localhost:3001/task/${id}`).then((response) => {
         if (response.data) {
-          setInitEnd(new Date(response.data.end_date))
-          let endDate = new Date(response.data.end_date)
-          let startDate = new Date(response.data.start_date)
-          if (endDate >= new Date(Date.now()) && startDate <= new Date(Date.now())) setDeclare(true);
-          else setDeclare(false)
-        }
-      else setDeclare(false)
-    });
+          setInitEnd(new Date(response.data.end_date));
+          let endDate = new Date(response.data.end_date);
+          let startDate = new Date(response.data.start_date);
+          if (endDate >= new Date(Date.now()) && startDate <= new Date(Date.now()))
+            setDeclare(true);
+          else setDeclare(false);
+        } else setDeclare(false);
+      });
       axios.get(`http://localhost:3001/${nameData}/${Cookies.get('user')}`).then((response) => {
-        let name = nameData + '_name'
+        let name = nameData + '_name';
         for (let i = 0; i < response.data.length; i++) {
           tempListCityName[i] = response.data[i][name];
         }
@@ -111,7 +99,7 @@ function Tasks() {
             ...rowToUpdate,
             startDate: start,
             endDate: end,
-            canDeclare: true
+            canDeclare: true,
             // status: 'Chưa hoàn thành',
           };
 
@@ -151,6 +139,7 @@ function Tasks() {
       headerName: 'ID',
       type: 'number',
       flex: 0.2,
+      minWidth: 100,
       sortable: false,
       disableColumnMenu: true,
     },
@@ -160,6 +149,7 @@ function Tasks() {
       type: 'string',
       sortable: false,
       flex: 1.2,
+      minWidth: 180,
     },
     {
       field: 'startDate',
@@ -168,6 +158,7 @@ function Tasks() {
       sortable: false,
       editable: true,
       flex: 1,
+      minWidth: 190,
     },
     {
       field: 'endDate',
@@ -176,6 +167,7 @@ function Tasks() {
       sortable: false,
       editable: true,
       flex: 1,
+      minWidth: 190,
     },
     {
       field: 'progress',
@@ -184,6 +176,8 @@ function Tasks() {
       sortable: true,
       disableColumnMenu: true,
       flex: 0.6,
+      minWidth: 120,
+
       valueFormatter: (params) => {
         const valueFormatted = params.value.toLocaleString();
         return `${valueFormatted} người`;
@@ -195,22 +189,25 @@ function Tasks() {
       type: 'number',
       sortable: false,
       flex: 1,
+      minWidth: 160,
+
       cellClassName: (params) =>
         clsx('status', {
-          negative: params.value === 'Chưa hoàn thành',
-          positive: params.value === 'Hoàn thành',
+          lock: params.value === 'Đang khóa quyền',
+          unfinished: params.value === 'Chưa hoàn thành',
+          finished: params.value === 'Hoàn thành',
         }),
     },
     {
       field: 'actions',
       type: 'actions',
       flex: 0.1,
+      minWidth: 60,
       getActions: (params) => [
         <GridActionsCellItem icon={<SaveIcon />} label="Save" onClick={updateTask(params.row)} />,
       ],
     },
   ];
-
 
   const updateBySelect = (select, start, end) => {
     if (select.length === 0) {
@@ -227,7 +224,7 @@ function Tasks() {
       if (row.cityName === select[index]) {
         row.startDate = start;
         row.endDate = end;
-        row.canDeclare = true
+        row.canDeclare = true;
         // row.status = 0;
         var timeStart =
           start.getFullYear().toString() +
@@ -242,10 +239,7 @@ function Tasks() {
           '-' +
           end.getDate().toString();
         axios
-          .put(
-            `http://localhost:3001/task/${row.id}`,
-            { startDate: timeStart, endDate: timeEnd }
-          )
+          .put(`http://localhost:3001/task/${row.id}`, { startDate: timeStart, endDate: timeEnd })
           .then((response) => {
             // setRows(response.data)
             console.log(response.data);
@@ -256,51 +250,87 @@ function Tasks() {
     setRows(newRows);
     showNoti('Thay đổi thành công', 'success');
   };
-  
+
   return (
-    <div className="wrapper">
-      {declare === false  ? <div className="statistic-img" style={{ height: '80%', width: '80%'}}>
-        <h2>Chưa được cấp quyền</h2>
-          <img src={ImageNotDeclare} alt="notDeclare" />
-        </div> : <div></div>}
-        {declare === true ? 
-        <div style={{ height: '95%', width: '100%', backgroundColor: 'white' }}>
-        <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
-          <div style={{ flexGrow: 0, padding: '20px 20px 0 20px' }}>
-            <Picker listCity={listCityName} nameTitle = {nameTitle} toggleApplyButton={updateBySelect}  initEnd = {initEnd}/>
-          </div>
-          <div style={{ flexGrow: 1, padding: '20px' }}>
-            <div style={{ height: '80vh' }}>
-              <DataGrid
-                autoHeight
-                rows={rows.map((row) => {
-                  if (row.startDate) {
-                    row = {
-                      ...row,
-                      startDate: new Date(row.startDate),
-                      endDate: new Date(row.endDate),
-                      status:  (row.status == 0 ? 'Chưa hoàn thành' : 'Hoàn thành'),
-                    };
-                  } else {
-                    row = {
-                      ...row,
-                      startDate: '',
-                      endDate: '',
-                      status: 'Đang khóa quyền',
-                    };
-                  }
-                  return row;
-                })}
-                columns={columns}
-                pageSize={7}
-                disableSelectionOnClick
-              />
-            </div>
+    <div className="grid">
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <div className="container-task">
+            {declare === false && (
+              <>
+                <div className="row">
+                  <div className="col l-12 m-12 c-12">
+                    <h2>Không có cuộc điều tra dân số nào đang diễn ra</h2>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col l-4 l-o-4 m-6 m-o-3 c-6 c-o-3">
+                    <img src={ImageNotDeclare} alt="notDeclare" style={{ width: '100%' }} />
+                  </div>
+                </div>
+              </>
+            )}
+            {declare === true && (
+              <>
+                <div className="row">
+                  <div className="col l-12 m-12 c-12">
+                    <h2>Công việc</h2>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col l-12 m-12 c-12">
+                    <Paper>
+                      <div className="row">
+                        <Picker
+                          listCity={listCityName}
+                          nameTitle={nameTitle}
+                          toggleApplyButton={updateBySelect}
+                          initEnd={initEnd}
+                        />
+                      </div>
+
+                      <div className="row container-datagrid">
+                        <div className="col l-12 m-12 c-12">
+                          <DataGrid
+                            autoHeight
+                            rows={rows.map((row) => {
+                              if (row.startDate) {
+                                row = {
+                                  ...row,
+                                  startDate: new Date(row.startDate),
+                                  endDate: new Date(row.endDate),
+                                  status: row.status == 0 ? 'Chưa hoàn thành' : 'Hoàn thành',
+                                };
+                              } else {
+                                row = {
+                                  ...row,
+                                  startDate: '',
+                                  endDate: '',
+                                  status: 'Đang khóa quyền',
+                                };
+                              }
+                              return row;
+                            })}
+                            columns={columns}
+                            pageSize={7}
+                            disableSelectionOnClick
+                          />
+                        </div>
+                      </div>
+                    </Paper>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      </div> : <div></div>}
-      
-      
+      </div>
+      <div className="row">
+        <div className="col l-12 m-12 c-12">
+          <Footer />
+        </div>
+      </div>
     </div>
   );
 }
