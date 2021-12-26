@@ -24,6 +24,7 @@ import './styles.scss';
 import axios from 'axios';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { isVietnamese } from '../../../constants/utils/CheckText';
 
 CensusForm.propTypes = {
   onSubmit: PropTypes.func,
@@ -193,7 +194,7 @@ function CensusForm({ data, onSubmit, handleClose }) {
     }
   }, [address.ward]);
   useEffect(() => {
-    if (address.hamlet !== data.homeHamlet_name && address.hamlet!== '') {
+    if (address.hamlet !== data.homeHamlet_name && address.hamlet !== '') {
       let index = listHamletFull.findIndex((x) => x.hamlet_name === address.hamlet);
       setAddressId(listHamletFull[index].id_hamlet);
     }
@@ -338,14 +339,16 @@ function CensusForm({ data, onSubmit, handleClose }) {
         setListHamlet2Full(response.data);
       });
     } else {
-        var listHamletName = [];
-      axios.get(`http://localhost:3001/hamlet/${data.tempAddress.substr(0, 6)}`).then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          listHamletName[i] = response.data[i].hamlet_name;
-        }
-        setListHamlet2(listHamletName);
-        setListHamlet2Full(response.data);
-      });
+      var listHamletName = [];
+      axios
+        .get(`http://localhost:3001/hamlet/${data.tempAddress.substr(0, 6)}`)
+        .then((response) => {
+          for (let i = 0; i < response.data.length; i++) {
+            listHamletName[i] = response.data[i].hamlet_name;
+          }
+          setListHamlet2(listHamletName);
+          setListHamlet2Full(response.data);
+        });
     }
   }, [address2.ward]);
   useEffect(() => {
@@ -367,10 +370,9 @@ function CensusForm({ data, onSubmit, handleClose }) {
         const idx = value.length - 1;
         return !(value[idx] === ' ');
       })
-      .matches(
-        /^[a-zA-Záàạảãăắằặẳẵâấầậẩẫéèẹẻẽêếềệểễíìịỉĩóòọỏõôốồộổỗơớờợởỡúùụủũưứừựửữ][a-zA-Záàạảãăắằặẳẵâấầậẩẫéèẹẻẽêếềệểễíìịỉĩóòọỏõôốồộổỗơớờợởỡúùụủũưứừựửữ\s]*$/,
-        'Chỉ nhập các kí tự tiếng Việt'
-      )
+      .test('checkVietnamese', 'Chỉ nhập ký tự tiếng Việt', (value) => {
+        return isVietnamese(value);
+      })
       .max(100, 'Tối đa 100 kí tự')
       .test('Nhập đúng theo mẫu', 'Mỗi từ cách nhau 1 khoảng trắng', (value) => {
         const list = value.split(' ');
@@ -433,7 +435,7 @@ function CensusForm({ data, onSubmit, handleClose }) {
         showNoti();
         return;
       } else {
-        onSubmit(data.id_citizen,values, information, addressId, address1Id, address2Id);
+        onSubmit(data.id_citizen, values, information, addressId, address1Id, address2Id);
       }
     }
   };
@@ -442,15 +444,15 @@ function CensusForm({ data, onSubmit, handleClose }) {
       <div style={{ height: '82%', width: '100%', backgroundColor: 'white' }}>
         <div style={{ flexGrow: 1, padding: '40px' }}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <div className = 'closeDialog'>
-          <IconButton
-              edge="end"
-              color="primary"
-              onClick={()=>handleClose()}
-              aria-label="close"             
-            >
-              <CloseIcon />
-            </IconButton>
+            <div className="closeDialog">
+              <IconButton
+                edge="end"
+                color="primary"
+                onClick={() => handleClose()}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
             </div>
             <h3 style={{ marginTop: '14px' }}>
               Phiếu điều tra dân số {new Date(Date.now()).getFullYear()}

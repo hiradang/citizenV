@@ -298,7 +298,7 @@ function Tasks() {
                                   ...row,
                                   startDate: new Date(row.startDate),
                                   endDate: new Date(row.endDate),
-                                  status: row.status == 0 ? 'Chưa hoàn thành' : 'Hoàn thành',
+                                  status: row.status === 0 ? 'Chưa hoàn thành' : 'Hoàn thành',
                                 };
                               } else {
                                 row = {

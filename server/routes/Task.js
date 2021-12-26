@@ -14,7 +14,7 @@ router.get('/city', validateToken, async (req, res) => {
   try {
     const [result, metadata] = await db.sequelize
       .query(`select cities.city_name as cityName, cities.id_city as id, 
-    tasks.start_date as startDate, tasks.end_date as endDate,  ifnull(tasks.is_finished,0) as status, cities.canDeclare, cities.quantity_city as progress
+    tasks.start_date as startDate, tasks.end_date as endDate,  ifnull(tasks.is_finished,0) as status, cities.quantity_city as progress
     from cities left JOIN tasks on cities.id_city = tasks.id_task`);
     res.json(result);
   } catch (e) {}

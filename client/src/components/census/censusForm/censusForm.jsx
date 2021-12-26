@@ -22,6 +22,7 @@ import {
 } from '../../../constants/listAboutPeople';
 import InputField from '../../form-control/inputField/inputField';
 import './styles.scss';
+import { isVietnamese } from '../../../constants/utils/CheckText';
 
 CensusForm.propTypes = {
   onSubmit: PropTypes.func,
@@ -280,10 +281,9 @@ function CensusForm({ onSubmit }) {
         const idx = value.length - 1;
         return !(value[idx] === ' ');
       })
-      .matches(
-        /^[a-zA-Záàạảãăắằặẳẵâấầậẩẫéèẹẻẽêếềệểễíìịỉĩóòọỏõôốồộổỗơớờợởỡúùụủũưứừựửữ][a-zA-Záàạảãăắằặẳẵâấầậẩẫéèẹẻẽêếềệểễíìịỉĩóòọỏõôốồộổỗơớờợởỡúùụủũưứừựửữ\s]*$/,
-        'Chỉ nhập các kí tự tiếng Việt'
-      )
+      .test('checkVietnamese', 'Chỉ nhập ký tự tiếng Việt', (value) => {
+        return isVietnamese(value);
+      })
       .max(100, 'Tối đa 100 kí tự')
       .test('Nhập đúng theo mẫu', 'Mỗi từ cách nhau 1 khoảng trắng', (value) => {
         const list = value.split(' ');

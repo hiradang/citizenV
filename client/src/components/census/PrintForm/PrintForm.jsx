@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { render } from 'react-dom';
 import { useReactToPrint } from 'react-to-print';
 import './style.scss';
-import Logo from '../../constants/images/print/logo.png';
+import Logo from '../../../constants/images/print/logo.png';
 import Square from '@mui/icons-material/CheckBoxOutlineBlank';
 import Button from '@mui/material/Button';
 import PrintIcon from '@mui/icons-material/LocalPrintshopOutlined';
