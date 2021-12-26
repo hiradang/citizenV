@@ -3,13 +3,13 @@ const router = express.Router();
 const { Account } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { validateToken } = require("../middlewares/AuthMiddleware");
+const { validateToken } = require('../middlewares/AuthMiddleware');
 
-router.post('/update/:id', validateToken ,async (req, res) => {
+router.post('/update/:id', validateToken, async (req, res) => {
   const id = req.params.id;
-  const {password} = req.body
+  const { password } = req.body;
   if (req.user.id !== id) {
-    return res.json("Không có quyền truy cập")
+    return res.json('Không có quyền truy cập');
   }
   bcrypt.hash(password, 10).then((hash) => {
     Account.update(
@@ -21,58 +21,57 @@ router.post('/update/:id', validateToken ,async (req, res) => {
   });
 });
 
-
-router.get('/' ,async (req, res) => {
-  bcrypt.hash("password", 10).then((hash) => {
+router.get('/', async (req, res) => {
+  bcrypt.hash('password', 10).then((hash) => {
     res.send(hash);
   });
 });
-// Cấp tài khoản 
-router.post("/", validateToken,async (req, res) => {
-    const { username, password } = req.body;
-    let role = ''
-    const roleAuth = req.user.role;
-    if (roleAuth === 'A1') role = 'A2'
-    else if (roleAuth === 'A2') role = 'A3'
-    else if (roleAuth === 'A3') role = 'B1'
-    else role = 'B2'
-    bcrypt.hash(password, 10).then((hash) => {
-      Account.create({
-        username: username,
-        password: hash,
-        role: role
-      });
-      // res.json("SUCCESS");
+// Cấp tài khoản
+router.post('/', validateToken, async (req, res) => {
+  const { username, password } = req.body;
+  let role = '';
+  const roleAuth = req.user.role;
+  if (roleAuth === 'A1') role = 'A2';
+  else if (roleAuth === 'A2') role = 'A3';
+  else if (roleAuth === 'A3') role = 'B1';
+  else role = 'B2';
+  bcrypt.hash(password, 10).then((hash) => {
+    Account.create({
+      username: username,
+      password: hash,
+      role: role,
     });
-    res.json('SUCCESS');
+    // res.json("SUCCESS");
   });
+  res.json('SUCCESS');
+});
 
 // Xác thực thông tin đăng nhập
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const user = await Account.findOne({where: {username: username}});
-  if (!user) res.json({ error: "Tài khoản không tồn tại" });
+  const user = await Account.findOne({ where: { username: username } });
+  if (!user) res.json({ error: 'Tài khoản không tồn tại' });
   bcrypt.compare(password, user.password).then((match) => {
     if (!match) res.json({ error: 'Mật khẩu không chính xác' });
     else {
-      const accessToken = jwt.sign({ id: user.username, role: user.role }, "importantsecret", {
-        expiresIn: "24h",
+      const accessToken = jwt.sign({ id: user.username, role: user.role }, 'importantsecret', {
+        expiresIn: '24h',
       });
-      res.cookie('token', accessToken)
+      res.cookie('token', accessToken);
       res.json({ username: user.username, role: user.role, accessToken });
     }
   });
 });
 
 // Xóa 1 tài khoản
-router.delete("/:username", validateToken, async (req, res) => {
+router.delete('/:username', validateToken, async (req, res) => {
   const username = req.params.username;
   Account.destroy({
     where: {
-      username: username
-    } 
-  })
-  res.send("SUCCESS")
+      username: username,
+    },
+  });
+  res.send('SUCCESS');
 });
 
 module.exports = router;

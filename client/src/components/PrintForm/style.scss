@@ -58,10 +58,6 @@
   .male {
     margin-right: 20px;
   }
-
-  .break {
-    display: none;
-  }
 }
 
 .date {
@@ -75,16 +71,6 @@
   margin-top: 10px;
 }
 
-@media print {
-  // .break {
-  //   margin-bottom: 120px;
-  // }
-
-  // .religion {
-  //   margin-top: 120px;
-  // }
-
-  .break {
-    display: block !important;
-  }
+.printComponent {
+  display: none !important;
 }

@@ -3,6 +3,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import WorkIcon from '@mui/icons-material/Work';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import PencilIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 
 export const roleA = [
   {
@@ -40,11 +41,6 @@ export const roleB1 = [
   },
   {
     listIcon: <AssignmentIcon />,
-    listText: 'Nhập liệu',
-    url: '/nhaplieu',
-  },
-  {
-    listIcon: <AssignmentIcon />,
     listText: 'Quản lý',
     url: '/quanly',
   },
@@ -62,6 +58,11 @@ export const roleB1 = [
     listIcon: <AssessmentIcon />,
     listText: 'Thống kê',
     url: '/thongke',
+  },
+  {
+    listIcon: <PencilIcon />,
+    listText: 'Nhập liệu',
+    url: '/nhaplieu',
   },
 ];
 

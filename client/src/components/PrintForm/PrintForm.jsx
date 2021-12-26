@@ -2,9 +2,10 @@ import React, { useRef } from 'react';
 import { render } from 'react-dom';
 import { useReactToPrint } from 'react-to-print';
 import './style.scss';
-import Logo from '../../constants/images/print/logo.svg';
+import Logo from '../../constants/images/print/logo.png';
 import Square from '@mui/icons-material/CheckBoxOutlineBlank';
 import Button from '@mui/material/Button';
+import PrintIcon from '@mui/icons-material/LocalPrintshopOutlined';
 // import Dot from './Dot';
 
 const Dot = () => {
@@ -101,14 +102,11 @@ class ComponentToPrint extends React.Component {
             <Dot />
           </div>
 
-          <div className="break">
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-          </div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
 
           <div className="religion">
             <p className="row">8. Tôn giáo: </p>
@@ -171,9 +169,13 @@ export default function Example() {
   return (
     <div>
       <Button onClick={handlePrint} variant="contained" className="printButton">
+        <PrintIcon />
         In phiếu
       </Button>
-      <ComponentToPrint ref={componentRef} />
+
+      <div className="printComponent">
+        <ComponentToPrint ref={componentRef} />
+      </div>
     </div>
   );
 }
