@@ -29,9 +29,9 @@ import CensusForm from '../census/census';
 import Manage from '../manage/main/manage';
 import Slide from '../slide/slide';
 import Statistics from '../statistics/main/statistics';
-import PrintForm from '../PrintForm/PrintForm';
 import UpdatePass from './updatePass';
 import Tasks from '../tasks/main/TaskHome';
+import NotFoundPage from '../NotFoundPage/NotFoundPage';
 
 const drawerWidth = '20vw';
 const idUser = Cookies.get('user');
@@ -143,7 +143,7 @@ export default function HomePage({ listItems }) {
     if (location.pathname === '/quanly') return <Manage />;
     if (location.pathname === '/thongke') return <Statistics />;
     if (location.pathname === '/nhaplieu') return <CensusForm />;
-    if (location.pathname === '/in') return <PrintForm />;
+    return <NotFoundPage />;
   };
 
   return (
@@ -165,7 +165,9 @@ export default function HomePage({ listItems }) {
           </IconButton>
 
           <div className="logo-and-name">
-            <img src={logoUrl} alt="" className="logo-header" />
+            <a href="/trangchu">
+              <img src={logoUrl} alt="" className="logo-header" />
+            </a>
             <Typography
               variant="h6"
               component="div"

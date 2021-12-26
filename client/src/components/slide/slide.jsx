@@ -10,8 +10,11 @@ import * as React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import Footer from '../footer/footer';
-// import img1 from '../../constants/images/1.jpg'
 import './styles.scss';
+import Image1 from '../../constants/images/slides/Image1.png';
+import Image2 from '../../constants/images/slides/Image2.png';
+import Image3 from '../../constants/images/slides/Image3.png';
+import Image4 from '../../constants/images/slides/Image4.png';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -20,23 +23,19 @@ const label = 'Các sự kiện đang diễn ra ';
 const images = [
   {
     label: label,
-    imgPath:
-      'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
+    imgPath: Image1,
   },
   {
     label: label,
-    imgPath:
-      'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
+    imgPath: Image2,
   },
   {
     label: label,
-    imgPath:
-      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
+    imgPath: Image3,
   },
   {
     label: label,
-    imgPath:
-      'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
+    imgPath: Image4,
   },
 ];
 

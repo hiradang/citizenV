@@ -4,13 +4,16 @@ const { Citizen } = require('../models');
 const db = require('../models');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 
-const utils = require('../utils/Utils')
+const utils = require('../utils/Utils');
 
 // Tìm kiếm thông tin 1 người dân
 router.get('/:id', validateToken, async (req, res) => {
   let id_citizen = req.params.id;
-  if (!utils.CheckCitizenId(id_citizen)) return res.json({error: 'Dữ liệu không hợp lệ'})
-  if (!utils.CheckCitizenId(id_citizen)) return res.json([])
+  if (!utils.CheckCitizenId(id_citizen))
+    return res.json({
+      status: 'error',
+      data: 'Id không hợp lệ',
+    });
   await db.sequelize
     .query('call getCitizenByIdCitizen(:id_citizen)', {
       replacements: { id_citizen: id_citizen },
@@ -44,18 +47,24 @@ router.post('/', validateToken, async (req, res) => {
   }
   const citizen = req.body;
 
-  if (!utils.CheckCitizenId(citizen.id_citizen) || !utils.CheckDate(citizen.date_of_birth) || 
-  !utils.isVietnamese(citizen.citizen_name) || !utils.isVietnamese(citizen.job) ||
-  !utils.isVietnamese(citizen.level) || !utils.CheckGender(citizen.gender) ||
-  !utils.CheckIdAddress(citizen.hometown) || !utils.CheckIdAddress(citizen.tempAddress) || 
-  !utils.CheckIdAddress(citizen.address)) 
-  return res.json({error: 'Dữ liệu không hợp lệ'})
-  
-  const findCitizen = await Citizen.findByPk(citizen.id_citizen)
+  if (
+    !utils.CheckCitizenId(citizen.id_citizen) ||
+    !utils.CheckDate(citizen.date_of_birth) ||
+    !utils.isVietnamese(citizen.citizen_name) ||
+    !utils.isVietnamese(citizen.job) ||
+    !utils.isVietnamese(citizen.level) ||
+    !utils.CheckGender(citizen.gender) ||
+    !utils.CheckIdAddress(citizen.hometown) ||
+    !utils.CheckIdAddress(citizen.tempAddress) ||
+    !utils.CheckIdAddress(citizen.address)
+  )
+    return res.json({ error: 'Dữ liệu không hợp lệ' });
+
+  const findCitizen = await Citizen.findByPk(citizen.id_citizen);
   if (!findCitizen) {
     await Citizen.create(citizen);
     res.json(citizen);
-  } else res.json({error: 'Người dân đã được nhập'})
+  } else res.json({ error: 'Người dân đã được nhập' });
 });
 
 // Xóa 1 người dân

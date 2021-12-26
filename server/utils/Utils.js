@@ -18,6 +18,12 @@ function removeVietnameseTones(str) {
   return str;
 }
 
+// Kiểm tra xem có phải một số hay không
+function isNumber(str) {
+  var reg = /^\d+$/;
+  return reg.test(str);
+}
+
 //Kiểm tra xem có phải số CCCD/CMND
 function CheckCitizenId(str) {
   var re1 = /^[0-9]{12}$/g;
@@ -25,10 +31,10 @@ function CheckCitizenId(str) {
   return re1.test(str) || re.test(str);
 }
 
-//Kiểm tra xem có phải iD address 
+//Kiểm tra xem có phải iD address
 function CheckIdAddress(str) {
   var re1 = /^[0-9]{8}$/g;
-  return re1.test(str)
+  return re1.test(str);
 }
 
 //Kiểm tra có phải là giới tính hợp lệ không
@@ -43,11 +49,16 @@ function CheckDate(str) {
   var re1 = /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/g;
   if (!re1.test(str)) return false;
   // Ngày có thật?
-  const arr = str.split('-')
+  const arr = str.split('-');
   const ngay = arr[2];
   const thang = arr[1];
   const nam = arr[0];
-  if (nam > new Date(Date.now()).getFullYear() && thang > (new Date(Date.now()).getMonth() + 1) && ngay> new Date(Date.now()).getDay() )  return false
+  if (
+    nam > new Date(Date.now()).getFullYear() &&
+    thang > new Date(Date.now()).getMonth() + 1 &&
+    ngay > new Date(Date.now()).getDay()
+  )
+    return false;
   if (ngay < 1 || ngay > 31) return false;
   if (thang < 1 || thang > 12) return false;
   if (
@@ -67,4 +78,4 @@ function CheckDate(str) {
   } else if (ngay > 30) return false;
   return true;
 }
-module.exports = { CheckCitizenId, isVietnamese, CheckGender, CheckDate, CheckIdAddress };
+module.exports = { CheckCitizenId, isVietnamese, CheckGender, CheckDate, CheckIdAddress, isNumber };
