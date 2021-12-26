@@ -27,6 +27,7 @@ import logoUrl from '../../constants/images/logo.png';
 import Citizen from '../all-citizen/Citizen';
 import CensusForm from '../census/census';
 import Manage from '../manage/main/manage';
+import PrintForm from '../PrintForm/PrintForm';
 import Slide from '../slide/slide';
 import Statistics from '../statistics/main/statistics';
 import UpdatePass from './updatePass';
