@@ -74,7 +74,7 @@ export const roleB2 = [
   {
     listIcon: <AssignmentIcon />,
     listText: 'Theo dõi',
-    url: '/theodoi',
+    url: '/danso',
   },
   {
     listIcon: <WorkIcon />,

@@ -11,6 +11,12 @@ import SelectOption from '../selectOption';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
+var addName = {
+  city_name: 'addCity_name',
+  district_name: 'addDistrict_name',
+  ward_name: 'addWard_name',
+  hamlet_name: 'addHamlet_name',
+};
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -22,12 +28,6 @@ export default function Citizen() {
     id_hamlet: [],
   });
   const selectOptionName = ['Quê quán', 'Địa chỉ thường trú', 'Địa chỉ tạm trú'];
-  var addName = {
-    city_name: 'addCity_name',
-    district_name: 'addDistrict_name',
-    ward_name: 'addWard_name',
-    hamlet_name: 'addHamlet_name',
-  };
   const [districtName, setDistrictName] = useState('');
   const [cityName, setCityName] = useState('');
   const idDistrict = Cookies.get('user');

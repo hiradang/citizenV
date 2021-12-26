@@ -1,6 +1,9 @@
 @import '../../app.scss';
 @import '../../grid.scss';
 
+.iconEdit {
+  cursor: pointer;
+}
 .container-all-citizen {
   background-color: #f5f7ff;
   padding: 0 40px 40px 40px;

@@ -94,6 +94,12 @@ import '../styleCitizen.scss';
 //   },
 // ];
 
+var addName = {
+  city_name: 'addCity_name',
+  district_name: 'addDistrict_name',
+  ward_name: 'addWard_name',
+  hamlet_name: 'addHamlet_name',
+};
 export default function Citizen() {
   const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -111,12 +117,6 @@ export default function Citizen() {
     id_ward: [],
     id_hamlet: [],
   });
-  var addName = {
-    city_name: 'addCity_name',
-    district_name: 'addDistrict_name',
-    ward_name: 'addWard_name',
-    hamlet_name: 'addHamlet_name',
-  };
   const [idCity, setIdCity] = useState('');
   const [idDistrict, setIdDistrict] = useState('');
   const [idWard, setIdWard] = useState('');

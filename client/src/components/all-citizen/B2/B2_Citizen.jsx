@@ -32,14 +32,17 @@ export default function Citizen() {
   const [districtName, setDistrictName] = useState('');
   const [cityName, setCityName] = useState('');
   const [wardName, setWardName] = useState('');
-  const idWard = Cookies.get('user');
-  var idCity = idWard.toString().substr(0, 2);
-  var idDistrict = idWard.toString().substr(0, 4);
-  const [listHamletName, setListHamletName] = useState([]);
-  const [listHamlet, setListHamlet] = useState([]);
+  const [hamletName, setHamletName] = useState('');
+  const idHamlet = Cookies.get('user');
+  var idCity = idHamlet.toString().substr(0, 2);
+  var idDistrict = idHamlet.toString().substr(0, 4);
+  var idWard = idHamlet.toString().substr(0, 6);
 
 
   useEffect(() => {
+    axios.get(`http://localhost:3001/hamlet/id?id=${idHamlet}`).then((response) => {
+        setHamletName(response.data.hamlet_name);
+      });
     axios.get(`http://localhost:3001/ward/id?id=${idWard}`).then((response) => {
       setWardName(response.data.ward_name);
     });
@@ -56,14 +59,7 @@ export default function Citizen() {
       });
       setListCitizen(temp);
     });
-    axios.get(`http://localhost:3001/hamlet/${idWard}`).then((response) => {
-      let tempListHamletName = [];
-      for (let i = 0; i < response.data.length; i++) {
-        tempListHamletName[tempListHamletName.length] = response.data[i].hamlet_name;
-      }
-      setListHamletName(tempListHamletName);
-      setListHamlet(response.data);
-    });
+    
   }, []);
 
   useEffect(() => {
@@ -111,7 +107,7 @@ export default function Citizen() {
         row[addName.district_name] === districtName &&
         row[addName.city_name] === cityName &&
         row[addName.ward_name] === wardName &&
-        (filter.id_hamlet.indexOf(row[addName.hamlet_name]) !== -1 || filter.id_hamlet.length === 0)
+        row[addName.hamlet_name] === hamletName
       );
     });
     
@@ -131,7 +127,7 @@ export default function Citizen() {
       <div className="row">
         <div className="col l-12 m-12 c-12">
           <h2>
-            Danh sách dân số {wardName}, {districtName}, {cityName}
+            Danh sách dân số {hamletName}, {wardName}, {districtName}, {cityName}
           </h2>
         </div>
       </div>
@@ -146,17 +142,6 @@ export default function Citizen() {
                   changeItem={(item, name) => changeRows(item, name)}
                   names = {selectOptionName}
                 ></SelectOption>
-              </div>
-              <div className="col l-3 m-5 c-12">
-                <Select
-                  names={listHamletName}
-                  label="Thôn/Xóm"
-                  item="id_hamlet"
-                  changeItem={(item, name) => changeRows(item, name)}
-                />
-              </div>
-              <div className="col l-3 m-5 c-12">
-                <Search search={(idCitizen) => setSearchId(idCitizen)} change={listCitizen} />
               </div>
             </div>
 

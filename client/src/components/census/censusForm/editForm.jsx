@@ -13,13 +13,22 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { useSnackbar } from 'notistack';
-import { listCareer, listEthnic, listLevel, listReligion } from '../../constants/listAboutPeople';
-import InputField from '../form-control/inputField/inputField';
+import {
+  listCareer,
+  listEthnic,
+  listLevel,
+  listReligion,
+} from '../../../constants/listAboutPeople';
+import InputField from '../../form-control/inputField/inputField';
 import './styles.scss';
 import axios from 'axios';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 CensusForm.propTypes = {
   onSubmit: PropTypes.func,
+  data: PropTypes.object,
+  handleClose: PropTypes.func,
 };
 
 const ITEM_HEIGHT = 48;
@@ -32,11 +41,11 @@ const MenuProps = {
   },
 };
 
-function CensusForm({ onSubmit }) {
+function CensusForm({ data, onSubmit, handleClose }) {
   //id_hamlet của quê quán, địa chỉ thường trú, tạm trú
-  const [addressId, setAddressId] = useState('');
-  const [address1Id, setAddress1Id] = useState('');
-  const [address2Id, setAddress2Id] = useState('');
+  const [addressId, setAddressId] = useState(data.hometown);
+  const [address1Id, setAddress1Id] = useState(data.address);
+  const [address2Id, setAddress2Id] = useState(data.tempAddress);
 
   //id+name của quê quán
   const [listCityFull, setListCityFull] = useState([]);
@@ -60,20 +69,20 @@ function CensusForm({ onSubmit }) {
   };
   // Thông tin cơ bản
   const [information, setInformation] = useState({
-    dateOfBirth: new Date(),
-    gender: '',
-    religion: '',
-    ethnic: 'Kinh',
-    level: '',
-    career: '',
+    dateOfBirth: new Date(data.date_of_birth),
+    gender: data.gender,
+    religion: data.religion,
+    ethnic: data.ethnic,
+    level: data.level,
+    career: data.job,
   });
 
   // Quê quán
   const [address, setAddress] = useState({
-    hamlet: '',
-    ward: '',
-    district: '',
-    city: '',
+    hamlet: data.homeHamlet_name,
+    ward: data.homeWard_name,
+    district: data.homeDistrict_name,
+    city: data.homeCity_name,
   });
   const [listCity, setListCity] = useState([]);
   const [listDistrict, setListDistrict] = useState([]);
@@ -82,10 +91,10 @@ function CensusForm({ onSubmit }) {
 
   // Địa chỉ thường trú
   const [address1, setAddress1] = useState({
-    hamlet: '',
-    ward: '',
-    district: '',
-    city: '',
+    hamlet: data.addHamlet_name,
+    ward: data.addWard_name,
+    district: data.addDistrict_name,
+    city: data.addCity_name,
   });
   const [listDistrict1, setListDistrict1] = useState([]);
   const [listWard1, setListWard1] = useState([]);
@@ -93,10 +102,10 @@ function CensusForm({ onSubmit }) {
 
   // Địa chỉ tạm trú
   const [address2, setAddress2] = useState({
-    hamlet: '',
-    ward: '',
-    district: '',
-    city: '',
+    hamlet: data.tempHamlet_name,
+    ward: data.tempWard_name,
+    district: data.tempDistrict_name,
+    city: data.tempCity_name,
   });
   const [listDistrict2, setListDistrict2] = useState([]);
   const [listWard2, setListWard2] = useState([]);
@@ -115,7 +124,7 @@ function CensusForm({ onSubmit }) {
 
   //Lấy dữ liệu cho quê quán
   useEffect(() => {
-    if (address.city) {
+    if (address.city !== data.homeCity_name && address.city !== '') {
       let index = listCityFull.findIndex((x) => x.city_name === address.city);
       let id_city = listCityFull[index].id_city;
       var listDistrictName = [];
@@ -126,10 +135,19 @@ function CensusForm({ onSubmit }) {
         setListDistrict(listDistrictName);
         setListDistrictFull(response.data);
       });
+    } else {
+      var listDistrictName = [];
+      axios.get(`http://localhost:3001/district/${data.hometown.substr(0, 2)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listDistrictName[i] = response.data[i].district_name;
+        }
+        setListDistrict(listDistrictName);
+        setListDistrictFull(response.data);
+      });
     }
   }, [address.city]);
   useEffect(() => {
-    if (address.district) {
+    if (address.district !== data.homeDistrict_name && address.district !== '') {
       let index = listDistrictFull.findIndex((x) => x.district_name === address.district);
       let id_district = listDistrictFull[index].id_district;
       var listWardName = [];
@@ -140,10 +158,19 @@ function CensusForm({ onSubmit }) {
         setListWard(listWardName);
         setListWardFull(response.data);
       });
+    } else {
+      var listWardName = [];
+      axios.get(`http://localhost:3001/ward/${data.hometown.substr(0, 4)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listWardName[i] = response.data[i].ward_name;
+        }
+        setListWard(listWardName);
+        setListWardFull(response.data);
+      });
     }
   }, [address.district]);
   useEffect(() => {
-    if (address.ward) {
+    if (address.ward !== data.homeWard_name && address.ward !== '') {
       let index = listWardFull.findIndex((x) => x.ward_name === address.ward);
       let id_ward = listWardFull[index].id_ward;
       var listHamletName = [];
@@ -154,10 +181,19 @@ function CensusForm({ onSubmit }) {
         setListHamlet(listHamletName);
         setListHamletFull(response.data);
       });
+    } else {
+      var listHamletName = [];
+      axios.get(`http://localhost:3001/hamlet/${data.hometown.substr(0, 6)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listHamletName[i] = response.data[i].hamlet_name;
+        }
+        setListHamlet(listHamletName);
+        setListHamletFull(response.data);
+      });
     }
   }, [address.ward]);
   useEffect(() => {
-    if (address.hamlet) {
+    if (address.hamlet !== data.homeHamlet_name && address.hamlet!== '') {
       let index = listHamletFull.findIndex((x) => x.hamlet_name === address.hamlet);
       setAddressId(listHamletFull[index].id_hamlet);
     }
@@ -165,7 +201,7 @@ function CensusForm({ onSubmit }) {
 
   //Lấy dữ liệu cho địa chỉ thường trú
   useEffect(() => {
-    if (address1.city) {
+    if (address1.city !== data.addCity_name && address1.city !== '') {
       let index = listCityFull.findIndex((x) => x.city_name === address1.city);
       let id_city = listCityFull[index].id_city;
       var listDistrictName = [];
@@ -176,10 +212,19 @@ function CensusForm({ onSubmit }) {
         setListDistrict1(listDistrictName);
         setListDistrict1Full(response.data);
       });
+    } else {
+      var listDistrictName = [];
+      axios.get(`http://localhost:3001/district/${data.address.substr(0, 2)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listDistrictName[i] = response.data[i].district_name;
+        }
+        setListDistrict1(listDistrictName);
+        setListDistrict1Full(response.data);
+      });
     }
   }, [address1.city]);
   useEffect(() => {
-    if (address1.district) {
+    if (address1.district !== data.addDistrict_name && address1.district !== '') {
       let index = listDistrict1Full.findIndex((x) => x.district_name === address1.district);
       let id_district = listDistrict1Full[index].id_district;
       var listWardName = [];
@@ -190,10 +235,19 @@ function CensusForm({ onSubmit }) {
         setListWard1(listWardName);
         setListWard1Full(response.data);
       });
+    } else {
+      var listWardName = [];
+      axios.get(`http://localhost:3001/ward/${data.address.substr(0, 4)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listWardName[i] = response.data[i].ward_name;
+        }
+        setListWard1(listWardName);
+        setListWard1Full(response.data);
+      });
     }
   }, [address1.district]);
   useEffect(() => {
-    if (address1.ward) {
+    if (address1.ward !== data.addWard_name && address1.ward !== '') {
       let index = listWard1Full.findIndex((x) => x.ward_name === address1.ward);
       let id_ward = listWard1Full[index].id_ward;
       var listHamletName = [];
@@ -204,10 +258,19 @@ function CensusForm({ onSubmit }) {
         setListHamlet1(listHamletName);
         setListHamlet1Full(response.data);
       });
+    } else {
+      var listHamletName = [];
+      axios.get(`http://localhost:3001/hamlet/${data.address.substr(0, 6)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listHamletName[i] = response.data[i].hamlet_name;
+        }
+        setListHamlet1(listHamletName);
+        setListHamlet1Full(response.data);
+      });
     }
   }, [address1.ward]);
   useEffect(() => {
-    if (address1.hamlet) {
+    if (address1.hamlet !== data.addHamlet_name && address1.hamlet !== '') {
       let index = listHamlet1Full.findIndex((x) => x.hamlet_name === address1.hamlet);
       setAddress1Id(listHamlet1Full[index].id_hamlet);
     }
@@ -215,7 +278,7 @@ function CensusForm({ onSubmit }) {
 
   //Lấy dữ liệu cho địa chỉ tạm trú
   useEffect(() => {
-    if (address2.city) {
+    if (address2.city !== data.tempCity_name && address2.city !== '') {
       let index = listCityFull.findIndex((x) => x.city_name === address2.city);
       let id_city = listCityFull[index].id_city;
       var listDistrictName = [];
@@ -226,10 +289,21 @@ function CensusForm({ onSubmit }) {
         setListDistrict2(listDistrictName);
         setListDistrict2Full(response.data);
       });
+    } else {
+      var listDistrictName = [];
+      axios
+        .get(`http://localhost:3001/district/${data.tempAddress.substr(0, 2)}`)
+        .then((response) => {
+          for (let i = 0; i < response.data.length; i++) {
+            listDistrictName[i] = response.data[i].district_name;
+          }
+          setListDistrict2(listDistrictName);
+          setListDistrict2Full(response.data);
+        });
     }
   }, [address2.city]);
   useEffect(() => {
-    if (address2.district) {
+    if (address2.district !== data.tempDistrict_name && address2.district !== '') {
       let index = listDistrict2Full.findIndex((x) => x.district_name === address2.district);
       let id_district = listDistrict2Full[index].id_district;
       var listWardName = [];
@@ -240,10 +314,19 @@ function CensusForm({ onSubmit }) {
         setListWard2(listWardName);
         setListWard2Full(response.data);
       });
+    } else {
+      var listWardName = [];
+      axios.get(`http://localhost:3001/ward/${data.tempAddress.substr(0, 4)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listWardName[i] = response.data[i].ward_name;
+        }
+        setListWard2(listWardName);
+        setListWard2Full(response.data);
+      });
     }
   }, [address2.district]);
   useEffect(() => {
-    if (address2.ward) {
+    if (address2.ward !== data.tempWard_name && address2.ward !== '') {
       let index = listWard2Full.findIndex((x) => x.ward_name === address2.ward);
       let id_ward = listWard2Full[index].id_ward;
       var listHamletName = [];
@@ -254,10 +337,19 @@ function CensusForm({ onSubmit }) {
         setListHamlet2(listHamletName);
         setListHamlet2Full(response.data);
       });
+    } else {
+        var listHamletName = [];
+      axios.get(`http://localhost:3001/hamlet/${data.tempAddress.substr(0, 6)}`).then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          listHamletName[i] = response.data[i].hamlet_name;
+        }
+        setListHamlet2(listHamletName);
+        setListHamlet2Full(response.data);
+      });
     }
   }, [address2.ward]);
   useEffect(() => {
-    if (address2.hamlet) {
+    if (address2.hamlet !== data.tempHamlet_name && address2.hamlet !== '') {
       let index = listHamlet2Full.findIndex((x) => x.hamlet_name === address2.hamlet);
       setAddress2Id(listHamlet2Full[index].id_hamlet);
     }
@@ -314,8 +406,8 @@ function CensusForm({ onSubmit }) {
   });
   const form = useForm({
     defaultValues: {
-      name: '',
-      citizenID: '',
+      name: data.citizen_name,
+      citizenID: data.id_citizen,
     },
     resolver: yupResolver(schema),
   });
@@ -328,7 +420,6 @@ function CensusForm({ onSubmit }) {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
     if (onSubmit) {
       // values là object chứa: Họ tên + CCCD / CMND
       // information chứa: Ngày sinh / Giới tính / Tôn giáo / Dân tộc / Trình độ / Nghề nghiệp
@@ -342,40 +433,7 @@ function CensusForm({ onSubmit }) {
         showNoti();
         return;
       } else {
-        onSubmit(values, information, addressId, address1Id, address2Id);
-
-        // Dữ liệu chuẩn và ko bị thiếu trường nào thì reset lại toàn bộ các trường
-        // form.reset();
-        // Reset lại thông tin cơ bản
-        setInformation({
-          dateOfBirth: new Date(),
-          gender: '',
-          religion: '',
-          ethnic: 'Kinh',
-          level: '',
-          career: '',
-        });
-        // Reset lại quê quán
-        setAddress({
-          hamlet: '',
-          ward: '',
-          district: '',
-          city: '',
-        });
-        // Reset lại địa chỉ thường trú
-        setAddress1({
-          hamlet: '',
-          ward: '',
-          district: '',
-          city: '',
-        });
-        // Reset lại địa chỉ tạm trú
-        setAddress2({
-          hamlet: '',
-          ward: '',
-          district: '',
-          city: '',
-        });
+        onSubmit(data.id_citizen,values, information, addressId, address1Id, address2Id);
       }
     }
   };
@@ -384,6 +442,16 @@ function CensusForm({ onSubmit }) {
       <div style={{ height: '82%', width: '100%', backgroundColor: 'white' }}>
         <div style={{ flexGrow: 1, padding: '40px' }}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className = 'closeDialog'>
+          <IconButton
+              edge="end"
+              color="primary"
+              onClick={()=>handleClose()}
+              aria-label="close"             
+            >
+              <CloseIcon />
+            </IconButton>
+            </div>
             <h3 style={{ marginTop: '14px' }}>
               Phiếu điều tra dân số {new Date(Date.now()).getFullYear()}
             </h3>
@@ -486,6 +554,9 @@ function CensusForm({ onSubmit }) {
                   setAddress({
                     ...address,
                     city: newValue,
+                    district: '',
+                    ward: '',
+                    hamlet: '',
                   });
                 }}
                 value={address.city}
@@ -501,6 +572,8 @@ function CensusForm({ onSubmit }) {
                   setAddress({
                     ...address,
                     district: newValue,
+                    ward: '',
+                    hamlet: '',
                   });
                 }}
                 value={address.district}
@@ -516,6 +589,7 @@ function CensusForm({ onSubmit }) {
                   setAddress({
                     ...address,
                     ward: newValue,
+                    hamlet: '',
                   });
                 }}
                 value={address.ward}
@@ -548,6 +622,9 @@ function CensusForm({ onSubmit }) {
                   setAddress1({
                     ...address1,
                     city: newValue,
+                    district: '',
+                    ward: '',
+                    hamlet: '',
                   });
                 }}
                 value={address1.city}
@@ -563,6 +640,8 @@ function CensusForm({ onSubmit }) {
                   setAddress1({
                     ...address1,
                     district: newValue,
+                    ward: '',
+                    hamlet: '',
                   });
                 }}
                 value={address1.district}
@@ -578,6 +657,7 @@ function CensusForm({ onSubmit }) {
                   setAddress1({
                     ...address1,
                     ward: newValue,
+                    hamlet: '',
                   });
                 }}
                 value={address1.ward}
@@ -610,6 +690,9 @@ function CensusForm({ onSubmit }) {
                   setAddress2({
                     ...address2,
                     city: newValue,
+                    district: '',
+                    ward: '',
+                    hamlet: '',
                   });
                 }}
                 value={address2.city}
@@ -625,6 +708,8 @@ function CensusForm({ onSubmit }) {
                   setAddress2({
                     ...address2,
                     district: newValue,
+                    ward: '',
+                    hamlet: '',
                   });
                 }}
                 value={address2.district}
@@ -640,6 +725,7 @@ function CensusForm({ onSubmit }) {
                   setAddress2({
                     ...address2,
                     ward: newValue,
+                    hamlet: '',
                   });
                 }}
                 value={address2.ward}
@@ -662,9 +748,8 @@ function CensusForm({ onSubmit }) {
                 renderInput={(params) => <TextField {...params} label="Thôn / Khu phố" />}
               />
             </div>
-
             <button className="button" type="submit">
-              <p>THÊM VÀO DANH SÁCH</p>
+              <p>CẬP NHẬT THÔNG TIN</p>
             </button>
           </form>
         </div>
