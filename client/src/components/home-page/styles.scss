@@ -2,10 +2,13 @@
 
 .logo-and-name {
   width: 100%;
+
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+
+  cursor: pointer;
 
   & > .MuiTypography-root.MuiTypography-h6 {
     flex: 0;
@@ -13,7 +16,7 @@
 }
 
 .username {
-  width: 100px;
+  width: 120px;
   text-align: right;
 }
 
