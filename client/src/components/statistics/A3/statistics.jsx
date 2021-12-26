@@ -235,12 +235,12 @@ function Statistics() {
         <div>
           <div className="grid graph-container">
             <div className="row">
-              <div className="col l-6 l-o-3 m-5 m-o-1 c-11 c-o-0-5">
+              <div className="col l-6 l-o-3 m-6 m-o-3 c-11 c-o-0-5">
                 <PieChart input={dataTable} criteria={criteria} />
               </div>
             </div>
 
-            <div className="col l-6 l-o-3 m-5 m-o-0 c-11 c-o-0-5" style={{ paddingTop: '40px' }}>
+            <div className="col l-6 l-o-3 m-6 m-o-3 c-11 c-o-0-5" style={{ paddingTop: '40px' }}>
               <VerticalBar input={dataTable} criteria={criteria} width={500} />
             </div>
           </div>

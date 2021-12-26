@@ -109,12 +109,17 @@ class ComponentToPrint extends React.Component {
           <br />
 
           <div className="religion">
-            <p className="row">8. Tôn giáo: </p>
+            <p className="row">8. Dân tộc: </p>
+            <Dot />
+          </div>
+
+          <div className="religion">
+            <p className="row">9. Tôn giáo: </p>
             <Dot />
           </div>
 
           <div className="level">
-            <p className="row">9. Trình độ văn hóa:</p>
+            <p className="row">10. Trình độ văn hóa:</p>
             <p className="instruction">Đánh dấu (X) vào ô thích hợp.</p>
             <div>
               <p>
@@ -139,7 +144,7 @@ class ComponentToPrint extends React.Component {
           </div>
 
           <div className="job">
-            <p className="row">10. Nghề nghiệp:</p>
+            <p className="row">11. Nghề nghiệp:</p>
             <Dot />
           </div>
         </div>

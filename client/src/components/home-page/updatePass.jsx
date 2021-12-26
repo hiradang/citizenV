@@ -29,7 +29,10 @@ function UpdatePass(props) {
     new: yup
       .string()
       .required('Chưa nhập mật khẩu mới')
-      .matches(/[A-Z,0-9]/, 'Phải tồn tại ít nhất 1 chữ số và 1 chữ cái viết hoa')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]/,
+        'Phải tồn tại ít nhất 1 chữ số và 1 chữ cái viết hoa'
+      )
       .min(6, 'Độ dài tối thiểu phải là 6 kí tự'),
     confirm: yup
       .string()
