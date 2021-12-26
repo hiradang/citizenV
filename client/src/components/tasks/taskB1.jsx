@@ -6,7 +6,6 @@ import Cookies from 'js-cookie';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import ImageNotDeclare from '../../constants/images/work/canNotDeclare.svg';
-import Footer from '../footer/footer';
 import Picker from './components/picker/picker';
 import './styles.scss';
 
@@ -315,12 +314,6 @@ function Tasks() {
               </>
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="col l-12 m-12 c-12">
-          <Footer />
         </div>
       </div>
     </div>

@@ -22,11 +22,12 @@ import Cookies from 'js-cookie';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useHistory, useLocation } from 'react-router-dom';
 import logoUrl from '../../constants/images/logo.png';
 import Citizen from '../all-citizen/Citizen';
 import CensusForm from '../census/census';
 import Manage from '../manage/main/manage';
+import PrintForm from '../PrintForm/PrintForm';
 import Slide from '../slide/slide';
 import Statistics from '../statistics/main/statistics';
 import UpdatePass from './updatePass';
@@ -89,6 +90,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function HomePage({ listItems }) {
   const theme = useTheme();
   const location = useLocation();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
   const toggleSideBar = () => {
     setOpen(!open);
@@ -146,6 +148,12 @@ export default function HomePage({ listItems }) {
     return <NotFoundPage />;
   };
 
+  const onClickLogo = () => {
+    history.push({
+      pathname: '/trangchu',
+    });
+  };
+
   return (
     <Box sx={{ display: 'flex' }} className="container-home-page">
       <Dialog open={openD} onClose={handleClose} fullWidth>
@@ -175,11 +183,11 @@ export default function HomePage({ listItems }) {
               fontWeight={600}
               fontSize="16px"
             >
-              <i>CitizenV</i>
+              CitizenV
             </Typography>
           </div>
 
-          <div className="username">
+          <div className="username" style={{ marginRight: '4px' }}>
             <Typography
               variant="h6"
               component="div"
@@ -187,7 +195,7 @@ export default function HomePage({ listItems }) {
               fontWeight={400}
               fontSize="14px"
             >
-              <i>User: {idUser}</i>
+              User: {idUser}
             </Typography>
           </div>
 

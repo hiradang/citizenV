@@ -26,7 +26,7 @@ h2 {
 // responsive tablet
 @media (min-width: 740px) and (max-width: 1023px) {
   .container-slide {
-    height: 80.5vh;
+    height: 80.8vh;
     padding: 0 50px 0px 50px;
   }
 }
@@ -34,14 +34,14 @@ h2 {
 // >= tablet <= pc low resolution
 @media (min-width: 1024px) and (max-width: 1239px) {
   .container-slide {
-    height: 85vh;
+    height: 85.6vh;
   }
 }
 
 // responsive mobile
 @media (max-width: 739px) {
   .container-slide {
-    height: 77vh;
+    height: 77.5vh;
     padding: 0 10px;
   }
 

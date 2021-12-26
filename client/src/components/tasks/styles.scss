@@ -85,23 +85,16 @@ ul.MuiDataGrid-menuList > li.MuiMenuItem-root.MuiButtonBase-root:nth-child(3) {
 
 // responsive tablet
 @media (min-width: 740px) and (max-width: 1023px) {
-  .container-task {
-    // height: 81vh;
-  }
 }
 
 // >= tablet <= pc low resolution
 @media (min-width: 1024px) and (max-width: 1239px) {
-  .container-task {
-    // height: 86vh;
-  }
 }
 
 // responsive mobile
 @media (max-width: 739px) {
   .container-task {
     padding: 0 20px;
-    // height: 77vh;
 
     h2 {
       padding: 20px 0;

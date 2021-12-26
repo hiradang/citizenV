@@ -5,7 +5,7 @@ import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import ImageNotDeclare from '../../constants/images/work/canNotDeclare.svg';
 import { useEffect, useState } from 'react';
-import PrintForm from '../PrintForm/PrintForm';
+import PrintForm from './PrintForm/PrintForm';
 import Cookies from 'js-cookie';
 
 Census.propTypes = {};
