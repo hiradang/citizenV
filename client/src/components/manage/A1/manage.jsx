@@ -465,10 +465,10 @@ function Manage() {
           </div>
         </div>
 
-        <div className="col l-1-8 m-3 c-12">
+        <div className="col l-1-5 m-3 c-12">
           <div className="actionButton">
             <Button variant="contained" onClick={exportExcel}>
-              Xuất ra Excel
+              Xuất Excel
             </Button>
           </div>
         </div>

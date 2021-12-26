@@ -20,7 +20,9 @@ function Census() {
   };
   useEffect(() => {
     axios.get(`http://localhost:3001/task/${idWard}`).then((response) => {
-      setDeclare(response.data.is_finished);
+      if (response.data === null) {
+        setDeclare(true);
+      } else setDeclare(response.data.is_finished);
     });
   }, [declare]);
   const showNotiError = () => {
@@ -56,6 +58,8 @@ function Census() {
 
   return (
     <div>
+      {role === 'B1' ? <PrintForm /> : <></>}
+
       {declare === false && <CensusForm onSubmit={handleSubmit} />}
       {declare === true && (
         <>
@@ -71,9 +75,6 @@ function Census() {
           </div>
         </>
       )}
-
-      {role === 'B1' ? <PrintForm /> : <></>}
-      <CensusForm onSubmit={handleSubmit} />
     </div>
   );
 }

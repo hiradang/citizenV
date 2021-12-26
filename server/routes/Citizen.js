@@ -14,13 +14,16 @@ router.get('/:id', validateToken, async (req, res) => {
       status: 'error',
       data: 'Id không hợp lệ',
     });
-  await db.sequelize
-    .query('call getCitizenByIdCitizen(:id_citizen)', {
-      replacements: { id_citizen: id_citizen },
-    })
-    .then((result) => {
-      res.json(result);
-    });
+
+  try {
+    await db.sequelize
+      .query('call getCitizenByIdCitizen(:id_citizen)', {
+        replacements: { id_citizen: id_citizen },
+      })
+      .then((result) => {
+        res.json(result);
+      });
+  } catch(e) {}
 });
 
 //Lấy thông tin người dân 

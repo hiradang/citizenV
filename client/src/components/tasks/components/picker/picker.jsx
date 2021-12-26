@@ -78,7 +78,7 @@ function Picker({ listCity, nameTitle, toggleApplyButton, toggleCompleteButton, 
 
   const [start, setStart] = useState(new Date(Date.now()));
   const [complete, setComplete] = useState('');
-  const [end, setEnd] = useState(new Date(Date.now() + 60 * 60 * 24 * 31 * 1000));
+  const [end, setEnd] = useState('');
   // const [initEnd, setInitEnd] = useState(new Date(Date.now() +  60*60*24*31*1000));
   const handleStartDate = (newDate) => setStart(newDate);
   const handleEndDate = (newDate) => setEnd(newDate);
