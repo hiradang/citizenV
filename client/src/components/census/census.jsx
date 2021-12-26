@@ -58,6 +58,8 @@ function Census() {
 
   return (
     <div>
+      {role === 'B1' ? <PrintForm /> : <></>}
+
       {declare === false && <CensusForm onSubmit={handleSubmit} />}
       {declare === true && (
         <>

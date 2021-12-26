@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "",
-    "database": "population2",
+    "database": "population",
     "host": "localhost",
     "dialect": "mysql"
   },

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Citizen } = require('../models');
+const { Citizen, City, District, Ward } = require('../models');
 const db = require('../models');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 
@@ -43,6 +43,7 @@ router.get('/', validateToken, async (req, res) => {
   }
 });
 
+
 //Thêm 1 người dân
 router.post('/', validateToken, async (req, res) => {
   if (req.user.role !== 'B1' && req.user.role !== 'B2') {
@@ -66,6 +67,21 @@ router.post('/', validateToken, async (req, res) => {
   const findCitizen = await Citizen.findByPk(citizen.id_citizen);
   if (!findCitizen) {
     await Citizen.create(citizen);
+    const city = await City.findByPk(id.substr(0,2))
+    await City.update({
+      quantity_city: city.quantity_city + 1
+    },
+    {where: {id_city: id.substr(0,2)}})
+  const district =  await District.findByPk(id.substr(0,4))
+    await District.update({
+      quantity_district: district.quantity_district + 1
+    },
+    {where: {id_district: id.substr(0,4)}})
+  const ward = await Ward.findByPk(id.substr(0,6))
+    await Ward.update({
+      quantity_ward: ward.quantity_ward + 1
+    },
+    {where: {id_ward: id.substr(0,6)}})
     res.json(citizen);
   } else res.json({ error: 'Người dân đã được nhập' });
 });
