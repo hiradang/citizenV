@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Citizen, City, District, Ward } = require('../models');
+const { Citizen, City, District, Ward, Hamlet } = require('../models');
 const db = require('../models');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 
@@ -23,11 +23,11 @@ router.get('/:id', validateToken, async (req, res) => {
       .then((result) => {
         res.json(result);
       });
-  } catch(e) {}
+  } catch (e) {}
 });
 
-//Lấy thông tin người dân 
-router.get('/', validateToken, async (req, res) => { 
+//Lấy thông tin người dân
+router.get('/', validateToken, async (req, res) => {
   if (req.user.role === 'A1') {
     await db.sequelize.query(`call getCitizen()`).then((result) => {
       res.json(result);
@@ -42,7 +42,6 @@ router.get('/', validateToken, async (req, res) => {
       });
   }
 });
-
 
 //Thêm 1 người dân
 router.post('/', validateToken, async (req, res) => {
@@ -67,21 +66,34 @@ router.post('/', validateToken, async (req, res) => {
   const findCitizen = await Citizen.findByPk(citizen.id_citizen);
   if (!findCitizen) {
     await Citizen.create(citizen);
-    const city = await City.findByPk(citizen.address.substr(0,2))
-    await City.update({
-      quantity_city: city.quantity_city + 1
-    },
-    {where: {id_city: citizen.address.substr(0,2)}})
-  const district =  await District.findByPk(citizen.address.substr(0,4))
-    await District.update({
-      quantity_district: district.quantity_district + 1
-    },
-    {where: {id_district: citizen.address.substr(0,4)}})
-  const ward = await Ward.findByPk(citizen.address.substr(0,6))
-    await Ward.update({
-      quantity_ward: ward.quantity_ward + 1
-    },
-    {where: {id_ward: citizen.address.substr(0,6)}})
+    const city = await City.findByPk(citizen.address.substr(0, 2));
+    await City.update(
+      {
+        quantity_city: city.quantity_city + 1,
+      },
+      { where: { id_city: citizen.address.substr(0, 2) } }
+    );
+    const district = await District.findByPk(citizen.address.substr(0, 4));
+    await District.update(
+      {
+        quantity_district: district.quantity_district + 1,
+      }, 
+      { where: { id_district: citizen.address.substr(0, 4) } }
+    );
+    const ward = await Ward.findByPk(citizen.address.substr(0, 6));
+    await Ward.update(
+      {
+        quantity_ward: ward.quantity_ward + 1,
+      },
+      { where: { id_ward: citizen.address.substr(0, 6) } }
+    );
+    const hamlet = await Hamlet.findByPk(citizen.address);
+    await Hamlet.update(
+      {
+        quantity_hamlet: hamlet.quantity_hamlet + 1,
+      },
+      { where: { id_hamlet: citizen.address } }
+    );
     res.json(citizen);
   } else res.json({ error: 'Người dân đã được nhập' });
 });
@@ -92,11 +104,43 @@ router.delete('/:id', validateToken, async (req, res) => {
     return res.json('Không có quyền truy cập');
   }
   let id_citizen = req.params.id;
-  if (!utils.CheckCitizenId(id_citizen)) return res.json({error: 'Dữ liệu không hợp lệ'})
+  if (!utils.CheckCitizenId(id_citizen)) return res.json({ error: 'Dữ liệu không hợp lệ' });
+  const citizen = await Citizen.findByPk(id_citizen);
   await Citizen.destroy({
-    where : {id_citizen: id_citizen}
-  })
-  res.json(id_citizen)
+    where: { id_citizen: id_citizen },
+  });
+
+
+  const city = await City.findByPk(citizen.address.substr(0, 2));
+    await City.update(
+      {
+        quantity_city: city.quantity_city - 1,
+      },
+      { where: { id_city: citizen.address.substr(0, 2) } }
+    );
+    const district = await District.findByPk(citizen.address.substr(0, 4));
+    await District.update(
+      {
+        quantity_district: district.quantity_district - 1,
+      }, 
+      { where: { id_district: citizen.address.substr(0, 4) } }
+    );
+    const ward = await Ward.findByPk(citizen.address.substr(0, 6));
+    await Ward.update(
+      {
+        quantity_ward: ward.quantity_ward - 1,
+      },
+      { where: { id_ward: citizen.address.substr(0, 6) } }
+    );
+    const hamlet = await Hamlet.findByPk(citizen.address);
+    await Hamlet.update(
+      {
+        quantity_hamlet: hamlet.quantity_hamlet - 1,
+      },
+      { where: { id_hamlet: citizen.address } }
+    );
+
+    res.json(id_citizen);
 });
 
 router.put('/:id', validateToken, async (req, res) => {
@@ -104,34 +148,43 @@ router.put('/:id', validateToken, async (req, res) => {
     return res.json('Không có quyền truy cập');
   }
   const citizen = req.body;
-  const id = req.params.id
-  if (!utils.CheckCitizenId(citizen.id_citizen) || !utils.CheckCitizenId(id) || 
-  !utils.CheckDate(citizen.date_of_birth) || !utils.CheckIdAddress(citizen.address) ||
-  !utils.isVietnamese(citizen.citizen_name) || !utils.isVietnamese(citizen.job) ||
-  !utils.isVietnamese(citizen.level) || !utils.CheckGender(citizen.gender) ||
-  !utils.CheckIdAddress(citizen.hometown) || !utils.CheckIdAddress(citizen.tempAddress) ) 
-  return res.json({error: 'Dữ liệu không hợp lệ'})
-  
-  const findCitizen = await Citizen.findByPk(id)
-  const findId = await Citizen.findByPk(citizen.id_citizen)
-  if (findCitizen && !findId) {
+  const id = req.params.id;
+  if (
+    !utils.CheckCitizenId(citizen.id_citizen) ||
+    !utils.CheckCitizenId(id) ||
+    !utils.CheckDate(citizen.date_of_birth) ||
+    !utils.CheckIdAddress(citizen.address) ||
+    !utils.isVietnamese(citizen.citizen_name) ||
+    !utils.isVietnamese(citizen.job) ||
+    !utils.isVietnamese(citizen.level) ||
+    !utils.CheckGender(citizen.gender) ||
+    !utils.CheckIdAddress(citizen.hometown) ||
+    !utils.CheckIdAddress(citizen.tempAddress)
+  )
+    return res.json({ error: 'Dữ liệu không hợp lệ' });
+
+  const findCitizen = await Citizen.findByPk(id);
+  const findId = await Citizen.findByPk(citizen.id_citizen);
+  if ((findCitizen && !findId) || (id === citizen.id_citizen)) {
     await Citizen.update(
       {
-      id_citizen: citizen.id_citizen,
-      citizen_name: citizen.citizen_name,
-      date_of_birth: citizen.date_of_birth,
-      gender: citizen.gender,
-      hometown: citizen.hometown,
-      tempAddress: citizen.tempAddress,
-      address: citizen.address,
-      ethnic: citizen.ethnic,
-      religion: citizen.religion,
-      level: citizen.level,
-      job: citizen.job,
-      },{
-      where : {id_citizen: id}
-    });
+        id_citizen: citizen.id_citizen,
+        citizen_name: citizen.citizen_name,
+        date_of_birth: citizen.date_of_birth,
+        gender: citizen.gender,
+        hometown: citizen.hometown,
+        tempAddress: citizen.tempAddress,
+        address: citizen.address,
+        ethnic: citizen.ethnic,
+        religion: citizen.religion,
+        level: citizen.level,
+        job: citizen.job,
+      },
+      {
+        where: { id_citizen: id },
+      }
+    );
     res.json(citizen);
-  } else res.json({error: 'Người dân đã được nhập'})
+  } else res.json({ error: 'Người dân đã được nhập' });
 });
 module.exports = router;

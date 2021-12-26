@@ -350,7 +350,7 @@ function CensusForm({ onSubmit }) {
         onSubmit(values, information, addressId, address1Id, address2Id);
 
         // Dữ liệu chuẩn và ko bị thiếu trường nào thì reset lại toàn bộ các trường
-        // form.reset();
+        form.reset();
         // Reset lại thông tin cơ bản
         setInformation({
           dateOfBirth: new Date(),
